@@ -1,0 +1,11 @@
+// for new repo from command line
+git init
+git commit -m "your message"
+git remote add origin https://github.com/omnakum2/Resto.git
+git branch -M main
+git push -u origin main
+
+// for existing repository from command line
+git remote add origin https://github.com/omnakum2/Resto.git
+git branch -M main
+git push -u origin main
