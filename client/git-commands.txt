@@ -9,3 +9,8 @@ git push -u origin main
 git remote add origin https://github.com/omnakum2/Resto.git
 git branch -M main
 git push -u origin main
+
+// for updates
+git add .
+git commit -m "your message"
+git push
