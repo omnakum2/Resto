@@ -1,8 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const Category = require("./modals/CategoryModel");
 const categoryRoute = require("./routes/categoryRoutes");
+const tableRoute = require("./routes/tableRoute");
 
 const app = express();
 app.use(cors());
@@ -16,3 +16,4 @@ app.listen(3001, () => {
 
 
 app.use("/api/category", categoryRoute);
+app.use("/api/table", tableRoute);
