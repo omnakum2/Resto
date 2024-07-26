@@ -6,7 +6,7 @@ const foodSchema = mongoose.Schema(
     price: { type: Number, default: 0, required: [true, "price is required"] },
     description: { type: String, required: [true, "description is required"] },
     image: { type: String, required: [true, "image is required"] },
-    category_id: { type: String, required: [true, "category id is required"] },
+    category_id: { type: mongoose.Schema.Types.ObjectId, ref: 'category',required: [true, "category id is required"] },
   },
   {
     timestamps: true,

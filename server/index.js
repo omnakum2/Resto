@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const categoryRoute = require("./routes/categoryRoutes");
 const tableRoute = require("./routes/tableRoute");
+const foodRoute = require("./routes/foodRoutes");
 
 const app = express();
 app.use(cors());
@@ -17,3 +18,5 @@ app.listen(3001, () => {
 
 app.use("/api/category", categoryRoute);
 app.use("/api/table", tableRoute);
+app.use("/api/food", foodRoute);
+app.use("/uploads", express.static("uploads"));
