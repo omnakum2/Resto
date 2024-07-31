@@ -70,6 +70,16 @@ const updateFood = async (req, res) => {
     const { name, price, description, category_id } = req.body;
     const image = req.file ? req.file.path : null;
 
+    if (!(name && price && description && category_id)) {
+      return res.status(400).send("All fields are Required");
+    }
+
+    // check food already exist - name
+    const existFood = await Food.findOne({ name });
+    if (existFood) {
+      return res.status(409).send(`Food already exists with ${name} name`);
+    }
+
     // check food exist - id
     const food = await Food.findById(id);
     if (!food) {

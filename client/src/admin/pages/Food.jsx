@@ -4,7 +4,7 @@ import axios from "axios";
 import Header from "../components/Header";
 import { Link, useNavigate } from "react-router-dom";
 
-function Category() {
+function Food() {
   const navigate = useNavigate();
   const [records, setRecords] = useState("");
   const [search, setSearch] = useState("");
@@ -29,8 +29,34 @@ function Category() {
   // table columns
   const cols = [
     {
+      name: "Image",
+      cell: (row) => (
+        <img
+          src={`http://localhost:3001/${row.image}`} 
+          alt={row.name}
+          style={{ width: "100px", height: "100px" }}
+        />
+      ),
+      sortable: false,
+    },
+    {
       name: "Name",
       selector: (row) => row.name,
+      sortable: true,
+    },
+    {
+      name: "Description",
+      selector: (row) => row.description,
+      sortable: true,
+    },
+    {
+      name: "Price",
+      selector: (row) => row.price,
+      sortable: true,
+    },
+    {
+      name: "Category",
+      selector: (row) => row._id,
       sortable: true,
     },
     {
@@ -70,7 +96,7 @@ function Category() {
   useEffect(() => {
     const fetchdata = async (res, req) => {
       await axios
-        .get("http://localhost:3001/api/category")
+        .get("http://localhost:3001/api/food")
         .then((res) => setRecords(res.data))
         .catch((err) => alert(err));
     };
@@ -79,28 +105,28 @@ function Category() {
 
   // edit category
   const handleEdit = (id) => {
-    navigate(`/category-edit/${id}`);
+    navigate(`/food-edit/${id}`);
   };
 
   // delete category
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure to delete category?")) {
+    if (window.confirm("Are you sure to delete Food?")) {
       try {
-        await axios.delete(`http://localhost:3001/api/category/${id}`);
+        await axios.delete(`http://localhost:3001/api/food/${id}`);
         setRecords(records.filter((record) => record._id !== id));
-        alert("Category deleted successfully");
+        alert("Food deleted successfully");
       } catch (err) {
-        alert("Failed to delete category.");
+        alert("Failed to delete Food.");
       }
     }
   };
 
-  // toggle category status
+  // toggle table status
   const handleToggleStatus = async (id) => {
     try {
-      const category = records.find((record) => record._id === id);
-      await axios.patch(`http://localhost:3001/api/category/${id}`, {
-        status: category.status === "active" ? "deactive" : "active",
+      const table = records.find((record) => record._id === id);
+      await axios.patch(`http://localhost:3001/api/food/${id}`, {
+        status: table.status === "active" ? "deactive" : "active",
       });
       setRecords(
         records.map((record) =>
@@ -112,7 +138,7 @@ function Category() {
             : record
         )
       );
-      alert("Category status Updated");
+      alert("Food status Updated");
     } catch (err) {
       alert("Failed to update status");
     }
@@ -124,23 +150,19 @@ function Category() {
       <main id="main" className="main">
         <div className="container">
           <div className="pagetitle">
-            Categories
-            <Link className="btn btn-dark btn-sm float-end" to="/category-add">
+            Food Items
+            <Link className="btn btn-dark btn-sm float-end" to="/food-add">
               <span>Add</span>
             </Link>
           </div>
           <hr />
-          <input
-            type="search"
-            className="mb-4 col-3 form-control float-end"
-            placeholder="Search..."
-          />
 
           <DataTable
             columns={cols}
             data={records}
             customStyles={mystyle}
             pagination
+            fixedHeader
             subHeader
             subHeaderComponent={
               <input
@@ -158,4 +180,4 @@ function Category() {
   );
 }
 
-export default Category;
+export default Food;

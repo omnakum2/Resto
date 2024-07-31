@@ -4,7 +4,7 @@ import axios from "axios";
 import Header from "../components/Header";
 import { Link, useNavigate } from "react-router-dom";
 
-function Category() {
+function Table() {
   const navigate = useNavigate();
   const [records, setRecords] = useState("");
   const [search, setSearch] = useState("");
@@ -29,15 +29,25 @@ function Category() {
   // table columns
   const cols = [
     {
-      name: "Name",
-      selector: (row) => row.name,
+      name: "Table No.",
+      selector: (row) => row.table_no,
+      sortable: true,
+    },
+    {
+      name: "Size",
+      selector: (row) => row.size,
+      sortable: true,
+    },
+    {
+      name: "Type",
+      selector: (row) => row.type,
       sortable: true,
     },
     {
       name: "Status",
       cell: (row) => (
         <button
-          className={`btn ${row.status === "active" ? "btn-sm btn-success" : "btn-sm btn-warning"}`}
+          className={`btn ${row.status === "unoccupied" ? "btn-sm btn-success" : "btn-sm btn-warning"}`}
           onClick={() => handleToggleStatus(row._id)}
         >
           {row.status}
@@ -70,7 +80,7 @@ function Category() {
   useEffect(() => {
     const fetchdata = async (res, req) => {
       await axios
-        .get("http://localhost:3001/api/category")
+        .get("http://localhost:3001/api/table")
         .then((res) => setRecords(res.data))
         .catch((err) => alert(err));
     };
@@ -79,44 +89,47 @@ function Category() {
 
   // edit category
   const handleEdit = (id) => {
-    navigate(`/category-edit/${id}`);
+    navigate(`/table-edit/${id}`);
   };
 
   // delete category
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure to delete category?")) {
+    if (window.confirm("Are you sure to delete table?")) {
       try {
-        await axios.delete(`http://localhost:3001/api/category/${id}`);
+        await axios.delete(`http://localhost:3001/api/table/${id}`);
         setRecords(records.filter((record) => record._id !== id));
-        alert("Category deleted successfully");
+        alert("Table deleted successfully");
       } catch (err) {
-        alert("Failed to delete category.");
+        alert("Failed to delete table.");
       }
     }
   };
 
-  // toggle category status
+  // toggle table status
   const handleToggleStatus = async (id) => {
     try {
-      const category = records.find((record) => record._id === id);
-      await axios.patch(`http://localhost:3001/api/category/${id}`, {
-        status: category.status === "active" ? "deactive" : "active",
+      const table = records.find((record) => record._id === id);
+      await axios.patch(`http://localhost:3001/api/table/${id}`, {
+        status: table.status === "occupied" ? "unoccupied" : "occupied",
       });
       setRecords(
         records.map((record) =>
           record._id === id
             ? {
                 ...record,
-                status: record.status === "active" ? "deactive" : "active",
+                status:
+                  record.status === "occupied" ? "unoccupied" : "occupied",
               }
             : record
         )
       );
-      alert("Category status Updated");
+      alert("Table status Updated");
     } catch (err) {
       alert("Failed to update status");
     }
   };
+
+  
 
   return (
     <div>
@@ -124,17 +137,12 @@ function Category() {
       <main id="main" className="main">
         <div className="container">
           <div className="pagetitle">
-            Categories
-            <Link className="btn btn-dark btn-sm float-end" to="/category-add">
+            Tables
+            <Link className="btn btn-dark btn-sm float-end" to="/table-add">
               <span>Add</span>
             </Link>
           </div>
           <hr />
-          <input
-            type="search"
-            className="mb-4 col-3 form-control float-end"
-            placeholder="Search..."
-          />
 
           <DataTable
             columns={cols}
@@ -158,4 +166,4 @@ function Category() {
   );
 }
 
-export default Category;
+export default Table;

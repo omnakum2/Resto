@@ -6,6 +6,11 @@ const userProfileSchema = mongoose.Schema(
     mobile: { type: String, required: [true, "Mobile is required"] },
     image: { type: String, required: [true, "Image is required"] },
     gender: { type: String, required: [true, "Gender is required"] },
+    user_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "users",
+      required: [true, "user_id is required"],
+    },
   },
   {
     timestamps: true,

@@ -73,33 +73,17 @@ function Header() {
           </li>
 
           <li className="nav-item">
-            <a href="."
-              className="nav-link collapsed"
-              data-bs-target="#Products-nav"
-              data-bs-toggle="collapse"
-            >
+            <Link className="nav-link collapsed" to="/table">
+              <i className="bi bi-table"></i>
+              <span>New Table</span>
+            </Link>
+          </li>
+
+          <li className="nav-item">
+            <Link className="nav-link collapsed" to="/food">
               <i className="bi bi-box"></i>
-              <span>Food</span>
-              <i className="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul
-              id="Products-nav"
-              className="nav-content collapse"
-              data-bs-parent="#sidebar-nav"
-            >
-              <li>
-                <Link to="/admin/product/add">
-                  <i className="bi bi-circle"></i>
-                  <span>Add Food</span>
-                </Link>
-              </li>
-              <li>
-                <Link to="/admin/product">
-                  <i className="bi bi-circle"></i>
-                  <span>Manage Food</span>
-                </Link>
-              </li>
-            </ul>
+              <span>New Food</span>
+            </Link>
           </li>
 
           <li className="nav-item">

@@ -11,6 +11,10 @@ import Dashboard from "./admin/pages/Dashboard";
 import Category from "./admin/pages/Category";
 import AddCategory from "./admin/pages/addCategory";
 import UpdateCategory from "./admin/pages/updateCategory";
+import Table from "./admin/pages/Table";
+import AddTable from "./admin/pages/addTable";
+import UpdateTable from "./admin/pages/updateTable";
+import Food from "./admin/pages/Food";
 
 function App() {
   return (
@@ -29,6 +33,12 @@ function App() {
           <Route path="category" element={<Category />} />
           <Route path="category-add" element={<AddCategory />} />
           <Route path="category-edit/:id" element={<UpdateCategory />} />
+          <Route path="table" element={<Table />} />
+          <Route path="table-add" element={<AddTable />} />
+          <Route path="table-edit/:id" element={<UpdateTable />} />
+          <Route path="food" element={<Food />} />
+          <Route path="table-add" element={<AddTable />} />
+          <Route path="table-edit/:id" element={<UpdateTable />} />
 
         </Routes>
       </BrowserRouter>
