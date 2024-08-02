@@ -129,6 +129,21 @@ const toggleStatus = async (req, res) => {
   }
 }
 
+const getActiveCategories = async (req, res) => {
+  try {
+    // Fetch categories with status 'active'
+    const activeCategories = await Category.find({ status: "active" });
+    
+    // Check if there are no categories found
+    if (!activeCategories) {
+      return res.status(404).json({ msg: 'No active categories found' });
+    }
+    
+    res.status(200).json(activeCategories);
+  } catch (error) {
+    res.status(500).json({ msg: error.message });
+  }
+};
 
 module.exports = {
   getCategories,
@@ -137,4 +152,5 @@ module.exports = {
   updateCategories,
   deleteCategories,
   toggleStatus,
+  getActiveCategories,
 };

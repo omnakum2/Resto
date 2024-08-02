@@ -228,9 +228,11 @@
 
 /*** Food Menu ***/
 .nav-pills .nav-item .active {
-    border-bottom: 2px solid var(--primary);
+    color: var(--primary); /* Primary color for active state */
 }
-
+.nav-pills .nav-item .active {
+    color: var(--primary); /* Primary color for active state */
+}
 
 /*** Youtube Video ***/
 .video {

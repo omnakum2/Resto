@@ -1,11 +1,53 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
 function Menu() {
+  const [categories, setCategories] = useState([]);
+  const [items, setItems] = useState({});
+  const [activeTab, setActiveTab] = useState("");
+
+  // Fetch categories
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get("http://localhost:3001/api/category");
+        setCategories(response.data);
+        setActiveTab(response.data[0]?._id); // Set the first category as active tab
+      } catch (error) {
+        alert("Failed to fetch categories.");
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  // Fetch items for the active category
+  useEffect(() => {
+    if (activeTab) {
+      const fetchItems = async () => {
+        try {
+          const response = await axios.get(
+            `http://localhost:3001/api/food?category_id=${activeTab}`
+          );
+          setItems((prevItems) => ({
+            ...prevItems,
+            [activeTab]: response.data,
+          }));
+        } catch (error) {
+          alert("Failed to fetch items.");
+        }
+      };
+
+      fetchItems();
+    }
+  }, [activeTab]);
+
+  // console.log(records);
   return (
     <div>
-      <Header/>
+      <Header />
       <div className="container-xxl py-5 bg-secondary hero-header mb-5">
         <div className="container text-center my-5 pt-5 pb-4">
           <h1 className="display-3 text-white mb-3 animated slideInDown">
@@ -40,46 +82,21 @@ function Menu() {
             className="tab-class text-center wow fadeInUp"
             data-wow-delay="0.1s"
           >
-            <ul className="nav nav-pills d-inline-flex justify-content-center border-bottom mb-5">
-              <li className="nav-item">
-                <a
-                  className="d-flex align-items-center text-start mx-3 ms-0 pb-3 active"
-                  data-bs-toggle="pill"
-                  href="#tab-1"
-                >
-                  <i className="fa fa-coffee fa-2x text-primary"></i>
-                  <div className="ps-3">
-                    <small className="text-body">Popular</small>
-                    <h6 className="mt-n1 mb-0">Breakfast</h6>
-                  </div>
-                </a>
-              </li>
-              <li className="nav-item">
-                <a
-                  className="d-flex align-items-center text-start mx-3 pb-3"
-                  data-bs-toggle="pill"
-                  href="#tab-2"
-                >
-                  <i className="fa fa-hamburger fa-2x text-primary"></i>
-                  <div className="ps-3">
-                    <small className="text-body">Special</small>
-                    <h6 className="mt-n1 mb-0">Lunch</h6>
-                  </div>
-                </a>
-              </li>
-              <li className="nav-item">
-                <a
-                  className="d-flex align-items-center text-start mx-3 me-0 pb-3"
-                  data-bs-toggle="pill"
-                  href="#tab-3"
-                >
-                  <i className="fa fa-utensils fa-2x text-primary"></i>
-                  <div className="ps-3">
-                    <small className="text-body">Lovely</small>
-                    <h6 className="mt-n1 mb-0">Dinner</h6>
-                  </div>
-                </a>
-              </li>
+            <ul className="nav nav-pills d-inline-flex justify-content-center mb-5">
+              {categories.map((category) => (
+                <li className="nav-item" key={category._id}>
+                  <a
+                    className={`d-flex align-items-center text-start mx-3 ms-0 pb-3 ${activeTab === category._id ? "active" : ""}`}
+                    data-bs-toggle="pill"
+                    href={`#tab-${category._id}`}
+                  onClick={(e) => setActiveTab(category._id)}
+                  >
+                    <div className="ps-3">
+                      <h6 className="mt-n1 mb-0">{category.name}</h6>
+                    </div>
+                  </a>
+                </li>
+              ))}
             </ul>
             <div className="tab-content">
               <div id="tab-1" className="tab-pane fade show p-0 active">
@@ -88,32 +105,36 @@ function Menu() {
                     <div className="d-flex align-items-center">
                       <img
                         className="flex-shrink-0 img-fluid rounded"
-                        src="assets/img/menu-1.jpg"
-                        alt=""
+                        src="assets/img/bg-hero.jpg"
+                        alt="img"
                         style={{ width: "80px" }}
                       />
                       <div className="w-100 d-flex flex-column text-start ps-4">
                         <h5 className="d-flex justify-content-between border-bottom pb-2">
-                          <span>Chicken Burger</span>
-                          <span className="text-primary">$115</span>
+                          <span>food</span>
+                          <span className="text-primary">₹1</span>
                         </h5>
-                        <small className="fst-italic">
-                          Ipsum ipsum clita erat amet dolor justo diam
-                        </small>
+                        <small className="fst-italic">aaa</small>
                       </div>
                     </div>
                   </div>
-                  {/* Repeat other menu items similarly */}
-                </div>
-              </div>
-              <div id="tab-2" className="tab-pane fade show p-0">
-                <div className="row g-4">
-                  {/* Repeat tab content structure for tab-2 */}
-                </div>
-              </div>
-              <div id="tab-3" className="tab-pane fade show p-0">
-                <div className="row g-4">
-                  {/* Repeat tab content structure for tab-3 */}
+                  <div className="col-lg-6">
+                    <div className="d-flex align-items-center">
+                      <img
+                        className="flex-shrink-0 img-fluid rounded"
+                        src="assets/img/bg-hero.jpg"
+                        alt="img"
+                        style={{ width: "80px" }}
+                      />
+                      <div className="w-100 d-flex flex-column text-start ps-4">
+                        <h5 className="d-flex justify-content-between border-bottom pb-2">
+                          <span>food</span>
+                          <span className="text-primary">₹1</span>
+                        </h5>
+                        <small className="fst-italic">aaa</small>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -121,7 +142,7 @@ function Menu() {
         </div>
       </div>
       {/* Menu End */}
-      <Footer/>
+      <Footer />
     </div>
   );
 }

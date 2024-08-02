@@ -6,6 +6,7 @@ const categorySchema = mongoose.Schema(
     status: {
       type: String,
       default: "active",
+      enum: ['active', 'deactive'],
       required: [true, "Status is required"],
     },
   },

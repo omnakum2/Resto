@@ -8,6 +8,7 @@ const {
   addFood,
   updateFood,
   deleteFood,
+  toggleStatus,
 } = require("../controllers/foodController");
 
 const storage = multer.diskStorage({
@@ -28,6 +29,7 @@ router.get("/", getFoods);
 router.get("/:id", getFood);
 router.post("/", upload.single("image"), addFood);
 router.put("/:id", upload.single("image"), updateFood);
+router.patch("/:id", toggleStatus);
 router.delete("/:id", deleteFood);
 
 module.exports = router;

@@ -130,11 +130,6 @@ function Category() {
             </Link>
           </div>
           <hr />
-          <input
-            type="search"
-            className="mb-4 col-3 form-control float-end"
-            placeholder="Search..."
-          />
 
           <DataTable
             columns={cols}

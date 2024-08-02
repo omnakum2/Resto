@@ -32,7 +32,7 @@ function Food() {
       name: "Image",
       cell: (row) => (
         <img
-          src={`http://localhost:3001/${row.image}`} 
+          src={`http://localhost:3001/uploads/${row.image}`} 
           alt={row.name}
           style={{ width: "100px", height: "100px" }}
         />
@@ -102,12 +102,12 @@ function Food() {
     fetchdata();
   }, []);
 
-  // edit category
+  // edit food
   const handleEdit = (id) => {
     navigate(`/food-edit/${id}`);
   };
 
-  // delete category
+  // delete food
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure to delete Food?")) {
       try {
@@ -120,12 +120,12 @@ function Food() {
     }
   };
 
-  // toggle table status
+  // toggle food status
   const handleToggleStatus = async (id) => {
     try {
-      const table = records.find((record) => record._id === id);
+      const food = records.find((record) => record._id === id);
       await axios.patch(`http://localhost:3001/api/food/${id}`, {
-        status: table.status === "active" ? "deactive" : "active",
+        status: food.status === "active" ? "deactive" : "active",
       });
       setRecords(
         records.map((record) =>

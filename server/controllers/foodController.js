@@ -30,7 +30,7 @@ const getFood = async (req, res) => {
 const addFood = async (req, res) => {
   try {
     const { name, price, description, category_id } = req.body;
-    const image = req.file ? req.file.path.replace(/\\/g, '/') : null;
+    const image = req.file ? req.file.filename : null;
 
     if (!(name && price && description && category_id)) {
       return res.status(400).send({msg:"All fields are Required"});
@@ -68,33 +68,36 @@ const addFood = async (req, res) => {
 
 // update food
 const updateFood = async (req, res) => {
-  const foodId = req.params.id;
   try {
     const { id } = req.params;
     const { name, price, description, category_id } = req.body;
-    const image = req.file ? req.file.path : null;
-
-    if (!(name && price && description && category_id)) {
-      return res.status(400).send("All fields are Required");
-    }
-
-    // check food already exist - name
-    const existFood = await Food.findOne({ name });
-    if (existFood) {
-      return res.status(409).send(`Food already exists with ${name} name`);
-    }
+    const newImage = req.file ? req.file.filename : null;
 
     // check food exist - id
     const food = await Food.findById(id);
     if (!food) {
-      return res.status(404).send("Food item not found");
+      return res.status(404).send({msg:"Food item not found"});
+    }
+
+    if (!(name && price && description && category_id)) {
+      return res.status(400).send({msg:"All fields are Required"});
     }
 
     // Validate the category
     if (category_id) {
       const category = await Category.findById(category_id);
       if (!category) {
-        return res.status(400).send("Invalid Category");
+        return res.status(400).send({msg:"Invalid Category"});
+      }
+    }
+
+    // If a new image is provided, delete the old image
+    if (newImage) {
+      if (food.image) {
+        const oldImagePath = path.join('uploads', food.image);
+        fs.unlink(oldImagePath, (err) => {
+          if (err) console.error("Error deleting old image:", err);
+        });
       }
     }
 
@@ -105,7 +108,7 @@ const updateFood = async (req, res) => {
         price: price || food.price,
         description: description || food.description,
         category_id: category_id || food.category_id,
-        image: image || food.image,
+        image: newImage || food.image,
       },
       { new: true }
     );
@@ -119,21 +122,35 @@ const updateFood = async (req, res) => {
 // delete food
 const deleteFood = async (req, res) => {
   try {
-    const deleteFood = await Food.findByIdAndDelete(req.params.id);
-    if (!deleteFood) {
-      res.status(404).send("Food not found");
-    }
+    const id = req.params.id;
+    const food = await Food.findById(id);
+    // console.log(id);
 
     // Delete the image file if it exists
-    if (deleteFood.image) {
-      const imagePath = path.join(__dirname, '../uploads', deleteFood.image); // Adjust path as necessary
-      fs.unlink(imagePath, (err) => {
-        if (err) {
-          console.error('Error deleting image:', err);
-          // You can choose to proceed or handle this error as per your requirement
-        }
+    // if (food.image) {
+    //   const dir = 'uploads';
+    //   const filename = food.image;
+    //   // console.log(dir+filename);
+    //   const imagePath = path.join(__dirname, dir, filename);
+    //   console.log(imagePath);
+    //   console.log("found.....");
+    //   // fs.unlink(imagePath, (err) => {
+    //   //   if (err) {
+    //   //     alert(err);
+    //   //   }
+    //   // });
+    // }
+    if (food.image) {
+      const oldImagePath = path.join('uploads', food.image);
+      fs.unlink(oldImagePath, (err) => {
+        if (err) console.error("Error deleting old image:", err);
       });
     }
+
+    // const deleteFood = await Food.findByIdAndDelete(id);
+    // if (!deleteFood) {
+    //   res.status(404).send("Food not found");
+    // }
 
     res.status(200).send("Food delete Successfully");
   } catch (error) {
@@ -141,7 +158,34 @@ const deleteFood = async (req, res) => {
   }
 };
 
+// update status
+const toggleStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body; // Get the new status from the request body
 
+    // Validate the status value
+    if (!status || (status !== 'active' && status !== 'deactive')) {
+      return res.status(400).json({ msg: 'Invalid status value' });
+    }
+
+    // Find the category by ID and update its status
+    const food = await Food.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true } // Return the updated document
+    );
+
+    if (!food) {
+      return res.status(404).json({ msg: 'Food not found' });
+    }
+
+    res.status(200).json(food);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: 'Server error' });
+  }
+}
 
 module.exports = {
   getFoods,
@@ -149,4 +193,5 @@ module.exports = {
   addFood,
   updateFood,
   deleteFood,
+  toggleStatus,
 };
