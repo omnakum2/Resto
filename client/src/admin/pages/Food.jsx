@@ -47,7 +47,6 @@ function Food() {
     {
       name: "Description",
       selector: (row) => row.description,
-      sortable: true,
     },
     {
       name: "Price",
@@ -56,7 +55,7 @@ function Food() {
     },
     {
       name: "Category",
-      selector: (row) => row._id,
+      selector: (row) => row.category_id.name,
       sortable: true,
     },
     {

@@ -15,6 +15,7 @@ import Table from "./admin/pages/Table";
 import AddTable from "./admin/pages/addTable";
 import UpdateTable from "./admin/pages/updateTable";
 import Food from "./admin/pages/Food";
+import AddFood from "./admin/pages/addFood";
 
 function App() {
   return (
@@ -37,8 +38,8 @@ function App() {
           <Route path="table-add" element={<AddTable />} />
           <Route path="table-edit/:id" element={<UpdateTable />} />
           <Route path="food" element={<Food />} />
-          <Route path="table-add" element={<AddTable />} />
-          <Route path="table-edit/:id" element={<UpdateTable />} />
+          <Route path="food-add" element={<AddFood />} />
+          <Route path="food-edit/:id" element={<UpdateTable />} />
 
         </Routes>
       </BrowserRouter>
