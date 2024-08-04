@@ -150,9 +150,9 @@ function Header() {
       {/* ======= Footer ======= */}
       <footer id="footer" className="footer fixed-bottom">
         <div className="copyright">
-          &copy; Copyright{" "}
+          &copy;{" "}
           <strong>
-            <span>IMS</span>
+            <span>FoodCourt</span>
           </strong>
           . All Rights Reserved
         </div>

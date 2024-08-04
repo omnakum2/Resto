@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 function Food() {
   const navigate = useNavigate();
-  const [records, setRecords] = useState("");
+  const [records, setRecords] = useState([]);
   const [search, setSearch] = useState("");
 
   // table style
@@ -32,9 +32,9 @@ function Food() {
       name: "Image",
       cell: (row) => (
         <img
-          src={`http://localhost:3001/uploads/${row.image}`} 
-          alt={row.name}
-          style={{ width: "100px", height: "100px" }}
+          src={`http://localhost:3001/uploads/${row.image}`}
+          alt={row.image}
+          style={{ width: "100px", height: "100px", backgroundSize: "cover" }}
         />
       ),
       sortable: false,
@@ -102,6 +102,15 @@ function Food() {
     fetchdata();
   }, []);
 
+  // Filter the records based on search input
+  const filteredRecords = records.filter((record) => {
+    return (
+      record.name.toLowerCase().includes(search.toLowerCase()) ||
+      record.description.toLowerCase().includes(search.toLowerCase()) ||
+      record.category_id.name.toLowerCase().includes(search.toLowerCase())
+    );
+  });
+
   // edit food
   const handleEdit = (id) => {
     navigate(`/food-edit/${id}`);
@@ -158,7 +167,7 @@ function Food() {
 
           <DataTable
             columns={cols}
-            data={records}
+            data={filteredRecords}
             customStyles={mystyle}
             pagination
             fixedHeader

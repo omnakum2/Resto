@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 function Table() {
   const navigate = useNavigate();
-  const [records, setRecords] = useState("");
+  const [records, setRecords] = useState([]);
   const [search, setSearch] = useState("");
 
   // table style
@@ -87,6 +87,15 @@ function Table() {
     fetchdata();
   }, []);
 
+  // Filter the records based on search input
+  const filteredRecords = records.filter((record) => {
+    return (
+      record.table_no.toString().toLowerCase().includes(search.toLowerCase()) ||
+      record.size.toString().toLowerCase().includes(search.toLowerCase()) ||
+      record.type.toLowerCase().includes(search.toLowerCase())
+    );
+  });
+
   // edit category
   const handleEdit = (id) => {
     navigate(`/table-edit/${id}`);
@@ -146,7 +155,7 @@ function Table() {
 
           <DataTable
             columns={cols}
-            data={records}
+            data={filteredRecords}
             customStyles={mystyle}
             pagination
             subHeader

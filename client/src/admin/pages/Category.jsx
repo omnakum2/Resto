@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 function Category() {
   const navigate = useNavigate();
-  const [records, setRecords] = useState("");
+  const [records, setRecords] = useState([]);
   const [search, setSearch] = useState("");
 
   // table style
@@ -77,6 +77,13 @@ function Category() {
     fetchdata();
   }, []);
 
+  // Filter the records based on search input
+  const filteredRecords = records.filter((record) => {
+    return (
+      record.name.toLowerCase().includes(search.toLowerCase())
+    );
+  });
+
   // edit category
   const handleEdit = (id) => {
     navigate(`/category-edit/${id}`);
@@ -133,7 +140,7 @@ function Category() {
 
           <DataTable
             columns={cols}
-            data={records}
+            data={filteredRecords}
             customStyles={mystyle}
             pagination
             subHeader

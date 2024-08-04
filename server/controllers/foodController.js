@@ -1,17 +1,17 @@
 const Food = require("../modals/FoodModel");
 const Category = require("../modals/CategoryModel");
-const fs = require('fs');
+const fs = require("fs");
+const path = require("path");
 
 // fetch all foods
 const getFoods = async (req, res) => {
   try {
-    // const food = await Food.find({});
     const food = await Food.find({})
-      .populate('category_id', 'name') // Populate the category field, only including the 'name' field
+      .populate("category_id", "name") // Populate the category field, only including the 'name' field
       .exec();
     res.status(200).json(food);
   } catch (error) {
-    res.status(500).json({ msg: 'Server error' });
+    res.status(500).json({ msg: "Server error" });
   }
 };
 
@@ -22,7 +22,7 @@ const getFood = async (req, res) => {
     const food = await Food.findById(id);
     res.status(200).json(food);
   } catch (error) {
-    res.status(500).json({ msg: 'Server error' });
+    res.status(500).json({ msg: "Server error" });
   }
 };
 
@@ -33,19 +33,21 @@ const addFood = async (req, res) => {
     const image = req.file ? req.file.filename : null;
 
     if (!(name && price && description && category_id)) {
-      return res.status(400).send({msg:"All fields are Required"});
+      return res.status(400).send({ msg: "All fields are Required" });
     }
 
     // check category if exists - id
     const category = await Category.findById(category_id);
     if (!category) {
-      return res.status(400).send({msg:"Invalid Category"});
+      return res.status(400).send({ msg: "Invalid Category" });
     }
 
     // check food already exist - name
     const existFood = await Food.findOne({ name });
     if (existFood) {
-      return res.status(409).send({msg:`Food already exists with ${name} name`});
+      return res
+        .status(409)
+        .send({ msg: `Food already exists with ${name} name` });
     }
     const newFood = await Food.create({
       name,
@@ -57,12 +59,12 @@ const addFood = async (req, res) => {
 
     // full image URL
     if (newFood.image) {
-        newFood.image = `http://localhost:3001/${newFood.image}`;
-      }
+      newFood.image = `http://localhost:3001/${newFood.image}`;
+    }
 
     res.status(200).send(newFood);
   } catch (error) {
-    res.status(500).json({ msg: 'Server error' });
+    res.status(500).json({ msg: "Server error" });
   }
 };
 
@@ -76,25 +78,25 @@ const updateFood = async (req, res) => {
     // check food exist - id
     const food = await Food.findById(id);
     if (!food) {
-      return res.status(404).send({msg:"Food item not found"});
+      return res.status(404).send({ msg: "Food item not found" });
     }
 
     if (!(name && price && description && category_id)) {
-      return res.status(400).send({msg:"All fields are Required"});
+      return res.status(400).send({ msg: "All fields are Required" });
     }
 
     // Validate the category
     if (category_id) {
       const category = await Category.findById(category_id);
       if (!category) {
-        return res.status(400).send({msg:"Invalid Category"});
+        return res.status(400).send({ msg: "Invalid Category" });
       }
     }
 
     // If a new image is provided, delete the old image
     if (newImage) {
       if (food.image) {
-        const oldImagePath = path.join('uploads', food.image);
+        const oldImagePath = path.join(__dirname,"../uploads", food.image);
         fs.unlink(oldImagePath, (err) => {
           if (err) console.error("Error deleting old image:", err);
         });
@@ -124,33 +126,19 @@ const deleteFood = async (req, res) => {
   try {
     const id = req.params.id;
     const food = await Food.findById(id);
-    // console.log(id);
+    // res.send(food);
 
-    // Delete the image file if it exists
-    // if (food.image) {
-    //   const dir = 'uploads';
-    //   const filename = food.image;
-    //   // console.log(dir+filename);
-    //   const imagePath = path.join(__dirname, dir, filename);
-    //   console.log(imagePath);
-    //   console.log("found.....");
-    //   // fs.unlink(imagePath, (err) => {
-    //   //   if (err) {
-    //   //     alert(err);
-    //   //   }
-    //   // });
-    // }
     if (food.image) {
-      const oldImagePath = path.join('uploads', food.image);
-      fs.unlink(oldImagePath, (err) => {
+      const filepath = path.join(__dirname,"../uploads", food.image)
+      fs.unlink(filepath, (err) => {
         if (err) console.error("Error deleting old image:", err);
       });
     }
 
-    // const deleteFood = await Food.findByIdAndDelete(id);
-    // if (!deleteFood) {
-    //   res.status(404).send("Food not found");
-    // }
+    const deleteFood = await Food.findByIdAndDelete(id);
+    if (!deleteFood) {
+      res.status(404).send("Food not found");
+    }
 
     res.status(200).send("Food delete Successfully");
   } catch (error) {
@@ -165,8 +153,8 @@ const toggleStatus = async (req, res) => {
     const { status } = req.body; // Get the new status from the request body
 
     // Validate the status value
-    if (!status || (status !== 'active' && status !== 'deactive')) {
-      return res.status(400).json({ msg: 'Invalid status value' });
+    if (!status || (status !== "active" && status !== "deactive")) {
+      return res.status(400).json({ msg: "Invalid status value" });
     }
 
     // Find the category by ID and update its status
@@ -177,15 +165,29 @@ const toggleStatus = async (req, res) => {
     );
 
     if (!food) {
-      return res.status(404).json({ msg: 'Food not found' });
+      return res.status(404).json({ msg: "Food not found" });
     }
 
     res.status(200).json(food);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ msg: 'Server error' });
+    res.status(500).json({ msg: "Server error" });
   }
-}
+};
+
+// for client
+const byCategory = async (req, res) => {
+  try {
+    const id = req.params.category_id;
+    const foodByCategory = await Food.find({
+      category_id: id,
+      status: "active",
+    });
+    res.send(foodByCategory);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
 
 module.exports = {
   getFoods,
@@ -194,4 +196,5 @@ module.exports = {
   updateFood,
   deleteFood,
   toggleStatus,
+  byCategory,
 };

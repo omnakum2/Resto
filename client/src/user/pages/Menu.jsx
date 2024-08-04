@@ -5,46 +5,52 @@ import Footer from "../components/Footer";
 
 function Menu() {
   const [categories, setCategories] = useState([]);
-  const [items, setItems] = useState({});
+  const [items, setItems] = useState([]);
   const [activeTab, setActiveTab] = useState("");
 
-  // Fetch categories
+  // Fetch categories on component mount
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get("http://localhost:3001/api/category");
+        const response = await axios.post(
+          "http://localhost:3001/api/category/active"
+        );
         setCategories(response.data);
-        setActiveTab(response.data[0]?._id); // Set the first category as active tab
+        if (response.data.length > 0 && !categories.find(cat => cat._id === activeTab)) {
+          setActiveTab(response.data[0]._id); // Set the first category as the default active tab
+        }
       } catch (error) {
         alert("Failed to fetch categories.");
       }
     };
 
     fetchCategories();
-  }, []);
+    const intervalId = setInterval(fetchCategories, 5000); // call every 5 seconds
+
+    return () => clearInterval(intervalId); // Clean up
+  });
 
   // Fetch items for the active category
   useEffect(() => {
     if (activeTab) {
       const fetchItems = async () => {
         try {
-          const response = await axios.get(
-            `http://localhost:3001/api/food?category_id=${activeTab}`
+          const response = await axios.post(
+            `http://localhost:3001/api/food/${activeTab}`
           );
-          setItems((prevItems) => ({
-            ...prevItems,
-            [activeTab]: response.data,
-          }));
+          setItems(response.data);
         } catch (error) {
           alert("Failed to fetch items.");
         }
       };
 
       fetchItems();
+      const intervalId = setInterval(fetchItems, 5000); // call every 5 seconds
+
+      return () => clearInterval(intervalId); // Clean up
     }
   }, [activeTab]);
 
-  // console.log(records);
   return (
     <div>
       <Header />
@@ -89,7 +95,7 @@ function Menu() {
                     className={`d-flex align-items-center text-start mx-3 ms-0 pb-3 ${activeTab === category._id ? "active" : ""}`}
                     data-bs-toggle="pill"
                     href={`#tab-${category._id}`}
-                  onClick={(e) => setActiveTab(category._id)}
+                    onClick={() => setActiveTab(category._id)}
                   >
                     <div className="ps-3">
                       <h6 className="mt-n1 mb-0">{category.name}</h6>
@@ -99,44 +105,42 @@ function Menu() {
               ))}
             </ul>
             <div className="tab-content">
-              <div id="tab-1" className="tab-pane fade show p-0 active">
-                <div className="row g-4">
-                  <div className="col-lg-6">
-                    <div className="d-flex align-items-center">
-                      <img
-                        className="flex-shrink-0 img-fluid rounded"
-                        src="assets/img/bg-hero.jpg"
-                        alt="img"
-                        style={{ width: "80px" }}
-                      />
-                      <div className="w-100 d-flex flex-column text-start ps-4">
-                        <h5 className="d-flex justify-content-between border-bottom pb-2">
-                          <span>food</span>
-                          <span className="text-primary">₹1</span>
-                        </h5>
-                        <small className="fst-italic">aaa</small>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-lg-6">
-                    <div className="d-flex align-items-center">
-                      <img
-                        className="flex-shrink-0 img-fluid rounded"
-                        src="assets/img/bg-hero.jpg"
-                        alt="img"
-                        style={{ width: "80px" }}
-                      />
-                      <div className="w-100 d-flex flex-column text-start ps-4">
-                        <h5 className="d-flex justify-content-between border-bottom pb-2">
-                          <span>food</span>
-                          <span className="text-primary">₹1</span>
-                        </h5>
-                        <small className="fst-italic">aaa</small>
-                      </div>
-                    </div>
+              {categories.map((category) => (
+                <div
+                  key={category._id}
+                  id={`tab-${category._id}`}
+                  className={`tab-pane fade show ${activeTab === category._id ? "active" : ""}`}
+                >
+                  <div className="row g-4">
+                    {items.map(
+                      (item) =>
+                        item.category_id === category._id && ( // Display items only if they match the active category
+                          <div key={item._id} className="col-lg-6">
+                            <div className="d-flex align-items-center">
+                              <img
+                                className="flex-shrink-0 img-fluid rounded"
+                                src={`http://localhost:3001/uploads/${item.image}`} // Use actual image URL
+                                alt={item.name}
+                                style={{ width: "80px" }}
+                              />
+                              <div className="w-100 d-flex flex-column text-start ps-4">
+                                <h5 className="d-flex justify-content-between border-bottom pb-2">
+                                  <span>{item.name}</span>
+                                  <span className="text-primary">
+                                    ₹{item.price}
+                                  </span>
+                                </h5>
+                                <small className="fst-italic">
+                                  {item.description}
+                                </small>
+                              </div>
+                            </div>
+                          </div>
+                        )
+                    )}
                   </div>
                 </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>

@@ -17,7 +17,7 @@ router.post("/", addCategories);
 router.put("/:id", updateCategories);
 router.patch("/:id", toggleStatus);
 router.delete("/:id", deleteCategories);
-router.get("/active", getActiveCategories);
+router.post("/active", getActiveCategories);
 
 
 module.exports = router;
