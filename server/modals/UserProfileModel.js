@@ -9,7 +9,6 @@ const userProfileSchema = mongoose.Schema(
     user_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "users",
-      required: [true, "user_id is required"],
     },
   },
   {
