@@ -1,12 +1,12 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
 const categoryRoute = require("./routes/categoryRoutes");
 const tableRoute = require("./routes/tableRoute");
 const foodRoute = require("./routes/foodRoutes");
 const userRoute = require("./routes/userRoutes");
+const dotenv = require('dotenv');
+dotenv.config();
 
 const app = express();
 app.use(cors());

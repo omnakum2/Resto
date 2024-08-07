@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Header() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -7,6 +7,19 @@ function Header() {
   const handleToggle = () => {
     setIsSidebarOpen((prevState) => !prevState);
     document.body.classList.toggle("toggle-sidebar", !isSidebarOpen);
+  };
+
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // Clear token from localStorage or cookies
+    localStorage.removeItem("userId");
+    localStorage.removeItem("token"); // If you store the JWT token separately
+
+    // Optionally, clear any other related data or state
+
+    // Redirect to login or home page
+    navigate("/login");
   };
 
   return (
@@ -85,7 +98,7 @@ function Header() {
 
           <li className="nav-item">
             <a
-            href="."
+              href="."
               className="nav-link collapsed"
               data-bs-target="#stock-nav"
               data-bs-toggle="collapse"
@@ -135,10 +148,10 @@ function Header() {
           </li> */}
 
           <li className="nav-item">
-            <Link className="nav-link collapsed" to="/admin/logout">
+            <p className="nav-link collapsed" onClick={handleLogout}>
               <i className="bi bi-box-arrow-right"></i>
               <span>Logout</span>
-            </Link>
+            </p>
           </li>
         </ul>
       </aside>

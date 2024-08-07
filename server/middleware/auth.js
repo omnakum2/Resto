@@ -1,26 +1,34 @@
-const jwt = require('jsonwebtoken')
+const jwt = require("jsonwebtoken");
+const user = require("../modals/UserModel");
+const dotenv = require("dotenv");
+dotenv.config();
 
-const auth = (req, res, next) => {
-    // grab token from cookie
-    console.log(req.cookies);
-    const { token } = req.cookies
+// Middleware to authenticate JWT
+exports.authenticateJWT = (req, res, next) => {
+  const token = req.headers["authorization"]?.split(" ")[1];
+  if (token == null)
+    return res.status(401).json({ msg: "Not authorized, please log in" });
 
-    // id no token, stop there
-    if(!token){
-        res.status(403).send("Please login first !");
-    }
-    
-    // decode that token and get id
-    try {
-        const decode = jwt.verify(token, "foodcourt");
-        console.log(decode);
-        req.user = decode
-      } catch (error) {
-        console.log(error);
-        res.status(401).send('Invalid Token')
+  jwt.verify(token, process.env.JWT_SECRET, async (err, user) => {
+    if (err) return res.status(403).json({ msg: "Invalid token" });
+
+    req.user = user;
+    next();
+  });
+};
+
+// Middleware for role
+exports.authorizeRole = (role) => {
+  return (req, res, next) => {
+    // if (!req.user) {
+    //   return res.status(401).json({ msg: "Not authorized, please log in" });
+    // }
+
+    if (!role.includes(req.user.role)) {
+      if (req.user.role === "staff") {
+        return res.status(403).json({ msg: "Access denied you are not admin" });
       }
-      // query to DB for that user id
-      return next();
-}
-
-module.exports = auth 
+    }
+    next();
+  };
+};

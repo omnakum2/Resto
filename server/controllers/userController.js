@@ -1,48 +1,118 @@
+const User = require("../modals/UserModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const User = require("../modals/UserModel");
+const dotenv = require("dotenv");
+dotenv.config();
 
-const newUser = async (req, res) => {
+// Generate JWT token
+const generateToken = (user) => {
+  return jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
+    expiresIn: "1h",
+  });
+};
+
+// new user register
+const register = async (req, res) => {
   try {
-    const { name, email, password, status, role_as } = req.body;
+    const { name, email, password, role, status } = req.body;
 
-    if (!(name && email && password)) {
-      return res.status(400).send({ msg: "All fields are Required" });
+    const useremail = await User.findOne({ email });
+
+    if (useremail) {
+      res.status(409).json({ msg: `User already exists with ${email} email` });
     }
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    const existEmail = await User.findOne({ email });
-    if (existEmail) {
-      return res.status(409).send({ msg: `User with ${email} already exists` });
-    }
-
-    const hashPassword = await bcrypt.hash(password, 10);
-
-    const user = await User.create({
+    const newUser = new User({
       name,
       email,
-      password: hashPassword,
+      password: hashedPassword,
+      role,
       status,
-      role_as,
     });
+    await newUser.save();
 
-    // generate a token for user and send it
-    const token = jwt.sign(
-      { id: user._id, email },
-      "foodcourt", //process.env.jwtsecret
-      {
-        expiresIn: "1h",
-      }
-    );
-
-    user.token = token;
-    user.password = undefined;
-
-    return res.status(200).send(user);
-  } catch (error) {
-    res.status(500).json({ msg: error.message });
+    // const token = generateToken(newUser);
+    res.status(201).json({ msg: "User created" });
+  } catch (err) {
+    res.status(500).json({ msg: err.message });
   }
 };
 
+// login user
+const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      return res.status(401).json({ msg: "Invalid credentials" });
+    }
+
+    const token = generateToken(user);
+    res.status(200).json({ token });
+  } catch (err) {
+    res.status(500).json({ msg: err.message });
+  }
+};
+
+// get all users
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find();
+    res.status(200).json(users);
+  } catch (err) {
+    res.status(500).json({ msg: err.message });
+  }
+};
+
+// get one user
+const getUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ msg: "User not found" });
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(500).json({ msg: err.message });
+  }
+};
+
+// update user
+const editUser = async (req, res) => {
+  try {
+    const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+    if (!updatedUser) return res.status(404).json({ msg: "User not found" });
+    res.status(200).json(updatedUser);
+  } catch (err) {
+    res.status(500).json({ msg: err.message });
+  }
+};
+
+// delete user
+const deleteUser = async (req, res) => {
+  try {
+    const deletedUser = await User.findByIdAndDelete(req.params.id);
+    if (!deletedUser)
+      return res.status(404).json({ message: "User not found" });
+    res.status(200).json({ message: "User deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ msg: err.message });
+  }
+};
+
+// staff page
+const staffuser = async (req, res) => {
+  res.send({ msg: "Welcome to the staff page!" });
+};
+
 module.exports = {
-    newUser
-}
+  register,
+  login,
+  getAllUsers,
+  getUser,
+  editUser,
+  deleteUser,
+  staffuser,
+};

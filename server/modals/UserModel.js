@@ -3,17 +3,21 @@ const mongoose = require("mongoose");
 const userSchema = mongoose.Schema(
   {
     name: { type: String, required: [true, "Name is required"] },
-    email: { type: String, required: [true, "Email is required"] },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     password: { type: String, required: [true, "password is required"] },
     status: {
       type: String,
-      default: "active",
-      required: [true, "status is required"],
+      enum: ["active", "deactive"],
+      default: "deactive",
     },
-    role_as: {
+    role: {
       type: String,
+      enum: ["staff", "admin"],
       default: "staff",
-      required: [true, "role_as is required"],
     },
   },
   {

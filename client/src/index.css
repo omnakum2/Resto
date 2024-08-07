@@ -304,6 +304,10 @@
 
 /* admin css starts */
 
+.admintext-primary {
+  color: #007bff;
+}
+
 .adminbtn {
   display: inline-block;
   font-weight: 400;
