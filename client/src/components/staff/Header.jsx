@@ -28,7 +28,7 @@ function Header() {
         style={{ background: "#36454f" }}
       >
         <div className="container-fluid">
-          <Link className="navbar-brand text-light" to="/admin">
+          <Link className="navbar-brand text-light" to="/staff">
             FoodCourt
           </Link>
           <button
@@ -67,30 +67,16 @@ function Header() {
           </Link>
 
           <li className="nav-item">
-            <Link className="nav-link collapsed" to="/admin">
+            <Link className="nav-link collapsed" to="/staff">
               <i className="bi bi-grid-fill"></i>
               <span>Dashboard</span>
             </Link>
           </li>
 
           <li className="nav-item">
-            <Link className="nav-link collapsed" to="/admin/category">
-              <i className="bi bi-stack"></i>
-              <span>New Category</span>
-            </Link>
-          </li>
-
-          <li className="nav-item">
-            <Link className="nav-link collapsed" to="/admin/table">
-              <i className="bi bi-table"></i>
-              <span>New Table</span>
-            </Link>
-          </li>
-
-          <li className="nav-item">
-            <Link className="nav-link collapsed" to="/admin/food">
-              <i className="bi bi-box"></i>
-              <span>New Food</span>
+            <Link className="nav-link collapsed" to="/staff/menu">
+              <i className="bi bi-list-task"></i>
+              <span>Menu</span>
             </Link>
           </li>
 
@@ -101,8 +87,8 @@ function Header() {
               data-bs-target="#stock-nav"
               data-bs-toggle="collapse"
             >
-              <i className="bi bi-bar-chart-fill"></i>
-              <span>Reports</span>
+              <i className="bi bi-plus-lg"></i>
+              <span>Orders</span>
               <i className="bi bi-chevron-down ms-auto"></i>
             </a>
             <ul
@@ -113,37 +99,24 @@ function Header() {
               <li>
                 <Link to="/admin/stock/add">
                   <i className="bi bi-circle"></i>
-                  <span>Admin</span>
+                  <span>New Order</span>
                 </Link>
               </li>
               <li>
                 <Link to="/admin/stock">
                   <i className="bi bi-circle"></i>
-                  <span>In/Out</span>
-                </Link>
-              </li>
-              <li>
-                <Link to="/admin/stock">
-                  <i className="bi bi-circle"></i>
-                  <span>Most Sell</span>
+                  <span>Manage Order</span>
                 </Link>
               </li>
             </ul>
           </li>
 
           <li className="nav-item">
-            <Link className="nav-link collapsed" to="/admin/staff">
-              <i className="bi bi-people-fill"></i>
-              <span>Staff</span>
+            <Link className="nav-link collapsed" to="/staff/profile">
+              <i className="bi bi-person-fill"></i>
+              <span>My Profile</span>
             </Link>
           </li>
-
-          {/* <li className="nav-item">
-            <Link className="nav-link collapsed" to="/admin/newadmin">
-              <i className="bi bi-people-fill"></i>
-              <span>New Admin</span>
-            </Link>
-          </li> */}
 
           <li className="nav-item">
             <p className="nav-link collapsed" onClick={handleLogout}>

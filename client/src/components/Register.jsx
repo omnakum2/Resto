@@ -53,7 +53,7 @@ function Register() {
   };
 
   const backgroundStyle = {
-    background: "linear-gradient(135deg, #87CEEB, #2F4F4F)", // Deep blue to purple gradient
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Deep blue to purple gradient
     height: "100vh", // Full viewport height
     display: "flex",
     alignItems: "center",
@@ -68,19 +68,17 @@ function Register() {
             <div className="card-title">
               <div className="text-center mt-4">
                 <h2 className="text-center mb-4">
-                  <i className="fa fa-utensils admintext-primary"></i>&nbsp; New
+                  <i className="fa fa-utensils text-primary"></i>&nbsp; New
                   User
                 </h2>
               </div>
             </div>
             <div className="card-body">
+              {error && <div className="mt-3 alert alert-danger">{error}</div>}
+              {success && (
+                <div className="mt-3 alert alert-success">{success}</div>
+              )}
               <form onSubmit={handleSubmit}>
-                {error && (
-                  <div className="mt-3 alert alert-danger">{error}</div>
-                )}
-                {success && (
-                  <div className="mt-3 alert alert-success">{success}</div>
-                )}
                 <div className="mb-3">
                   <label htmlFor="email" className="form-label">
                     Name
@@ -94,6 +92,7 @@ function Register() {
                     value={formData.name}
                     onChange={handleChange}
                     autoComplete="off"
+                    autoFocus="on"
                   />
                 </div>
                 <div className="mb-3">
@@ -143,7 +142,7 @@ function Register() {
                 </div>
                 <button
                   type="submit"
-                  className="adminbtn adminbtn-primary w-100"
+                  className="btn btn-primary w-100"
                 >
                   Register
                 </button>

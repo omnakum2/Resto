@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const backgroundStyle = {
-  background: "linear-gradient(135deg, #87CEEB, #2F4F4F)", // Deep blue to purple gradient
+  backgroundColor: "rgba(0, 0, 0, 0.5)", // Deep blue to purple gradient
   height: "100vh", // Full viewport height
   display: "flex",
   alignItems: "center",
@@ -11,11 +11,17 @@ const backgroundStyle = {
 };
 
 function Login() {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const navigate = useNavigate();
+  // Get the message from the state (if available)
+  const message = location.state?.message || "";
+  if (message) {
+    setError(message);
+  }
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -30,15 +36,25 @@ function Login() {
       );
 
       if (response.status === 200) {
-        const { user } = response.data;
-        localStorage.setItem("userId", user._id);
-        console.log(user._id);
-        alert("Login successful!");
-        console.log(user.role_as);
-        if (user.role_as === "admin") {
-          navigate("/admin"); // Redirect to home page
+        const { user, token } = response.data;
+
+        if (user.role === "admin" && user.status === "active") {
+          localStorage.setItem("user_id", user._id);
+          localStorage.setItem("user_name", user.name);
+          localStorage.setItem("user_role", user.role);
+          localStorage.setItem("user_token", token);
+          localStorage.setItem("isAuthenticated", true);
+          navigate("/admin");
+        } else if (user.role === "staff" && user.status === "active") {
+          localStorage.setItem("user_id", user._id);
+          localStorage.setItem("user_name", user.name);
+          localStorage.setItem("user_role", user.role);
+          localStorage.setItem("user_token", token);
+          localStorage.setItem("isAuthenticated", true);
+          navigate("/staff");
         } else {
-          navigate("/"); // Redirect to Admin page
+          navigate("/login");
+          setError("you are not an active user");
         }
       } else {
         navigate("*"); // Redirect to 404 not found
@@ -58,16 +74,16 @@ function Login() {
       <div className="container-fluid">
         <div className="d-flex align-items-center justify-content-center vh-100">
           <div className="card col-sm-8 col-md-6 col-lg-4">
-            {error && <div className="alert alert-danger">{error}</div>}
             <div className="card-title">
               <div className="text-center mt-4">
                 <h2 className="text-center mb-4">
-                  <i className="fa fa-utensils admintext-primary"></i>&nbsp;
-                  Welcome Back!
+                  <i className="fa fa-utensils text-primary"></i>&nbsp; Welcome
+                  Back!
                 </h2>
               </div>
             </div>
             <div className="card-body">
+              {error && <div className="alert alert-danger">{error}</div>}
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                   <label htmlFor="email" className="form-label">
@@ -98,10 +114,7 @@ function Login() {
                     autoComplete="off"
                   />
                 </div>
-                <button
-                  type="submit"
-                  className="adminbtn adminbtn-primary w-100"
-                >
+                <button type="submit" className="btn btn-primary w-100">
                   Login
                 </button>
               </form>

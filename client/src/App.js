@@ -1,4 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import AdminLayout from "./components/AdminLayout";
+import StaffLayout from "./components/StaffLayout";
 import UserLayout from "./components/UserLayout";
 
 // user components
@@ -18,12 +20,17 @@ import UpdateTable from "./components/admin/updateTable";
 import Food from "./components/admin/Food";
 import AddFood from "./components/admin/addFood";
 import UpdateFood from "./components/admin/updateFood";
-import AdminLayout from "./components/AdminLayout";
+
+// staff components
+import StaffDashboard from "./components/staff/dashboard";
 
 // auth components
 import NotFound from "./components/NotFound";
 import Register from "./components/Register";
 import Login from "./components/Login";
+import ProtectedRoute from "./utils/ProtectedRoute";
+import UnAuthorized from "./components/UnAuthorized";
+import UnAuthenticated from "./components/UnAuthenticated";
 
 function App() {
   return (
@@ -39,23 +46,32 @@ function App() {
           </Route>
 
           {/* admin routes */}
-          <Route path="admin" element={<AdminLayout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="category" element={<Category />} />
-            <Route path="category-add" element={<AddCategory />} />
-            <Route path="category-edit/:id" element={<UpdateCategory />} />
-            <Route path="table" element={<Table />} />
-            <Route path="table-add" element={<AddTable />} />
-            <Route path="table-edit/:id" element={<UpdateTable />} />
-            <Route path="food" element={<Food />} />
-            <Route path="food-add" element={<AddFood />} />
-            <Route path="food-edit/:id" element={<UpdateFood />} />
+          <Route path="/admin" element={<ProtectedRoute element={<AdminLayout />} requiredRole="admin" />}>
+            <Route index element={<ProtectedRoute element={<Dashboard />} requiredRole="admin" />} />
+            <Route path="category" element={<ProtectedRoute element={<Category />} requiredRole="admin" />} />
+            <Route path="category-add" element={<ProtectedRoute element={<AddCategory />} requiredRole="admin" />} />
+            <Route path="category-edit/:id" element={<ProtectedRoute element={<UpdateCategory />} requiredRole="admin" />} />
+            <Route path="table" element={<ProtectedRoute element={<Table />} requiredRole="admin" />} />
+            <Route path="table-add" element={<ProtectedRoute element={<AddTable />} requiredRole="admin" />} />
+            <Route path="table-edit/:id" element={<ProtectedRoute element={<UpdateTable />} requiredRole="admin" />} />
+            <Route path="food" element={<ProtectedRoute element={<Food />} requiredRole="admin" />} />
+            <Route path="food-add" element={<ProtectedRoute element={<AddFood />} requiredRole="admin" />} />
+            <Route path="food-edit/:id" element={<ProtectedRoute element={<UpdateFood />} requiredRole="admin" />} />
+          </Route>
+
+          {/* staff routes */}
+          <Route path="/staff" element={<ProtectedRoute element={<StaffLayout />} requiredRole={['admin','staff']} />}>
+            <Route index element={<ProtectedRoute element={<StaffDashboard />} requiredRole={['admin','staff']} />} />
           </Route>
 
           {/* auth routes */}
-          <Route path="/register" element={<Register/>}/>
-          <Route path="/login" element={<Login/>}/>
-          <Route path="*" element={<NotFound/>}/>
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+
+          {/* error handle routes */}
+          <Route path="/unAuthorized" element={<UnAuthorized />} />
+          <Route path="/unAuthenticated" element={<UnAuthenticated />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </div>
