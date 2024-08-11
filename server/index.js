@@ -5,6 +5,7 @@ const categoryRoute = require("./routes/categoryRoutes");
 const tableRoute = require("./routes/tableRoute");
 const foodRoute = require("./routes/foodRoutes");
 const userRoute = require("./routes/userRoutes");
+const oderRoute = require("./routes/orderRoutes");
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -27,4 +28,5 @@ app.use("/api/user", userRoute);
 app.use("/api/category", categoryRoute);
 app.use("/api/table", tableRoute);
 app.use("/api/food", foodRoute);
+app.use("/api/order", oderRoute);
 app.use("/uploads", express.static("uploads"));
