@@ -97,7 +97,7 @@ function Header() {
               data-bs-parent="#sidebar-nav"
             >
               <li>
-                <Link to="/admin/stock/add">
+                <Link to="/staff/new-order">
                   <i className="bi bi-circle"></i>
                   <span>New Order</span>
                 </Link>
