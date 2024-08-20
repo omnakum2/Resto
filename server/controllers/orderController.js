@@ -34,6 +34,41 @@ const getPrice = async (food_id) => {
   }
 };
 
+// new order no
+const generateOrderNumber = async () => {
+  const today = new Date().toLocaleDateString().split("T")[0];
+  const prefix = today + "_";
+
+  try {
+    // Find the highest sequence number for today
+    const lastOrder = await Order.findOne({
+      order_no: { $regex: `^${prefix}` },
+    })
+      .sort({ order_no: -1 })
+      .exec();
+
+    let sequence = 1;
+    if (lastOrder) {
+      // Extract the sequence number and increment
+      const lastOrderNo = lastOrder.order_no;
+      sequence = parseInt(lastOrderNo.split("_")[1], 10) + 1;
+    } else {
+      // No previous orders for today, start sequence at 1
+      sequence = 1;
+    }
+
+    return `${prefix}${sequence}`;
+  } catch (error) {
+    // Log the error for debugging
+    console.error("Error generating order number:", error);
+
+    // Handle the error case
+    // For simplicity, you might want to return a default sequence number
+    // or rethrow the error depending on your application needs
+    throw new Error("Failed to generate order number");
+  }
+};
+
 // new order
 const newOrder = async (req, res) => {
   const { table_id, user_id, items } = req.body;
@@ -48,14 +83,13 @@ const newOrder = async (req, res) => {
   }
 
   try {
-    // Dynamically import nanoid
-    const { nanoid } = await import("nanoid");
+    const order_no = await generateOrderNumber();
 
     // Create a new order
     const order = new Order({
       table_id,
       user_id,
-      order_no: nanoid(), // unique order number
+      order_no,
     });
     await order.save();
 
@@ -71,6 +105,53 @@ const newOrder = async (req, res) => {
       order,
       orderItems,
     });
+  } catch (error) {
+    res.status(500).send({ msg: error.message });
+  }
+};
+
+// get all orders
+const allOrders = async (req, res) => {
+  try {
+    const order = await Order.find().populate("table_id");
+    if (!order) {
+      return res.status(404).send({ msg: "No order found" });
+    }
+    res.status(200).send(order);
+  } catch (error) {
+    res.status(500).send({ msg: error.message });
+  }
+};
+
+// get order user wise
+const userWiseOrder = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const order = await Order.find({ user_id: id }).populate("table_id");
+    if (!order) {
+      return res.status(404).send({ msg: "No order found" });
+    }
+    res.status(200).send(order);
+  } catch (error) {
+    res.status(500).send({ msg: error.message });
+  }
+};
+
+// full order
+const viewFullOrder = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const fullOrder = await OrderItem.find({ order_id: id }).populate(
+      "food_id"
+    );
+    const order = await Order.findById(id)
+      .populate("table_id")
+      .populate("user_id")
+      .exec();
+    if (!fullOrder || !order) {
+      return res.status(404).send({ msg: "No order found" });
+    }
+    res.status(200).send({ order: order, fullOrder: fullOrder });
   } catch (error) {
     res.status(500).send({ msg: error.message });
   }
@@ -212,46 +293,12 @@ const deleteOrder = async (req, res) => {
   }
 };
 
-// generate the invoice
-const makeBill = async (req, res) => {
-  const orderId = req.params.id;
-
-  try {
-    // Fetch the order by ID
-    const order = await Order.findById(orderId);
-
-    if (!order) {
-      return res.status(404).send({ msg: "Order not found" });
-    }
-
-    // Fetch the user based on user_id
-    const user = await User.findById(order.user_id);
-
-    // Fetch order items related to this order
-    const orderItems = await OrderItem.find({ order_id: orderId }).populate(
-      "food_id"
-    );
-
-    // Calculate total price and quantity
-    const detailedOrderItems = orderItems.map(item => {
-      const itemPrice = item.food_id.price || 0;
-      const total = item.quantity * itemPrice;
-      return {
-        ...item._doc,
-        total
-      };
-    });
-
-    // Respond with order, user, and order items
-    res.status(200).send({
-      order,
-      user: user ? { username: user.name } : { username: "Unknown" },
-      orderItems:detailedOrderItems,
-    });
-  } catch (error) {
-    console.error("Error fetching order and order items:", error.message);
-    res.status(500).send({ msg: error.message });
-  }
+module.exports = {
+  newOrder,
+  allOrders,
+  userWiseOrder,
+  viewFullOrder,
+  editOrder,
+  checkoutOrder,
+  deleteOrder,
 };
-
-module.exports = { newOrder, editOrder, checkoutOrder, deleteOrder, makeBill };

@@ -20,10 +20,15 @@ import UpdateTable from "./components/admin/updateTable";
 import Food from "./components/admin/Food";
 import AddFood from "./components/admin/addFood";
 import UpdateFood from "./components/admin/updateFood";
+import AdminOrders from "./components/admin/Orders";
 
 // staff components
 import StaffDashboard from "./components/staff/dashboard";
 import NewOrder from "./components/staff/NewOrder";
+import Orders from "./components/staff/Orders";
+import ViewOrder from "./components/staff/ViewOrder";
+import EditOrder from "./components/staff/EditOrder";
+import CheckoutOrder from "./components/staff/CheckoutOrder";
 
 // auth components
 import NotFound from "./components/NotFound";
@@ -63,6 +68,7 @@ function App() {
             <Route path="food" element={<Food />} />
             <Route path="food-add" element={<AddFood />} />
             <Route path="food-edit/:id" element={<UpdateFood />} />
+            <Route path="orders" element={<AdminOrders />} />
           </Route>
 
           {/* staff routes */}
@@ -77,6 +83,10 @@ function App() {
           >
             <Route index element={<StaffDashboard />} />
             <Route path="new-order" element={<NewOrder />} />
+            <Route path="orders" element={<Orders />} />
+            <Route path="view-order/:id" element={<ViewOrder />} />
+            <Route path="edit-order/:id" element={<EditOrder />} />
+            <Route path="checkout-order/:id" element={<CheckoutOrder />} />
           </Route>
 
           {/* auth routes */}

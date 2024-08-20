@@ -95,6 +95,13 @@ function Header() {
           </li>
 
           <li className="nav-item">
+            <Link className="nav-link collapsed" to="/admin/orders">
+              <i className="bi bi-list"></i>
+              <span>Orders</span>
+            </Link>
+          </li>
+
+          <li className="nav-item">
             <a
               href="."
               className="nav-link collapsed"
@@ -151,21 +158,19 @@ function Header() {
               <span>Logout</span>
             </p>
           </li>
+
+          <li className="nav-item adminfooter">
+            <p className="nav-link collapsed">
+              &copy;{" "}
+              <strong>
+                <span>FoodCourt</span>
+              </strong>
+              . All Rights Reserved
+            </p>
+          </li>
         </ul>
       </aside>
       {/* End Sidebar */}
-
-      {/* ======= Footer ======= */}
-      <footer id="footer" className="footer fixed-bottom">
-        <div className="copyright">
-          &copy;{" "}
-          <strong>
-            <span>FoodCourt</span>
-          </strong>
-          . All Rights Reserved
-        </div>
-      </footer>
-      {/* End Footer */}
     </div>
   );
 }
