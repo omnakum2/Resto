@@ -686,19 +686,34 @@
   flex-grow: 0;
 }
 
-.dashboard .sales-card .card-icon {
-  color: #4154f1;
-  background: #f6f6fe;
+.dashboard .staff-card .card-icon {
+  color: #50e3c2; /* Teal */
+  background: #eaf7f3; /* Light Teal */
 }
 
-.dashboard .revenue-card .card-icon {
-  color: #2eca6a;
-  background: #e0f8e9;
+.dashboard .food-card .card-icon {
+  color: #e94e77; /* Warm Pink */
+  background: #fdedf0; /* Light Pink */
 }
 
-.dashboard .customers-card .card-icon {
-  color: #ff771d;
-  background: #ffecdf;
+.dashboard .order-card .card-icon {
+  color: #4a90e2; /* Vibrant Blue */
+  background: #e6f0ff; /* Light Blue */
+}
+
+.dashboard .table-card .card-icon {
+  color: #f5a623; /* Orange */
+  background: #fff7e6; /* Light Beige */
+}
+
+.dashboard .category-card .card-icon {
+  color: #6d28d9; /* Light Purple for the icon */
+  background: #d3b9f3; /* Dark Purple for the background */
+}
+
+.dashboard .income-card .card-icon {
+  color: #2eca6a; /* Green */
+  background: #e9f9e6; /* Light Mint Green */
 }
 
 /*--------------------------------------------------------------
@@ -742,4 +757,14 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.dashboard .staffCloseOrder-card .card-icon {
+  color: #f5a623; /* Orange */
+  background: #fff7e6; /* Light Beige */
+}
+
+.dashboard .staffOpenOrder-card .card-icon {
+  color: #2eca6a; /* Green */
+  background: #e9f9e6; /* Light Mint Green */
 }

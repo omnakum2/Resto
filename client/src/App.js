@@ -21,6 +21,7 @@ import Food from "./components/admin/Food";
 import AddFood from "./components/admin/addFood";
 import UpdateFood from "./components/admin/updateFood";
 import AdminOrders from "./components/admin/Orders";
+import Reports from "./components/admin/Reports";
 
 // staff components
 import StaffDashboard from "./components/staff/dashboard";
@@ -69,6 +70,7 @@ function App() {
             <Route path="food-add" element={<AddFood />} />
             <Route path="food-edit/:id" element={<UpdateFood />} />
             <Route path="orders" element={<AdminOrders />} />
+            <Route path="reports" element={<Reports />} />
           </Route>
 
           {/* staff routes */}

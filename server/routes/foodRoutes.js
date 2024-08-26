@@ -9,6 +9,7 @@ const {
   updateFood,
   deleteFood,
   toggleStatus,
+  toggleSpecial,
   byCategory,
 } = require("../controllers/foodController");
 
@@ -31,6 +32,7 @@ router.get("/:id", getFood);
 router.post("/", upload.single("image"), addFood);
 router.put("/:id", upload.single("image"), updateFood);
 router.patch("/:id", toggleStatus);
+router.patch("/flag/:id", toggleSpecial);
 router.delete("/:id", deleteFood);
 router.post("/:category_id", byCategory);
 

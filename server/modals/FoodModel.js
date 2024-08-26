@@ -6,6 +6,7 @@ const foodSchema = mongoose.Schema(
     price: { type: Number, default: 0, required: [true, "price is required"] },
     description: { type: String,default:"a food item", required: [true, "description is required"] },
     status: { type: String,default:"active", required: [true, "status is required"] },
+    flag: { type: String,default:"special", required: [true, "flag is required"] },
     image: { type: String, required: [true, "image is required"] },
     category_id: { type: mongoose.Schema.Types.ObjectId, ref: 'category',required: [true, "category id is required"] },
   },

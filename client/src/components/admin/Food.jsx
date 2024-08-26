@@ -70,6 +70,18 @@ function Food() {
       sortable: true,
     },
     {
+      name: "Featured",
+      cell: (row) => (
+        <button
+          className={`adminbtn ${row.flag === "special" ? "adminbtn-sm adminbtn-success" : "adminbtn-sm adminbtn-warning"}`}
+          onClick={() => handleToggleFlag(row._id)}
+        >
+          {row.flag}
+        </button>
+      ),
+      sortable: true,
+    },
+    {
       name: "Action",
       cell: (row) => (
         <div>
@@ -148,6 +160,29 @@ function Food() {
       alert("Food status Updated");
     } catch (err) {
       alert("Failed to update status");
+    }
+  };
+
+  // toggle food status
+  const handleToggleFlag = async (id) => {
+    try {
+      const food = records.find((record) => record._id === id);
+      await axios.patch(`http://localhost:3001/api/food/flag/${id}`, {
+        flag: food.flag === "special" ? "none" : "special",
+      });
+      setRecords(
+        records.map((record) =>
+          record._id === id
+            ? {
+                ...record,
+                flag: record.flag === "special" ? "none" : "special",
+              }
+            : record
+        )
+      );
+      alert("Food Flag Updated");
+    } catch (err) {
+      alert("Failed to update flag");
     }
   };
 

@@ -175,6 +175,35 @@ const toggleStatus = async (req, res) => {
   }
 };
 
+// special food 
+const toggleSpecial = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { flag } = req.body; // Get the new flag from the request body
+
+    // Validate the status value
+    if (!flag || (flag !== "special" && flag !== "none")) {
+      return res.status(400).json({ msg: "Invalid flag value" });
+    }
+
+    // Find the category by ID and update its status
+    const food = await Food.findByIdAndUpdate(
+      id,
+      { flag },
+      { new: true } // Return the updated document
+    );
+
+    if (!food) {
+      return res.status(404).json({ msg: "Food not found" });
+    }
+
+    res.status(200).json(food);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: "Server error" });
+  }
+};
+
 // for client
 const byCategory = async (req, res) => {
   try {
@@ -196,5 +225,6 @@ module.exports = {
   updateFood,
   deleteFood,
   toggleStatus,
+  toggleSpecial,
   byCategory,
 };

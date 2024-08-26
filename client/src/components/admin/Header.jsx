@@ -95,53 +95,16 @@ function Header() {
           </li>
 
           <li className="nav-item">
-            <Link className="nav-link collapsed" to="/admin/orders">
-              <i className="bi bi-list"></i>
-              <span>Orders</span>
+            <Link className="nav-link collapsed" to="/admin/staff">
+              <i className="bi bi-people-fill"></i>
+              <span>New Staff</span>
             </Link>
           </li>
 
           <li className="nav-item">
-            <a
-              href="."
-              className="nav-link collapsed"
-              data-bs-target="#stock-nav"
-              data-bs-toggle="collapse"
-            >
+            <Link className="nav-link collapsed" to="/admin/reports">
               <i className="bi bi-bar-chart-fill"></i>
               <span>Reports</span>
-              <i className="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul
-              id="stock-nav"
-              className="nav-content collapse"
-              data-bs-parent="#sidebar-nav"
-            >
-              <li>
-                <Link to="/admin/stock/add">
-                  <i className="bi bi-circle"></i>
-                  <span>Admin</span>
-                </Link>
-              </li>
-              <li>
-                <Link to="/admin/stock">
-                  <i className="bi bi-circle"></i>
-                  <span>In/Out</span>
-                </Link>
-              </li>
-              <li>
-                <Link to="/admin/stock">
-                  <i className="bi bi-circle"></i>
-                  <span>Most Sell</span>
-                </Link>
-              </li>
-            </ul>
-          </li>
-
-          <li className="nav-item">
-            <Link className="nav-link collapsed" to="/admin/staff">
-              <i className="bi bi-people-fill"></i>
-              <span>Staff</span>
             </Link>
           </li>
 
@@ -151,6 +114,13 @@ function Header() {
               <span>New Admin</span>
             </Link>
           </li> */}
+
+          <li className="nav-item">
+            <Link className="nav-link collapsed" to="/admin/orders">
+              <i className="bi bi-list-check"></i>
+              <span>Orders</span>
+            </Link>
+          </li>
 
           <li className="nav-item">
             <p className="nav-link collapsed" onClick={handleLogout}>
