@@ -6,23 +6,49 @@ function Dashboard() {
   const [food, setFood] = useState([]);
   const id = localStorage.getItem("user_id");
 
+  // get special food
+  useEffect(() => {
+    const fetchdata = async (res, req) => {
+      try {
+        const foodResponse = await axios.get(
+          "http://localhost:3001/api/dashboard/getSpecialItem"
+        );
+
+        if (foodResponse.status === 200) {
+          setFood(foodResponse.data);
+        } else {
+          alert("No data Found");
+        }
+      } catch (error) {}
+    };
+    fetchdata();
+  }, [id]);
+
   // fetch all data
   useEffect(() => {
     const fetchdata = async (res, req) => {
       try {
+        const foodResponse = await axios.get(
+          "http://localhost:3001/api/dashboard/getSpecialItem"
+        );
+
         const response = await axios.get(
           "http://localhost:3001/api/dashboard/getStaffTotal/" + id
         );
+
+        if (foodResponse.status === 200) {
+          setFood(foodResponse.data);
+        } else {
+          alert("No data Found");
+        }
+        console.log(foodResponse.data);
+
         if (response.status === 200) {
-          const { food } = response.data;
-          setFood(food);
           setData(response.data);
         } else {
           alert("No data Found");
         }
-      } catch (error) {
-        alert("Error : " + error);
-      }
+      } catch (error) {}
     };
     fetchdata();
   }, [id]);
@@ -45,7 +71,7 @@ function Dashboard() {
                           <i className="bi bi-list-check"></i>
                         </div>
                         <div className="ms-5">
-                          <h6>{data.orders}</h6>
+                          <h6>{data?.orders || 0}</h6>
                         </div>
                       </div>
                     </div>
@@ -62,7 +88,7 @@ function Dashboard() {
                           <i className="bi bi-arrow-up"></i>
                         </div>
                         <div className="ms-5">
-                          <h6>{data.openOrder}</h6>
+                          <h6>{data?.openOrder || 0}</h6>
                         </div>
                       </div>
                     </div>
@@ -79,7 +105,7 @@ function Dashboard() {
                           <i className="bi bi-arrow-down"></i>
                         </div>
                         <div className="ms-5">
-                          <h6>{data.closeOrder}</h6>
+                          <h6>{data?.closeOrder || 0}</h6>
                         </div>
                       </div>
                     </div>

@@ -2,10 +2,10 @@ const mongoose = require("mongoose");
 
 const userProfileSchema = mongoose.Schema(
   {
-    address: { type: String, required: [true, "Address is required"] },
-    mobile: { type: String, required: [true, "Mobile is required"] },
-    image: { type: String, required: [true, "Image is required"] },
-    gender: { type: String, required: [true, "Gender is required"] },
+    address: { type: String },
+    mobile: { type: String },
+    image: { type: String },
+    gender: { type: String },
     user_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "users",

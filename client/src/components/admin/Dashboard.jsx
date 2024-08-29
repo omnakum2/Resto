@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 function Dashboard() {
-
   const [data, setData] = useState("");
 
   // fetch all data
@@ -34,7 +33,7 @@ function Dashboard() {
                           <i className="bi bi-people-fill"></i>
                         </div>
                         <div className="ms-5">
-                          <h6>{data.staff}</h6>
+                          <h6>{data.staff || 0}</h6>
                         </div>
                       </div>
                     </div>
@@ -51,7 +50,7 @@ function Dashboard() {
                           <i className="bi bi-box-fill"></i>
                         </div>
                         <div className="ms-5">
-                          <h6>{data.food}</h6>
+                          <h6>{data.food || 0}</h6>
                         </div>
                       </div>
                     </div>
@@ -67,7 +66,7 @@ function Dashboard() {
                           <i className="bi bi-currency-rupee"></i>
                         </div>
                         <div className="ms-5">
-                          <h6>{data.income}</h6>
+                          <h6>{data.income || 0}</h6>
                         </div>
                       </div>
                     </div>
@@ -75,7 +74,7 @@ function Dashboard() {
                 </div>
               </div>
             </div>
-            
+
             <div className="col-lg-12">
               <div className="row">
                 {/* table Card */}
@@ -88,7 +87,7 @@ function Dashboard() {
                           <i className="bi bi-table"></i>
                         </div>
                         <div className="ms-5">
-                          <h6>{data.table}</h6>
+                          <h6>{data.table || 0}</h6>
                         </div>
                       </div>
                     </div>
@@ -105,7 +104,7 @@ function Dashboard() {
                           <i className="bi bi-stack"></i>
                         </div>
                         <div className="ms-5">
-                          <h6>{data.category}</h6>
+                          <h6>{data.category || 0}</h6>
                         </div>
                       </div>
                     </div>
@@ -122,7 +121,7 @@ function Dashboard() {
                           <i className="bi bi-list-check"></i>
                         </div>
                         <div className="ms-5">
-                          <h6>{data.orders}</h6>
+                          <h6>{data.orders || 0}</h6>
                         </div>
                       </div>
                     </div>

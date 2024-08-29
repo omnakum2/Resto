@@ -49,23 +49,7 @@ function Header() {
       {/* ======= Sidebar ======= */}
       <aside id="sidebar" className="sidebar">
         <ul className="sidebar-nav" id="sidebar-nav">
-          <Link
-            to="/admin/profile"
-            className="text-decoration-none"
-            style={{ color: "#36454f" }}
-          >
-            <div className="box text-center">
-              <div className="row">
-                <span className="bi bi-person-fill display-6"></span>
-              </div>
-              <div className="row mb-2">
-                <strong>
-                  <span className="h4">{userName}</span>
-                </strong>
-              </div>
-            </div>
-          </Link>
-
+          
           <li className="nav-item">
             <Link className="nav-link collapsed" to="/staff">
               <i className="bi bi-grid-fill"></i>
@@ -112,9 +96,9 @@ function Header() {
           </li>
 
           <li className="nav-item">
-            <Link className="nav-link collapsed" to="/staff/profile">
-              <i className="bi bi-person-fill"></i>
-              <span>My Profile</span>
+            <Link className="nav-link collapsed" to="/staff/settings">
+              <i className="bi bi-gear-fill"></i>
+              <span>Settings</span>
             </Link>
           </li>
 

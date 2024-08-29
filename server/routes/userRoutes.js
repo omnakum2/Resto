@@ -7,7 +7,8 @@ const {
   deleteUser,
   register,
   login,
-  staffuser,
+  getAllStaff,
+  toggleStatus,
 } = require("../controllers/userController");
 const { authenticateJWT, authorizeRole } = require("../middleware/auth");
 
@@ -17,11 +18,11 @@ router.post("/login", login);
 
 // admin routes
 router.get("/admin", authenticateJWT, authorizeRole("admin"), getAllUsers);
-router.get("/admin/:id", authenticateJWT, authorizeRole("admin"), getUser);
 router.put("/admin/:id", authenticateJWT, authorizeRole("admin"), editUser);
-router.delete("/admin/:id", authenticateJWT, authorizeRole("admin"), deleteUser);
 
-// Staff routes
-router.get("/staff", authenticateJWT, authorizeRole(["admin","staff"]), staffuser)
+router.get("/staff", authenticateJWT, authorizeRole("admin"), getAllStaff);
+router.get("/staff/:id", authenticateJWT, authorizeRole(["admin","staff"]), getUser);
+router.patch("/staff/:id", authenticateJWT, authorizeRole("admin"), toggleStatus);
+router.delete("/staff/:id", authenticateJWT, authorizeRole("admin"), deleteUser);
 
 module.exports = router;

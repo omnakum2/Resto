@@ -1,4 +1,5 @@
 const User = require("../modals/UserModel");
+const UserProfile = require("../modals/UserProfileModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const dotenv = require("dotenv");
@@ -32,8 +33,14 @@ const register = async (req, res) => {
     });
     await newUser.save();
 
+    // Create a profile for the new user
+    const newProfile = new UserProfile({
+      user_id: newUser._id,
+    });
+    await newProfile.save();
+
     // const token = generateToken(newUser);
-    res.status(201).json({ msg: "User created" });
+    res.status(201).json({ msg: "User created",profile: newProfile});
   } catch (err) {
     res.status(500).json({ msg: err.message });
   }
@@ -66,12 +73,23 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-// get one user
+// get staff user
 const getUser = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const {id} = req.params;
+    const user = await UserProfile.findOne({user_id:id}).populate("user_id");
     if (!user) return res.status(404).json({ msg: "User not found" });
     res.status(200).json(user);
+  } catch (err) {
+    res.status(500).json({ msg: err.message });
+  }
+};
+
+// get all staff users
+const getAllStaff = async (req, res) => {
+  try {
+    const users = await User.find({ role: "staff" });
+    res.status(200).json(users);
   } catch (err) {
     res.status(500).json({ msg: err.message });
   }
@@ -102,17 +120,41 @@ const deleteUser = async (req, res) => {
   }
 };
 
-// staff page
-const staffuser = async (req, res) => {
-  res.send({ msg: "Welcome to the staff page!" });
+const toggleStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    // Validate the status value
+    if (!status || (status !== "active" && status !== "deactive")) {
+      return res.status(400).json({ msg: "Invalid status value" });
+    }
+
+    // Find the user by ID and update its status
+    const user = await User.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true } // Return the updated document
+    );
+
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: "Server error" });
+  }
 };
 
 module.exports = {
   register,
   login,
   getAllUsers,
+  getAllStaff,
   getUser,
   editUser,
   deleteUser,
-  staffuser,
+  toggleStatus,
 };

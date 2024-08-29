@@ -8,6 +8,7 @@ const userRoute = require("./routes/userRoutes");
 const orderRoute = require("./routes/orderRoutes");
 const dashboardRoute = require("./routes/dashboardRoutes");
 const reportRoute = require("./routes/reportRoutes");
+const profileRoute = require("./routes/profileRoutes");
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -33,4 +34,5 @@ app.use("/api/food", foodRoute);
 app.use("/api/order", orderRoute);
 app.use("/api/dashboard", dashboardRoute);
 app.use("/api/report", reportRoute);
+app.use("/api/profile", profileRoute);
 app.use("/uploads", express.static("uploads"));

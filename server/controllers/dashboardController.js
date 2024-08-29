@@ -87,6 +87,18 @@ const getStaffCount = async (req, res) => {
       return res.status(404).send({ msg: "no data available" });
     }
 
+    return res.status(200).send({
+      orders: totalOrders,
+      openOrder: totalOpenOrders,
+      closeOrder: totalClosedOrders,
+    });
+  } catch (error) {
+    res.status(500).send({ msg: error.message });
+  }
+};
+
+const getSpecialItem = async (req, res) => {
+  try {
     // get all special foods
     const getSpecialFood = await Food.find({
       status: "active",
@@ -95,13 +107,7 @@ const getStaffCount = async (req, res) => {
     if (!getSpecialFood) {
       return res.status(404).send({ msg: "no data available" });
     }
-
-    return res.status(200).send({
-      orders: totalOrders,
-      openOrder: totalOpenOrders,
-      closeOrder: totalClosedOrders,
-      food: getSpecialFood,
-    });
+    return res.status(200).send(getSpecialFood);
   } catch (error) {
     res.status(500).send({ msg: error.message });
   }
@@ -110,4 +116,5 @@ const getStaffCount = async (req, res) => {
 module.exports = {
   getAdminCount,
   getStaffCount,
+  getSpecialItem,
 };
