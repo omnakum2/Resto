@@ -26,6 +26,7 @@ import Reports from "./components/admin/Reports";
 import Staff from "./components/admin/Staff";
 import ViewStaffProfile from "./components/admin/ViewStaffProfile";
 import AdminSetting from "./components/admin/Setting";
+import QRCode from "./components/admin/QRCode";
 
 // staff components
 import StaffDashboard from "./components/staff/dashboard";
@@ -86,6 +87,7 @@ function App() {
             <Route path="settings" element={<AdminSetting />} />
             <Route path="profile" element={<Profile />} />
             <Route path="profile-edit" element={<EditProfile />} />
+            <Route path="qr-code" element={<QRCode />} />
           </Route>
 
           {/* staff routes */}

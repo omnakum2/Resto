@@ -47,7 +47,7 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="d-flex justify-content-center">
+    <div className="d-flex justify-content-center mt-5">
       <div className="card p-4 shadow" style={{ width: "400px" }}>
         {error && <div className="alert alert-danger">{error}</div>}
         {success && <div className="alert alert-success">{success}</div>}

@@ -108,13 +108,6 @@ function Header() {
             </Link>
           </li>
 
-          {/* <li className="nav-item">
-            <Link className="nav-link collapsed" to="/admin/newadmin">
-              <i className="bi bi-people-fill"></i>
-              <span>New Admin</span>
-            </Link>
-          </li> */}
-
           <li className="nav-item">
             <Link className="nav-link collapsed" to="/admin/orders">
               <i className="bi bi-list-check"></i>

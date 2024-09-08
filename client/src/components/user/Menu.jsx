@@ -5,27 +5,26 @@ function Menu() {
   const [categories, setCategories] = useState([]);
   const [items, setItems] = useState([]);
   const [activeTab, setActiveTab] = useState("");
+  const URL = process.env.REACT_APP_BASE_URL;
 
   // Fetch categories on component mount
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const response = await axios.post(
-          "http://localhost:3001/api/category/active"
+          `${URL}category/active`
         );
         setCategories(response.data);
         if (response.data.length > 0 && !categories.find(cat => cat._id === activeTab)) {
           setActiveTab(response.data[0]._id); // Set the first category as the default active tab
         }
+        // console.log(URL);
       } catch (error) {
         alert("Failed to fetch categories.");
       }
     };
 
     fetchCategories();
-    const intervalId = setInterval(fetchCategories, 5000); // call every 5 seconds
-
-    return () => clearInterval(intervalId); // Clean up
   });
 
   // Fetch items for the active category
@@ -34,18 +33,14 @@ function Menu() {
       const fetchItems = async () => {
         try {
           const response = await axios.post(
-            `http://localhost:3001/api/food/${activeTab}`
+            `${URL}food/${activeTab}`
           );
           setItems(response.data);
         } catch (error) {
           alert("Failed to fetch items.");
         }
       };
-
       fetchItems();
-      const intervalId = setInterval(fetchItems, 5000); // call every 5 seconds
-
-      return () => clearInterval(intervalId); // Clean up
     }
   }, [activeTab]);
 
@@ -116,7 +111,7 @@ function Menu() {
                             <div className="d-flex align-items-center">
                               <img
                                 className="flex-shrink-0 img-fluid rounded"
-                                src={`http://localhost:3001/uploads/${item.image}`} // Use actual image URL
+                                src={`http://192.168.43.236:3001/uploads/${item.image}`} // Use actual image URL
                                 alt={item.name}
                                 style={{ width: "80px" }}
                               />
