@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
-function StaffProfile() {
-  const { id } = useParams();
-  const { navigate } = useNavigate();
+function Profile() {
+  const id = localStorage.getItem("user_id");
   const [data, setData] = useState([]);
   const token = localStorage.getItem("user_token");
+  const userType = localStorage.getItem("user_role");
 
   const handleError = (e) => {
     e.target.src = "http://localhost:3001/uploads/profile/blank-profile.jpg"; // Fallback image URL
@@ -16,7 +16,7 @@ function StaffProfile() {
     const fetchdata = async (res, req) => {
       try {
         const response = await axios.get(
-          "http://localhost:3001/api/user/profile/" + id,
+          `http://localhost:3001/api/user/profile/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -25,12 +25,7 @@ function StaffProfile() {
         );
         // console.log(response.data[0]);
         setData(response.data);
-      } catch (err) {
-        console.log(err);
-        if (err.response.status === 403) {
-          navigate("/unAuthenticated");
-        }
-      }
+      } catch (err) {}
     };
     fetchdata();
   }, [id]);
@@ -40,16 +35,15 @@ function StaffProfile() {
       <main id="main" className="main">
         <div className="container">
           <div className="pagetitle">
-            Staff Profile
+            Profile
             <Link
               className="adminbtn text-decoration-none adminbtn-dark adminbtn-sm float-end"
-              to="/admin/staff"
+              to={userType === "admin" ? "/admin" : "/staff"}
             >
               <span>Back</span>
             </Link>
           </div>
           <hr />
-
           <div className="row">
             <div className="col">
               <div className="card">
@@ -78,6 +72,16 @@ function StaffProfile() {
                   <div className="mb-3">
                     <strong>Gender :</strong> {data?.gender}
                   </div>
+                  <Link
+                    className="col-12 adminbtn text-decoration-none adminbtn-dark adminbtn-sm float-end"
+                    to={
+                      userType === "admin"
+                        ? "/admin/profile-edit"
+                        : "/staff/profile-edit"
+                    }
+                  >
+                    <span>Edit</span>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -88,4 +92,4 @@ function StaffProfile() {
   );
 }
 
-export default StaffProfile;
+export default Profile;

@@ -21,7 +21,7 @@ app.use(
 );
 app.use(express.json());
 
-mongoose.connect("mongodb://localhost:27017/resto");
+mongoose.connect(process.env.MONGODB_URI);
 
 app.listen(3001, () => {
   console.log("local server running on port 3001");

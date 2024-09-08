@@ -18,6 +18,6 @@ const upload = multer({
   storage: storage,
 });
 
-router.put("/staff/:id", upload.single("image"), profileStaff);
+router.put("/:id", upload.single("image"), profileStaff);
 
 module.exports = router;

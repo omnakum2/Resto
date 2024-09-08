@@ -19,6 +19,8 @@ const userSchema = mongoose.Schema(
       enum: ["staff", "admin"],
       default: "staff",
     },
+    otp: { type: String, default: "null" },
+    otpExpire: { type: Date, default: Date.now() },
   },
   {
     timestamps: true,

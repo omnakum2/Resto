@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AdminLayout from "./components/AdminLayout";
 import StaffLayout from "./components/StaffLayout";
 import UserLayout from "./components/UserLayout";
+import AuthLayout from "./components/AuthLayout";
 
 // user components
 import Home from "./components/user/Home";
@@ -36,12 +37,17 @@ import CheckoutOrder from "./components/staff/CheckoutOrder";
 import Setting from "./components/staff/Setting";
 
 // auth components
+import Register from "./components/auth/Register";
+import Login from "./components/auth/Login";
+import Profile from "./components/auth/Profile";
+import EditProfile from "./components/auth/EditProfile";
+import ForgotPassword from "./components/auth/ForgotPassword";
+
+// other components
 import NotFound from "./components/NotFound";
-import Register from "./components/Register";
-import Login from "./components/Login";
-import ProtectedRoute from "./utils/ProtectedRoute";
 import UnAuthorized from "./components/UnAuthorized";
 import UnAuthenticated from "./components/UnAuthenticated";
+import ProtectedRoute from "./utils/ProtectedRoute";
 
 function App() {
   return (
@@ -78,6 +84,8 @@ function App() {
             <Route path="staff" element={<Staff />} />
             <Route path="staff-profile/:id" element={<ViewStaffProfile />} />
             <Route path="settings" element={<AdminSetting />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="profile-edit" element={<EditProfile />} />
           </Route>
 
           {/* staff routes */}
@@ -97,11 +105,16 @@ function App() {
             <Route path="edit-order/:id" element={<EditOrder />} />
             <Route path="checkout-order/:id" element={<CheckoutOrder />} />
             <Route path="settings" element={<Setting />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="profile-edit" element={<EditProfile />} />
           </Route>
 
           {/* auth routes */}
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/auth" element={<AuthLayout />}>
+            <Route index element={<Login />} />
+            <Route path="register" element={<Register />} />
+            <Route path="forgot-password" element={<ForgotPassword />} />
+          </Route>
 
           {/* error handle routes */}
           <Route path="/unAuthorized" element={<UnAuthorized />} />
