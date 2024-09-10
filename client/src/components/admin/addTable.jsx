@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 const AddTable = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const URL = process.env.REACT_APP_BASE_URL;
 
   const handleForm = async (e) => {
     e.preventDefault();
@@ -17,7 +18,7 @@ const AddTable = () => {
     let table_obj = Object.fromEntries(formData.entries());
 
     try {
-      const response = await axios.post("http://localhost:3001/api/table", {
+      const response = await axios.post(`${URL}table`, {
         table_no: table_obj.table_no,
         size: table_obj.size,
         type: table_obj.type,

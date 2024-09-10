@@ -9,11 +9,12 @@ const UpdateTable = () => {
   const [type, setType] = useState("AC"); // Default value should be one of the select options
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const URL = process.env.REACT_APP_BASE_URL;
 
   useEffect(() => {
     const fetchTable = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/api/table/${id}`);
+        const response = await axios.get(`${URL}table/${id}`);
         const { table_no, size, type } = response.data;
         setTable_no(table_no);
         setSize(size);
@@ -32,7 +33,7 @@ const UpdateTable = () => {
 
     try {
       const response = await axios.put(
-        `http://localhost:3001/api/table/${id}`,
+        `${URL}table/${id}`,
         {
           table_no,
           size,

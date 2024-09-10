@@ -18,8 +18,8 @@ const qrcodeRoute = require("./routes/qrcodeRoutes");
 const app = express();
 app.use(
   cors({
-    origin: "http://localhost:3000",
-    credentials: true,
+    origin: "*",
+    credentials: false,
   })
 );
 app.use(express.json());
@@ -29,6 +29,10 @@ mongoose.connect(process.env.MONGODB_URI);
 app.listen(3001, () => {
   console.log("local server running on port 3001");
 });
+
+app.get("/demo",(req,res) => {
+  res.send("hello");
+})
 
 app.use("/api/user", userRoute);
 app.use("/api/category", categoryRoute);

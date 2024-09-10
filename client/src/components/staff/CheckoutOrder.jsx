@@ -9,6 +9,7 @@ function CheckoutOrder() {
   const [order_no, setOrder_no] = useState("");
   const [customer_mob, setCustomer_mob] = useState("");
   const [data, setData] = useState({});
+  const URL = process.env.REACT_APP_BASE_URL;
 
   // Calculate total price
   const totalPrice = records.reduce((total, item) => {
@@ -26,7 +27,7 @@ function CheckoutOrder() {
         customer_mob: customer_mob,
       };
       const response = await axios.put(
-        `http://localhost:3001/api/order/checkoutOrder`,
+        `${URL}order/checkoutOrder`,
         data,
       );
       if (response.status === 200) {
@@ -44,7 +45,7 @@ function CheckoutOrder() {
       try {
         // Fetch full order
         const response = await axios.get(
-          `http://localhost:3001/api/order/viewOrder/${id}`
+          `${URL}order/viewOrder/${id}`
         );
         const { order, fullOrder } = response.data;
         setData(order);

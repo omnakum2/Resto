@@ -13,18 +13,19 @@ function EditOrder() {
   const [orderItems, setOrderItems] = useState([]);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const URL = process.env.REACT_APP_BASE_URL;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         // Fetch categories
         const categoryResponse = await axios.post(
-          "http://localhost:3001/api/category/active"
+          `${URL}category/active`
         );
         setCategories(categoryResponse.data);
 
         // Fetch food items
-        const foodResponse = await axios.get("http://localhost:3001/api/food");
+        const foodResponse = await axios.get(`${URL}food`);
         setFoodItems(foodResponse.data);
       } catch (error) {
         alert("Error fetching data: " + error.message);
@@ -96,7 +97,7 @@ function EditOrder() {
         })),
       };
       const res = await axios.put(
-        `http://localhost:3001/api/order/editOrder`,
+        `${URL}order/editOrder`,
         orderData
       );
       // console.log("", res);

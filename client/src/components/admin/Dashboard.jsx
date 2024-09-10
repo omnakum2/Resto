@@ -3,12 +3,13 @@ import axios from "axios";
 
 function Dashboard() {
   const [data, setData] = useState("");
+  const URL = process.env.REACT_APP_BASE_URL;
 
   // fetch all data
   useEffect(() => {
     const fetchdata = async (res, req) => {
       await axios
-        .get("http://localhost:3001/api/dashboard/getAdminTotal")
+        .get(`${URL}dashboard/getAdminTotal`)
         .then((res) => setData(res.data))
         .catch((err) => alert(err));
     };

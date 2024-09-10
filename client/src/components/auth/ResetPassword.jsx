@@ -7,6 +7,7 @@ const ResetPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const URL = process.env.REACT_APP_BASE_URL;
 
   const userId = localStorage.getItem("user_id");
   const token = localStorage.getItem("user_role");
@@ -23,7 +24,7 @@ const ResetPassword = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:3001/api/user/reset-password",
+        `${URL}user/reset-password`,
 
         {
           userId, // Pass userId here

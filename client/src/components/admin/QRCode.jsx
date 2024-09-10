@@ -7,11 +7,12 @@ function QRCode() {
   const [qrcode, setQRCode] = useState("");
   const [error, setError] = useState("");
   const [isDownloading, setIsDownloading] = useState(false);
-
+  const URL = process.env.REACT_APP_BASE_URL;
+  
   useEffect(() => {
     const fetchQRCode = async () => {
       try {
-        const response = await axios.get("http://localhost:3001/api/QRCode/");
+        const response = await axios.get(`${URL}QRCode/`);
         if (response.status === 200) setQRCode(response.data);
       } catch (error) {
         setError(error.response.data.msg);
@@ -24,7 +25,7 @@ function QRCode() {
     setError("");
     setIsDownloading(true);
     try {
-      const response = await axios.post("http://localhost:3001/api/QRCode/");
+      const response = await axios.post(`${URL}QRCode/`);
       if (response.status === 200) {
         alert(response.data.msg);
         setQRCode(response.data);

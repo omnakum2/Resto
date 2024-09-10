@@ -2,6 +2,10 @@ const QRCode = require("qrcode");
 const path = require("path");
 const fs = require("fs");
 const os = require("os");
+const dotenv = require("dotenv");
+dotenv.config();
+
+const URI = process.env.IMAGE_URI;
 
 // get the local ip of the device
 function getLocalIP() {
@@ -47,7 +51,7 @@ const makeQRCode = async (req, res) => {
     if (!qrCode) {
       res.status(404).send("Something went Wrong");
     }
-    const URL = "http://localhost:3001/uploads/QR/qrcode.png";
+    const URL = `${URI}QR/qrcode.png`;
     if (!URL) {
       res.status(404).send("Something went Wrong");
     }
@@ -61,7 +65,7 @@ const makeQRCode = async (req, res) => {
 
 const getQRCode = async (req, res) => {
   try {
-    const URL = "http://localhost:3001/uploads/QR/qrcode.png";
+    const URL = `${URI}QR/qrcode.png`;
     if (!URL) {
       res.status(404).send("Something went Wrong");
     }

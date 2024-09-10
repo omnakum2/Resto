@@ -7,7 +7,8 @@ function Orders() {
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
   const [search, setSearch] = useState("");
-
+  const URL = process.env.REACT_APP_BASE_URL;
+  
   // table style
   const mystyle = {
     headRow: {
@@ -73,7 +74,7 @@ function Orders() {
       try {
         // Fetch user orders
         const userOrderResponse = await axios.get(
-          `http://localhost:3001/api/order/allOrders`
+          `${URL}order/allOrders`
         );
         setRecords(userOrderResponse.data);
       } catch (error) {
@@ -97,7 +98,7 @@ function Orders() {
   const handleDelete = async(id) => {
     if (window.confirm("Are you sure to delete Order?")) {
       try {
-        await axios.delete(`http://localhost:3001/api/order/${id}`);
+        await axios.delete(`${URL}order/${id}`);
         setRecords(records.filter((record) => record._id !== id));
         alert("Order deleted successfully");
       } catch (err) {

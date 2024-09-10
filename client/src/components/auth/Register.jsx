@@ -12,6 +12,7 @@ function Register() {
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const URL = process.env.REACT_APP_BASE_URL;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -32,7 +33,7 @@ function Register() {
 
     try {
       const response = await axios.post(
-        "http://localhost:3001/api/user/register",
+        `${URL}user/register`,
         formData
       );
       if (response.status === 200) {

@@ -12,12 +12,13 @@ const ForgotPassword = () => {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const URL = process.env.REACT_APP_BASE_URL;
 
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:3001/api/user/forgot-password",
+        `${URL}user/forgot-password`,
         { email }
       );
       setMessage(response.data.message);
@@ -38,7 +39,7 @@ const ForgotPassword = () => {
     setPasswordError("");
     try {
       const response = await axios.post(
-        "http://localhost:3001/api/user/change-password",
+        `${URL}user/change-password`,
         { email, otp, newPassword }
       );
       alert(response.data.message);

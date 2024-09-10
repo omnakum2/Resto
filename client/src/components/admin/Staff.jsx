@@ -8,6 +8,7 @@ function Staff() {
   const [records, setRecords] = useState([]);
   const [search, setSearch] = useState("");
   const token = localStorage.getItem("user_token");
+  const URL = process.env.REACT_APP_BASE_URL;
 
   // table style
   const mystyle = {
@@ -76,7 +77,7 @@ function Staff() {
     const fetchdata = async (res, req) => {
       try {
         const response = await axios.get(
-          "http://localhost:3001/api/user/staff",
+          `${URL}user/staff`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -109,7 +110,7 @@ function Staff() {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure to delete user?")) {
       try {
-        await axios.delete(`http://localhost:3001/api/user/staff/${id}`, {
+        await axios.delete(`${URL}user/staff/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -127,7 +128,7 @@ function Staff() {
     try {
       const user = records.find((record) => record._id === id);
       await axios.patch(
-        `http://localhost:3001/api/user/staff/${id}`,
+        `${URL}user/staff/${id}`,
         {
           status: user.status === "active" ? "deactive" : "active",
         },

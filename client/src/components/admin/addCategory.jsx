@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 const AddCategory = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const URL = process.env.REACT_APP_BASE_URL;
 
   const handleForm = async (e) => {
     e.preventDefault();
@@ -17,7 +18,7 @@ const AddCategory = () => {
     let category_obj = Object.fromEntries(formData.entries());
 
     try {
-      const response = await axios.post("http://localhost:3001/api/category", {
+      const response = await axios.post(`${URL}category`, {
         name: category_obj.name,
       });
 

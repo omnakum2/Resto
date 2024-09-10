@@ -7,6 +7,7 @@ function ViewOrder() {
   const { id } = useParams();
   const [records, setRecords] = useState([]);
   const [data, setData] = useState({});
+  const URL = process.env.REACT_APP_BASE_URL;
 
   // Calculate total price
   const totalPrice = records.reduce((total, item) => {
@@ -19,7 +20,7 @@ function ViewOrder() {
       try {
         // Fetch full order
         const response = await axios.get(
-          `http://localhost:3001/api/order/viewOrder/${id}`
+          `${URL}order/viewOrder/${id}`
         );
         const { order, fullOrder } = response.data;
         setData(order);

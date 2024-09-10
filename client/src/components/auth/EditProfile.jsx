@@ -14,16 +14,18 @@ const EditProfile = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const userType = localStorage.getItem("user_role");
+  const URL = process.env.REACT_APP_BASE_URL;
+  const URI = process.env.REACT_APP_BASE_URL_NEW;
 
   const handleError = (e) => {
-    e.target.src = "http://localhost:3001/uploads/profile/blank-profile.jpg"; // Fallback image URL
+    e.target.src = `${URI}profile/blank-profile.jpg`; // Fallback image URL
   };
 
   useEffect(() => {
     const fetchdata = async (res, req) => {
       try {
         const response = await axios.get(
-          "http://localhost:3001/api/user/profile/" + id,
+          `${URL}user/profile/` + id,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -54,7 +56,7 @@ const EditProfile = () => {
 
     try {
       const response = await axios.put(
-        `http://localhost:3001/api/profile/${id}`,
+        `${URL}profile/${id}`,
         formData,
         {
           headers: {
@@ -182,7 +184,7 @@ const EditProfile = () => {
                   <div className="col">
                     <label className="form-label mt-3">Profile Image</label>
                     <img
-                      src={`http://localhost:3001/uploads/profile/${image}`}
+                      src={`${URI}profile/${image}`}
                       alt={name}
                       style={{ width: "100px", height: "100px" }}
                       onError={handleError} // Fallback when image fails to load

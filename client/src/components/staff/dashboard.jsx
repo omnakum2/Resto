@@ -5,13 +5,14 @@ function Dashboard() {
   const [data, setData] = useState("");
   const [food, setFood] = useState([]);
   const id = localStorage.getItem("user_id");
+  const URL = process.env.REACT_APP_BASE_URL;
 
   // get special food
   useEffect(() => {
     const fetchdata = async (res, req) => {
       try {
         const foodResponse = await axios.get(
-          "http://localhost:3001/api/dashboard/getSpecialItem"
+          `${URL}dashboard/getSpecialItem`
         );
 
         if (foodResponse.status === 200) {
@@ -29,11 +30,11 @@ function Dashboard() {
     const fetchdata = async (res, req) => {
       try {
         const foodResponse = await axios.get(
-          "http://localhost:3001/api/dashboard/getSpecialItem"
+          `${URL}dashboard/getSpecialItem`
         );
 
         const response = await axios.get(
-          "http://localhost:3001/api/dashboard/getStaffTotal/" + id
+          `${URL}dashboard/getStaffTotal/` + id
         );
 
         if (foodResponse.status === 200) {

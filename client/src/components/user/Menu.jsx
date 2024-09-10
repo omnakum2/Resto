@@ -6,6 +6,7 @@ function Menu() {
   const [items, setItems] = useState([]);
   const [activeTab, setActiveTab] = useState("");
   const URL = process.env.REACT_APP_BASE_URL;
+  const URI = process.env.REACT_APP_BASE_URL_NEW;
 
   // Fetch categories on component mount
   useEffect(() => {
@@ -111,7 +112,7 @@ function Menu() {
                             <div className="d-flex align-items-center">
                               <img
                                 className="flex-shrink-0 img-fluid rounded"
-                                src={`http://192.168.43.236:3001/uploads/${item.image}`} // Use actual image URL
+                                src={`${URI}${item.image}`} // Use actual image URL
                                 alt={item.name}
                                 style={{ width: "80px" }}
                               />

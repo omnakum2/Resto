@@ -11,6 +11,7 @@ function Reports() {
   const [isDownloading, setIsDownloading] = useState(false); // Added for download state
   const [error, setError] = useState(null); // Added for error handling
   const year = new Date().getFullYear();
+  const URL = process.env.REACT_APP_BASE_URL;
 
   // Fetch data based on the selected report type
   const fetchData = async () => {
@@ -18,11 +19,11 @@ function Reports() {
     setError(null); // Clear previous errors
     try {
       const responses = {
-        month: await axios.get("http://localhost:3001/api/report/monthlySales"),
-        year: await axios.get("http://localhost:3001/api/report/yearlySales"),
-        user: await axios.get("http://localhost:3001/api/report/userSales"),
+        month: await axios.get(`${URL}report/monthlySales`),
+        year: await axios.get(`${URL}report/yearlySales`),
+        user: await axios.get(`${URL}report/userSales`),
         mostSell: await axios.get(
-          "http://localhost:3001/api/report/getMostSell"
+          `${URL}report/getMostSell`
         ),
       };
 

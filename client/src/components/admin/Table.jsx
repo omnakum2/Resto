@@ -7,6 +7,7 @@ function Table() {
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
   const [search, setSearch] = useState("");
+  const URL = process.env.REACT_APP_BASE_URL;
 
   // table style
   const mystyle = {
@@ -79,7 +80,7 @@ function Table() {
   useEffect(() => {
     const fetchdata = async (res, req) => {
       await axios
-        .get("http://localhost:3001/api/table")
+        .get(`${URL}table`)
         .then((res) => setRecords(res.data))
         .catch((err) => alert(err));
     };
@@ -104,7 +105,7 @@ function Table() {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure to delete table?")) {
       try {
-        await axios.delete(`http://localhost:3001/api/table/${id}`);
+        await axios.delete(`${URL}table/${id}`);
         setRecords(records.filter((record) => record._id !== id));
         alert("Table deleted successfully");
       } catch (err) {
@@ -117,7 +118,7 @@ function Table() {
   const handleToggleStatus = async (id) => {
     try {
       const table = records.find((record) => record._id === id);
-      await axios.patch(`http://localhost:3001/api/table/${id}`, {
+      await axios.patch(`${URL}table/${id}`, {
         status: table.status === "occupied" ? "unoccupied" : "occupied",
       });
       setRecords(

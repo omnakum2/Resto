@@ -8,6 +8,7 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const URL = process.env.REACT_APP_BASE_URL;
 
   // Get the message from the state (if available)
   const message = location.state?.message || "";
@@ -19,12 +20,12 @@ function Login() {
     event.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:3001/api/user/login",
+        `${URL}user/login`,
         {
           email,
           password,
         },
-        { withCredentials: true }
+        { withCredentials: false }
       );
 
       if (response.status === 200) {

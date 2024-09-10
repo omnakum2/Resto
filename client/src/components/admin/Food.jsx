@@ -7,6 +7,8 @@ function Food() {
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
   const [search, setSearch] = useState("");
+  const URL = process.env.REACT_APP_BASE_URL;
+  const URI = process.env.REACT_APP_BASE_URL_NEW;
 
   // table style
   const mystyle = {
@@ -31,7 +33,7 @@ function Food() {
       name: "Image",
       cell: (row) => (
         <img
-          src={`http://localhost:3001/uploads/${row.image}`}
+          src={`${URI}${row.image}`}
           alt={row.image}
           style={{ width: "100px", height: "100px", backgroundSize: "cover" }}
         />
@@ -106,7 +108,7 @@ function Food() {
   useEffect(() => {
     const fetchdata = async (res, req) => {
       await axios
-        .get("http://localhost:3001/api/food")
+        .get(`${URL}food`)
         .then((res) => setRecords(res.data))
         .catch((err) => alert(err));
     };
@@ -131,7 +133,7 @@ function Food() {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure to delete Food?")) {
       try {
-        await axios.delete(`http://localhost:3001/api/food/${id}`);
+        await axios.delete(`${URL}food/${id}`);
         setRecords(records.filter((record) => record._id !== id));
         alert("Food deleted successfully");
       } catch (err) {
@@ -144,7 +146,7 @@ function Food() {
   const handleToggleStatus = async (id) => {
     try {
       const food = records.find((record) => record._id === id);
-      await axios.patch(`http://localhost:3001/api/food/${id}`, {
+      await axios.patch(`${URL}food/${id}`, {
         status: food.status === "active" ? "deactive" : "active",
       });
       setRecords(
@@ -167,7 +169,7 @@ function Food() {
   const handleToggleFlag = async (id) => {
     try {
       const food = records.find((record) => record._id === id);
-      await axios.patch(`http://localhost:3001/api/food/flag/${id}`, {
+      await axios.patch(`${URL}food/flag/${id}`, {
         flag: food.flag === "special" ? "none" : "special",
       });
       setRecords(

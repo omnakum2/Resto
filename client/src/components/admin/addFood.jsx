@@ -6,12 +6,13 @@ const AddFood = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [category, setCategory] = useState([]);
+  const URL = process.env.REACT_APP_BASE_URL;
 
   // fetch all data
   useEffect(() => {
     const fetchdata = async (res, req) => {
       await axios
-        .get("http://localhost:3001/api/category")
+        .get(`${URL}category`)
         .then((res) => setCategory(res.data))
         .catch((err) => alert(err));
     };
@@ -28,7 +29,7 @@ const AddFood = () => {
     let formData = new FormData(form);
 
     try {
-      const response = await axios.post("http://localhost:3001/api/food", formData, {
+      const response = await axios.post(`${URL}food`, formData, {
         headers: {
             'Content-Type': 'multipart/form-data'
           }

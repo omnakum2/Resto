@@ -12,12 +12,14 @@ const UpdateFood = () => {
   const [image, setImage] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const URL = process.env.REACT_APP_BASE_URL;
+  const URI = process.env.REACT_APP_BASE_URL_NEW;
 
   // fetch all category data
   useEffect(() => {
     const fetchdata = async (res, req) => {
       await axios
-        .get("http://localhost:3001/api/category")
+        .get(`${URL}category`)
         .then((res) => setCategory(res.data))
         .catch((err) => alert(err));
     };
@@ -29,7 +31,7 @@ const UpdateFood = () => {
     const fetchFood = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3001/api/food/${id}`
+          `${URL}food/${id}`
         );
         const { name, category_id, price, description, image } = response.data;
         setName(name);
@@ -56,7 +58,7 @@ const UpdateFood = () => {
 
     try {
       const response = await axios.put(
-        `http://localhost:3001/api/food/${id}`,
+        `${URL}food/${id}`,
         formData,
         {
           headers: {
@@ -158,7 +160,7 @@ const UpdateFood = () => {
                 <div className="col">
                   <label className="form-label mt-3">Food Image</label>
                   <img
-                    src={`http://localhost:3001/uploads/${image}`}
+                    src={`${URI}${image}`}
                     alt={name}
                     style={{ width: "100px", height: "100px" }}
                     className="mx-3"

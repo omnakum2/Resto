@@ -7,12 +7,13 @@ const UpdateCategory = () => {
   const [category, setCategory] = useState({ name: "" });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const URL = process.env.REACT_APP_BASE_URL;
 
   useEffect(() => {
     const fetchCategory = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3001/api/category/${id}`
+          `${URL}category/${id}`
         );
         setCategory(response.data);
       } catch (err) {
@@ -32,7 +33,7 @@ const UpdateCategory = () => {
 
     try {
       const response = await axios.put(
-        `http://localhost:3001/api/category/${id}`,
+        `${URL}category/${id}`,
         {
           name: category_obj.name,
         }

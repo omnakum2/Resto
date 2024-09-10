@@ -8,6 +8,7 @@ function Orders() {
   const [records, setRecords] = useState([]);
   const [search, setSearch] = useState("");
   const id = localStorage.getItem("user_id");
+  const URL = process.env.REACT_APP_BASE_URL;
 
   // table style
   const mystyle = {
@@ -91,7 +92,7 @@ function Orders() {
       try {
         // Fetch user orders
         const userOrderResponse = await axios.get(
-          `http://localhost:3001/api/order/userOrder/${id}`
+          `${URL}order/userOrder/${id}`
         );
         setRecords(userOrderResponse.data);
       } catch (error) {
