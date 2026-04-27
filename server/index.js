@@ -1,5 +1,5 @@
+const AppDataSource = require("./config/database");
 const express = require("express");
-const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
 dotenv.config();
@@ -24,11 +24,15 @@ app.use(
 );
 app.use(express.json());
 
-mongoose.connect(process.env.MONGODB_URI);
-
-app.listen(3001, () => {
-  console.log("local server running on port 3001");
-});
+AppDataSource.initialize()
+  .then(() => {
+    console.log("MySQL Database connected via TypeORM");
+    const PORT = process.env.PORT || 3001;
+    app.listen(PORT, () => {
+      console.log(`local server running on port ${PORT}`);
+    });
+  })
+  .catch((error) => console.log("Database connection error: ", error));
 
 app.get("/demo",(req,res) => {
   res.send("hello");

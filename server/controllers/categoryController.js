@@ -1,9 +1,12 @@
-const Category = require("../modals/CategoryModel");
+const AppDataSource = require("../config/database");
+const CategoryEntity = require("../entities/CategoryEntity");
+
+const categoryRepository = AppDataSource.getRepository(CategoryEntity);
 
 // fetch all category
 const getCategories = async (req, res) => {
   try {
-    const category = await Category.find({});
+    const category = await categoryRepository.find();
     res.status(200).json(category);
   } catch (error) {
     res.status(500).json({ msg: error.message });
@@ -14,7 +17,8 @@ const getCategories = async (req, res) => {
 const getCategory = async (req, res) => {
   try {
     const { id } = req.params;
-    const category = await Category.findById(id);
+    const category = await categoryRepository.findOneBy({ id: parseInt(id) });
+    if (!category) return res.status(404).json({ msg: "Category not found" });
     res.status(200).json(category);
   } catch (error) {
     res.status(500).json({ msg: error.message });
@@ -27,16 +31,17 @@ const addCategories = async (req, res) => {
     const { name } = req.body;
 
     if (!name) {
-      return res.status(400).send({msg:"All fields are Required"});
+      return res.status(400).send({ msg: "All fields are Required" });
     }
 
     // check category already exist - name
-    const existcategory = await Category.findOne({ name });
+    const existcategory = await categoryRepository.findOneBy({ name });
     if (existcategory) {
-      return res.status(409).send({msg:`${name} category already exists`});
+      return res.status(409).send({ msg: `${name} category already exists` });
     }
 
-    const category = await Category.create(req.body);
+    const category = categoryRepository.create(req.body);
+    await categoryRepository.save(category);
     res.status(200).send(category);
   } catch (error) {
     res.status(500).json({ msg: error.message });
@@ -50,23 +55,24 @@ const updateCategories = async (req, res) => {
     const { name } = req.body;
 
     if (!name) {
-      return res.status(400).send({msg:"All fields are Required"});
+      return res.status(400).send({ msg: "All fields are Required" });
     }
 
-    // check category already exist - name
-    const existcategory = await Category.findOne({ name });
-    if (existcategory) {
-      return res.status(409).send({msg:`${name} category already exists`});
+    // check category already exist - name (excluding current category)
+    const existcategory = await categoryRepository.findOneBy({ name });
+    if (existcategory && existcategory.id !== parseInt(id)) {
+      return res.status(409).send({ msg: `${name} category already exists` });
     }
 
-    const category = await Category.findByIdAndUpdate(id, req.body);
+    let category = await categoryRepository.findOneBy({ id: parseInt(id) });
 
     if (!category) {
       return res.status(404).send({ msg: "Category not found" });
     }
 
-    const updateCategory = await Category.findById(id);
-    res.status(200).send(updateCategory);
+    categoryRepository.merge(category, req.body);
+    const updatedCategory = await categoryRepository.save(category);
+    res.status(200).send(updatedCategory);
   } catch (error) {
     res.status(500).json({ msg: error.message });
   }
@@ -76,10 +82,10 @@ const updateCategories = async (req, res) => {
 const deleteCategories = async (req, res) => {
   try {
     const { id } = req.params;
-    const category = await Category.findByIdAndDelete(id);
+    const result = await categoryRepository.delete(id);
 
-    if (!category) {
-      return res.status(404).json({ msg: "Categoryct not found" });
+    if (result.affected === 0) {
+      return res.status(404).json({ msg: "Category not found" });
     }
 
     res.status(200).send({ msg: "category deleted successfully..." });
@@ -90,55 +96,38 @@ const deleteCategories = async (req, res) => {
 
 // update status
 const toggleStatus = async (req, res) => {
-  // try {
-  //   const { id } = req.params;
-  //   const category = await Category.findById(id);
-
-  //   if (!category) {
-  //     return res.status(404).json({ msg: "Category not found" });
-  //   }
-    
-  // } catch (error) {
-  //   res.status(500).json({ msg: error.message });
-  // }
-
   try {
     const { id } = req.params;
-    const { status } = req.body; // Get the new status from the request body
+    const { status } = req.body;
 
-    // Validate the status value
-    if (!status || (status !== 'active' && status !== 'deactive')) {
-      return res.status(400).json({ msg: 'Invalid status value' });
+    if (!status || (status !== "active" && status !== "deactive")) {
+      return res.status(400).json({ msg: "Invalid status value" });
     }
 
-    // Find the category by ID and update its status
-    const category = await Category.findByIdAndUpdate(
-      id,
-      { status },
-      { new: true } // Return the updated document
-    );
+    const category = await categoryRepository.findOneBy({ id: parseInt(id) });
 
     if (!category) {
-      return res.status(404).json({ msg: 'Category not found' });
+      return res.status(404).json({ msg: "Category not found" });
     }
+
+    category.status = status;
+    await categoryRepository.save(category);
 
     res.status(200).json(category);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ msg: 'Server error' });
+    res.status(500).json({ msg: "Server error" });
   }
-}
+};
 
 const getActiveCategories = async (req, res) => {
   try {
-    // Fetch categories with status 'active'
-    const activeCategories = await Category.find({ status: "active" });
-    
-    // Check if there are no categories found
-    if (!activeCategories) {
-      return res.status(404).json({ msg: 'No active categories found' });
+    const activeCategories = await categoryRepository.findBy({ status: "active" });
+
+    if (activeCategories.length === 0) {
+      return res.status(404).json({ msg: "No active categories found" });
     }
-    
+
     res.status(200).json(activeCategories);
   } catch (error) {
     res.status(500).json({ msg: error.message });

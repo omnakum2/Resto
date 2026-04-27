@@ -1,16 +1,21 @@
-const Food = require("../modals/FoodModel");
-const Category = require("../modals/CategoryModel");
+const AppDataSource = require("../config/database");
+const FoodEntity = require("../entities/FoodEntity");
+const CategoryEntity = require("../entities/CategoryEntity");
 const fs = require("fs");
 const path = require("path");
+
+const foodRepository = AppDataSource.getRepository(FoodEntity);
+const categoryRepository = AppDataSource.getRepository(CategoryEntity);
 
 // fetch all foods
 const getFoods = async (req, res) => {
   try {
-    const food = await Food.find({})
-      .populate("category_id", "name") // Populate the category field, only including the 'name' field
-      .exec();
+    const food = await foodRepository.find({
+      relations: ["category"],
+    });
     res.status(200).json(food);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ msg: "Server error" });
   }
 };
@@ -19,7 +24,8 @@ const getFoods = async (req, res) => {
 const getFood = async (req, res) => {
   try {
     const { id } = req.params;
-    const food = await Food.findById(id);
+    const food = await foodRepository.findOneBy({ id: parseInt(id) });
+    if (!food) return res.status(404).json({ msg: "Food item not found" });
     res.status(200).json(food);
   } catch (error) {
     res.status(500).json({ msg: "Server error" });
@@ -37,25 +43,26 @@ const addFood = async (req, res) => {
     }
 
     // check category if exists - id
-    const category = await Category.findById(category_id);
+    const category = await categoryRepository.findOneBy({ id: parseInt(category_id) });
     if (!category) {
       return res.status(400).send({ msg: "Invalid Category" });
     }
 
     // check food already exist - name
-    const existFood = await Food.findOne({ name });
+    const existFood = await foodRepository.findOneBy({ name });
     if (existFood) {
       return res
         .status(409)
         .send({ msg: `Food already exists with ${name} name` });
     }
-    const newFood = await Food.create({
+    const newFood = foodRepository.create({
       name,
-      price,
+      price: parseFloat(price),
       description,
-      category_id,
+      category: category,
       image: image,
     });
+    await foodRepository.save(newFood);
 
     // full image URL
     if (newFood.image) {
@@ -64,6 +71,7 @@ const addFood = async (req, res) => {
 
     res.status(200).send(newFood);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ msg: "Server error" });
   }
 };
@@ -76,7 +84,7 @@ const updateFood = async (req, res) => {
     const newImage = req.file ? req.file.filename : null;
 
     // check food exist - id
-    const food = await Food.findById(id);
+    const food = await foodRepository.findOneBy({ id: parseInt(id) });
     if (!food) {
       return res.status(404).send({ msg: "Food item not found" });
     }
@@ -86,8 +94,9 @@ const updateFood = async (req, res) => {
     }
 
     // Validate the category
+    let category = null;
     if (category_id) {
-      const category = await Category.findById(category_id);
+      category = await categoryRepository.findOneBy({ id: parseInt(category_id) });
       if (!category) {
         return res.status(400).send({ msg: "Invalid Category" });
       }
@@ -96,28 +105,26 @@ const updateFood = async (req, res) => {
     // If a new image is provided, delete the old image
     if (newImage) {
       if (food.image) {
-        const oldImagePath = path.join(__dirname,"../uploads", food.image);
+        const oldImagePath = path.join(__dirname, "../uploads", food.image);
         fs.unlink(oldImagePath, (err) => {
           if (err) console.error("Error deleting old image:", err);
         });
       }
     }
 
-    const updateFood = await Food.findByIdAndUpdate(
-      id,
-      {
-        name: name || food.name,
-        price: price || food.price,
-        description: description || food.description,
-        category_id: category_id || food.category_id,
-        image: newImage || food.image,
-      },
-      { new: true }
-    );
+    foodRepository.merge(food, {
+      name: name || food.name,
+      price: price ? parseFloat(price) : food.price,
+      description: description || food.description,
+      category: category || food.category,
+      image: newImage || food.image,
+    });
 
-    res.status(200).send(updateFood);
+    const updatedFood = await foodRepository.save(food);
+    res.status(200).send(updatedFood);
   } catch (error) {
-    res.status(500).send(error);
+    console.error(error);
+    res.status(500).send("Server error");
   }
 };
 
@@ -125,21 +132,20 @@ const updateFood = async (req, res) => {
 const deleteFood = async (req, res) => {
   try {
     const id = req.params.id;
-    const food = await Food.findById(id);
-    // res.send(food);
+    const food = await foodRepository.findOneBy({ id: parseInt(id) });
+    
+    if (!food) {
+      return res.status(404).send("Food not found");
+    }
 
     if (food.image) {
-      const filepath = path.join(__dirname,"../uploads", food.image)
+      const filepath = path.join(__dirname, "../uploads", food.image)
       fs.unlink(filepath, (err) => {
         if (err) console.error("Error deleting old image:", err);
       });
     }
 
-    const deleteFood = await Food.findByIdAndDelete(id);
-    if (!deleteFood) {
-      res.status(404).send("Food not found");
-    }
-
+    await foodRepository.delete(id);
     res.status(200).send("Food delete Successfully");
   } catch (error) {
     res.status(500).send(error);
@@ -150,23 +156,20 @@ const deleteFood = async (req, res) => {
 const toggleStatus = async (req, res) => {
   try {
     const { id } = req.params;
-    const { status } = req.body; // Get the new status from the request body
+    const { status } = req.body; 
 
-    // Validate the status value
     if (!status || (status !== "active" && status !== "deactive")) {
       return res.status(400).json({ msg: "Invalid status value" });
     }
 
-    // Find the category by ID and update its status
-    const food = await Food.findByIdAndUpdate(
-      id,
-      { status },
-      { new: true } // Return the updated document
-    );
+    const food = await foodRepository.findOneBy({ id: parseInt(id) });
 
     if (!food) {
       return res.status(404).json({ msg: "Food not found" });
     }
+
+    food.status = status;
+    await foodRepository.save(food);
 
     res.status(200).json(food);
   } catch (error) {
@@ -179,23 +182,20 @@ const toggleStatus = async (req, res) => {
 const toggleSpecial = async (req, res) => {
   try {
     const { id } = req.params;
-    const { flag } = req.body; // Get the new flag from the request body
+    const { flag } = req.body; 
 
-    // Validate the status value
     if (!flag || (flag !== "special" && flag !== "none")) {
       return res.status(400).json({ msg: "Invalid flag value" });
     }
 
-    // Find the category by ID and update its status
-    const food = await Food.findByIdAndUpdate(
-      id,
-      { flag },
-      { new: true } // Return the updated document
-    );
+    const food = await foodRepository.findOneBy({ id: parseInt(id) });
 
     if (!food) {
       return res.status(404).json({ msg: "Food not found" });
     }
+
+    food.flag = flag;
+    await foodRepository.save(food);
 
     res.status(200).json(food);
   } catch (error) {
@@ -208,14 +208,25 @@ const toggleSpecial = async (req, res) => {
 const byCategory = async (req, res) => {
   try {
     const id = req.params.category_id;
-    const foodByCategory = await Food.find({
-      category_id: id,
+    const foodByCategory = await foodRepository.findBy({
+      category: { id: parseInt(id) },
       status: "active",
     });
     res.send(foodByCategory);
   } catch (error) {
     res.status(500).send(error);
   }
+};
+
+module.exports = {
+  getFoods,
+  getFood,
+  addFood,
+  updateFood,
+  deleteFood,
+  toggleStatus,
+  toggleSpecial,
+  byCategory,
 };
 
 module.exports = {

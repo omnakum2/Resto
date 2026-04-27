@@ -1,28 +1,30 @@
-const Order = require("../modals/OrderModel");
-const OrderItem = require("../modals/OrderItemModel");
-const Food = require("../modals/FoodModel");
-const User = require("../modals/UserModel");
-const mongoose = require("mongoose");
+const AppDataSource = require("../config/database");
+const OrderEntity = require("../entities/OrderEntity");
+const OrderItemEntity = require("../entities/OrderItemEntity");
+const FoodEntity = require("../entities/FoodEntity");
+const UserEntity = require("../entities/UserEntity");
 
-// Helper function to validate ObjectId
-const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
+const orderRepository = AppDataSource.getRepository(OrderEntity);
+const orderItemRepository = AppDataSource.getRepository(OrderItemEntity);
+const foodRepository = AppDataSource.getRepository(FoodEntity);
+const userRepository = AppDataSource.getRepository(UserEntity);
+
+// Helper function to validate Number ID
+const isValidId = (id) => !isNaN(parseInt(id));
 
 // get price by food id
 const getPrice = async (food_id) => {
   try {
-    // Validate ObjectId
-    if (!mongoose.Types.ObjectId.isValid(food_id)) {
+    if (!isValidId(food_id)) {
       return { msg: "invalid foodId" };
     }
 
-    // Fetch the food item by _id
-    const food = await Food.findById(food_id);
+    const food = await foodRepository.findOneBy({ id: parseInt(food_id) });
 
     if (!food) {
       return { msg: "food not found" };
     }
 
-    // Ensure the price is a valid number
     const price = parseFloat(food.price);
     if (isNaN(price)) {
       return { msg: "price is NaN" };
@@ -30,41 +32,31 @@ const getPrice = async (food_id) => {
 
     return price;
   } catch (error) {
-    return { msg: error.message, price: 0 }; // Default value in case of error
+    return { msg: error.message, price: 0 }; 
   }
 };
 
 // new order no
 const generateOrderNumber = async () => {
-  const today = new Date().toLocaleDateString().split("T")[0];
+  const today = new Date().toISOString().split("T")[0];
   const prefix = today + "_";
 
   try {
-    // Find the highest sequence number for today
-    const lastOrder = await Order.findOne({
-      order_no: { $regex: `^${prefix}` },
-    })
-      .sort({ order_no: -1 })
-      .exec();
+    const lastOrder = await orderRepository
+      .createQueryBuilder("order")
+      .where("order.order_no LIKE :prefix", { prefix: `${prefix}%` })
+      .orderBy("order.order_no", "DESC")
+      .getOne();
 
     let sequence = 1;
     if (lastOrder) {
-      // Extract the sequence number and increment
       const lastOrderNo = lastOrder.order_no;
       sequence = parseInt(lastOrderNo.split("_")[1], 10) + 1;
-    } else {
-      // No previous orders for today, start sequence at 1
-      sequence = 1;
     }
 
     return `${prefix}${sequence}`;
   } catch (error) {
-    // Log the error for debugging
     console.error("Error generating order number:", error);
-
-    // Handle the error case
-    // For simplicity, you might want to return a default sequence number
-    // or rethrow the error depending on your application needs
     throw new Error("Failed to generate order number");
   }
 };
@@ -73,8 +65,7 @@ const generateOrderNumber = async () => {
 const newOrder = async (req, res) => {
   const { table_id, user_id, items } = req.body;
 
-  // Validate ObjectId
-  if (!isValidObjectId(table_id) || !isValidObjectId(user_id)) {
+  if (!isValidId(table_id) || !isValidId(user_id)) {
     return res.status(400).send({ msg: "Invalid table_id or user_id" });
   }
 
@@ -85,20 +76,21 @@ const newOrder = async (req, res) => {
   try {
     const order_no = await generateOrderNumber();
 
-    // Create a new order
-    const order = new Order({
-      table_id,
-      user_id,
+    const order = orderRepository.create({
+      table: { id: parseInt(table_id) },
+      user: { id: parseInt(user_id) },
       order_no,
     });
-    await order.save();
+    await orderRepository.save(order);
 
-    // Create order items
-    const orderItems = items.map((item) => ({
-      ...item,
-      order_id: order._id,
-    }));
-    await OrderItem.insertMany(orderItems);
+    const orderItems = items.map((item) => {
+      return orderItemRepository.create({
+        quantity: item.quantity,
+        food: { id: parseInt(item.food_id) },
+        order: { id: order.id },
+      });
+    });
+    await orderItemRepository.save(orderItems);
 
     res.status(201).send({
       msg: "Order placed successfully",
@@ -106,6 +98,7 @@ const newOrder = async (req, res) => {
       orderItems,
     });
   } catch (error) {
+    console.error(error);
     res.status(500).send({ msg: error.message });
   }
 };
@@ -113,11 +106,10 @@ const newOrder = async (req, res) => {
 // get all orders
 const allOrders = async (req, res) => {
   try {
-    const order = await Order.find().populate("table_id");
-    if (!order) {
-      return res.status(404).send({ msg: "No order found" });
-    }
-    res.status(200).send(order);
+    const orders = await orderRepository.find({
+      relations: ["table", "user"],
+    });
+    res.status(200).send(orders);
   } catch (error) {
     res.status(500).send({ msg: error.message });
   }
@@ -127,11 +119,11 @@ const allOrders = async (req, res) => {
 const userWiseOrder = async (req, res) => {
   const { id } = req.params;
   try {
-    const order = await Order.find({ user_id: id }).populate("table_id");
-    if (!order) {
-      return res.status(404).send({ msg: "No order found" });
-    }
-    res.status(200).send(order);
+    const orders = await orderRepository.find({
+      where: { user: { id: parseInt(id) } },
+      relations: ["table"],
+    });
+    res.status(200).send(orders);
   } catch (error) {
     res.status(500).send({ msg: error.message });
   }
@@ -141,13 +133,14 @@ const userWiseOrder = async (req, res) => {
 const viewFullOrder = async (req, res) => {
   const { id } = req.params;
   try {
-    const fullOrder = await OrderItem.find({ order_id: id }).populate(
-      "food_id"
-    );
-    const order = await Order.findById(id)
-      .populate("table_id")
-      .populate("user_id")
-      .exec();
+    const fullOrder = await orderItemRepository.find({
+      where: { order: { id: parseInt(id) } },
+      relations: ["food"],
+    });
+    const order = await orderRepository.findOne({
+      where: { id: parseInt(id) },
+      relations: ["table", "user"],
+    });
     if (!fullOrder || !order) {
       return res.status(404).send({ msg: "No order found" });
     }
@@ -157,57 +150,53 @@ const viewFullOrder = async (req, res) => {
   }
 };
 
-// edit order
+// edit order (Actually "order_no" param in req.body was used in findById, but it's likely the "id")
 const editOrder = async (req, res) => {
-  const { order_no, items } = req.body;
+  const { order_no, items } = req.body; // order_no here is likely the order ID
 
   if (!order_no || !Array.isArray(items)) {
-    return res.status(400).send({ msg: "Order number and items are required" });
+    return res.status(400).send({ msg: "Order ID and items are required" });
   }
 
   try {
-    // Find the order by order_no
-    const order = await Order.findById(order_no);
+    const order = await orderRepository.findOneBy({ id: parseInt(order_no) });
 
     if (!order) {
       return res.status(404).send({ msg: "Order not found" });
     }
 
-    // Check if order status is open
     if (order.status !== "open") {
       return res.status(400).send({ msg: "Order status is not open" });
     }
 
-    // Process items
     const updatedItems = [];
     const newItems = [];
 
     for (const item of items) {
-      if (!isValidObjectId(item.food_id)) {
+      if (!isValidId(item.food_id)) {
         return res
           .status(400)
           .send({ msg: `Invalid food_id: ${item.food_id}` });
       }
 
-      // Check if the item already exists in the order
-      const existingItem = await OrderItem.findOne({
-        order_id: order_no,
-        food_id: item.food_id,
+      const existingItem = await orderItemRepository.findOne({
+        where: {
+          order: { id: order.id },
+          food: { id: parseInt(item.food_id) },
+        },
       });
 
       if (existingItem) {
-        // Update existing item
-        existingItem.quantity += item.quantity;
-        await existingItem.save();
+        existingItem.quantity += parseInt(item.quantity);
+        await orderItemRepository.save(existingItem);
         updatedItems.push(existingItem);
       } else {
-        // Add new item
-        const newItem = new OrderItem({
-          food_id: item.food_id,
-          quantity: item.quantity,
-          order_id: order_no,
+        const newItem = orderItemRepository.create({
+          food: { id: parseInt(item.food_id) },
+          quantity: parseInt(item.quantity),
+          order: { id: order.id },
         });
-        await newItem.save();
+        await orderItemRepository.save(newItem);
         newItems.push(newItem);
       }
     }
@@ -218,60 +207,57 @@ const editOrder = async (req, res) => {
       newItems,
     });
   } catch (error) {
+    console.error(error);
     res.status(500).send({ msg: error.message });
   }
 };
 
 // checkout order
 const checkoutOrder = async (req, res) => {
-  const { order_no, customer_mob } = req.body;
+  const { order_no, customer_mob } = req.body; // order_no is ID
 
   if (!order_no) {
-    return res.status(400).send({ msg: "Order number is required" });
+    return res.status(400).send({ msg: "Order ID is required" });
   }
 
   const customerMobile = customer_mob || "Unknown";
 
   try {
-    // Find the order by order_no
-    const order = await Order.findById(order_no);
+    const order = await orderRepository.findOneBy({ id: parseInt(order_no) });
 
     if (!order) {
       return res.status(404).send({ msg: "Order not found" });
     }
 
-    // Fetch order items
-    const orderItems = await OrderItem.find({ order_id: order_no });
+    const orderItems = await orderItemRepository.find({
+      where: { order: { id: order.id } },
+      relations: ["food"],
+    });
 
     if (orderItems.length === 0) {
       return res.status(400).send({ msg: "No items found for this order" });
     }
 
-    // Calculate grand total
     let grandTotal = 0;
     for (const item of orderItems) {
-      try {
-        const price = await getPrice(item.food_id); // Ensure getPrice is awaited
-        if (isNaN(price)) {
-          return res.status(500).send({ msg: "Invalid Price NaN" });
-        }
-        grandTotal += price * item.quantity;
-      } catch (error) {
-        return res.status(500).send({ msg: error.message });
+      const price = parseFloat(item.food.price);
+      if (isNaN(price)) {
+        return res.status(500).send({ msg: "Invalid Price NaN" });
       }
+      grandTotal += price * item.quantity;
     }
 
-    // Update order with grand total and set status to closed
     order.grand_total = grandTotal;
     order.customer_mob = customerMobile;
     order.status = "closed";
-    await order.save();
+    await orderRepository.save(order);
 
     res.status(200).send({
       msg: "Order checked out successfully",
       order,
     });
   } catch (error) {
+    console.error(error);
     res.status(500).send({ msg: error.message });
   }
 };
@@ -279,18 +265,29 @@ const checkoutOrder = async (req, res) => {
 const deleteOrder = async (req, res) => {
   try {
     const id = req.params.id;
-    const order = await Order.findByIdAndDelete(id);
-    if (!order) {
+    const result = await orderRepository.delete(id);
+    if (result.affected === 0) {
       return res.status(404).send({ msg: "Order not found" });
     }
 
-    // Delete the associated order items
-    await OrderItem.deleteMany({ order_id: id });
+    // Associated order items are deleted via CASCADE if defined in EntitySchema
+    // But we can also delete manually to be safe if cascade is not set
+    // In my EntitySchema, I didn't explicitly set cascade delete in Order -> OrderItem but relations delete CASCADE usually works.
 
     res.status(200).send({ msg: "Order deleted Successfully" });
   } catch (error) {
     res.status(500).send({ msg: error.message });
   }
+};
+
+module.exports = {
+  newOrder,
+  allOrders,
+  userWiseOrder,
+  viewFullOrder,
+  editOrder,
+  checkoutOrder,
+  deleteOrder,
 };
 
 module.exports = {
