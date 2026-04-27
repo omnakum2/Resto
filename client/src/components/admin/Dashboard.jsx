@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+
 
 function Dashboard() {
   const [data, setData] = useState("");
@@ -7,11 +7,18 @@ function Dashboard() {
 
   // fetch all data
   useEffect(() => {
-    const fetchdata = async (res, req) => {
-      await axios
-        .get(`${URL}dashboard/getAdminTotal`)
-        .then((res) => setData(res.data))
-        .catch((err) => alert(err));
+    const fetchdata = async () => {
+      try {
+        const response = await fetch(`${URL}dashboard/getAdminTotal`);
+        if (response.ok) {
+          const result = await response.json();
+          setData(result);
+        } else {
+          alert("Failed to fetch dashboard data");
+        }
+      } catch (err) {
+        alert(err);
+      }
     };
     fetchdata();
   }, []);

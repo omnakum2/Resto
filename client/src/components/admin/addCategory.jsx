@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+
 import { Link } from "react-router-dom";
 
 const AddCategory = () => {
@@ -18,24 +18,28 @@ const AddCategory = () => {
     let category_obj = Object.fromEntries(formData.entries());
 
     try {
-      const response = await axios.post(`${URL}category`, {
-        name: category_obj.name,
+      const response = await fetch(`${URL}category`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: category_obj.name,
+        }),
       });
 
-      if (response.status === 200) {
+      if (response.ok) {
         setSuccess("Category added successfully");
         setTimeout(() => {
           window.location.href = "/admin/category";
         }, 2000);
       } else {
-        alert(response.statusText);
+        const errorData = await response.json();
+        setError(errorData.msg || "Category addition failed");
       }
     } catch (error) {
-      if (error.response) {
-        setError(error.response.data.msg);
-      }else{
-        setError("server error...");
-      }
+      console.error("Error adding category:", error);
+      setError("server error...");
     }
   };
 

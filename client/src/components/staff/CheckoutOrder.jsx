@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+
 import { Link, useParams, useNavigate } from "react-router-dom";
 
 function CheckoutOrder() {
@@ -21,18 +21,23 @@ function CheckoutOrder() {
     e.preventDefault();
 
     try {
-      // checkout
       const data = {
         order_no: order_no,
         customer_mob: customer_mob,
       };
-      const response = await axios.put(
-        `${URL}order/checkoutOrder`,
-        data,
-      );
-      if (response.status === 200) {
-        alert(response.data.msg);
+      const response = await fetch(`${URL}order/checkoutOrder`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      if (response.ok) {
+        const result = await response.json();
+        alert(result.msg);
         navigate("/staff/orders");
+      } else {
+        alert("Checkout failed");
       }
     } catch (error) {
       alert("Error : " + error.message);
@@ -41,17 +46,18 @@ function CheckoutOrder() {
 
   // fetch all data
   useEffect(() => {
-    const fetchdata = async (res, req) => {
+    const fetchdata = async () => {
       try {
-        // Fetch full order
-        const response = await axios.get(
-          `${URL}order/viewOrder/${id}`
-        );
-        const { order, fullOrder } = response.data;
-        setData(order);
-        setRecords(fullOrder);
-        setOrder_no(order._id);
-        // console.log(response.data);
+        const response = await fetch(`${URL}order/viewOrder/${id}`);
+        if (response.ok) {
+          const result = await response.json();
+          const { order, fullOrder } = result;
+          setData(order);
+          setRecords(fullOrder);
+          setOrder_no(order._id);
+        } else {
+          alert("Failed to fetch order data");
+        }
       } catch (error) {
         alert("Error fetching data: " + error.message);
       }

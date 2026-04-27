@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+
 import { useParams, useNavigate } from "react-router-dom";
 
 function EditOrder() {
@@ -18,15 +18,19 @@ function EditOrder() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch categories
-        const categoryResponse = await axios.post(
-          `${URL}category/active`
-        );
-        setCategories(categoryResponse.data);
+        const categoryResponse = await fetch(`${URL}category/active`, {
+          method: "POST",
+        });
+        if (categoryResponse.ok) {
+          const categoriesData = await categoryResponse.json();
+          setCategories(categoriesData);
+        }
 
-        // Fetch food items
-        const foodResponse = await axios.get(`${URL}food`);
-        setFoodItems(foodResponse.data);
+        const foodResponse = await fetch(`${URL}food`);
+        if (foodResponse.ok) {
+          const foodsData = await foodResponse.json();
+          setFoodItems(foodsData);
+        }
       } catch (error) {
         alert("Error fetching data: " + error.message);
       }
@@ -96,16 +100,23 @@ function EditOrder() {
           quantity: item.quantity,
         })),
       };
-      const res = await axios.put(
-        `${URL}order/editOrder`,
-        orderData
-      );
-      // console.log("", res);
-      if (res.status === 200) {
-        setSuccess(res.data.msg);
+      const res = await fetch(`${URL}order/editOrder`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(orderData),
+      });
+
+      if (res.ok) {
+        const result = await res.json();
+        setSuccess(result.msg);
         setTimeout(() => {
           navigate("/staff/orders");
         }, 1000);
+      } else {
+        const errorData = await res.json();
+        setError(errorData.msg || "Failed to update order");
       }
       setOrderItems([]);
     } catch (error) {

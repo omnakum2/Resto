@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+
 import { Link } from "react-router-dom";
 
 const EditProfile = () => {
@@ -22,25 +22,27 @@ const EditProfile = () => {
   };
 
   useEffect(() => {
-    const fetchdata = async (res, req) => {
+    const fetchdata = async () => {
       try {
-        const response = await axios.get(
-          `${URL}user/profile/` + id,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const { address, mobile, gender, image } = response.data;
-        const { name, email } = response.data.user_id;
-        setName(name);
-        setEmail(email);
-        setMobile(mobile);
-        setAddress(address);
-        setGender(gender);
-        setImage(image);
-      } catch (err) {}
+        const response = await fetch(`${URL}user/profile/` + id, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (response.ok) {
+          const result = await response.json();
+          const { address, mobile, gender, image } = result;
+          const { name, email } = result.user_id;
+          setName(name);
+          setEmail(email);
+          setMobile(mobile);
+          setAddress(address);
+          setGender(gender);
+          setImage(image);
+        }
+      } catch (err) {
+        console.error("Error fetching profile:", err);
+      }
     };
     fetchdata();
   }, []);
@@ -55,32 +57,27 @@ const EditProfile = () => {
     let formData = new FormData(form);
 
     try {
-      const response = await axios.put(
-        `${URL}profile/${id}`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await fetch(`${URL}profile/${id}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
 
-      if (response.status === 200) {
+      if (response.ok) {
         setSuccess("Profile Updated successfully");
         setTimeout(() => {
           window.location.href =
             userType === "admin" ? "/admin/profile" : "/staff/profile";
         }, 2000);
       } else {
-        alert(response.statusText);
+        const errorData = await response.json();
+        setError(errorData.msg || "Server error...");
       }
     } catch (error) {
-      if (error.response) {
-        setError(error.response.data.msg);
-      } else {
-        setError("server error...");
-      }
+      console.error("Error updating profile:", error);
+      setError("server error...");
     }
   };
 

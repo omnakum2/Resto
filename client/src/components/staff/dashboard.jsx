@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+
 
 function Dashboard() {
   const [data, setData] = useState("");
@@ -9,49 +9,47 @@ function Dashboard() {
 
   // get special food
   useEffect(() => {
-    const fetchdata = async (res, req) => {
+    const fetchdata = async () => {
       try {
-        const foodResponse = await axios.get(
-          `${URL}dashboard/getSpecialItem`
-        );
-
-        if (foodResponse.status === 200) {
-          setFood(foodResponse.data);
+        const foodResponse = await fetch(`${URL}dashboard/getSpecialItem`);
+        if (foodResponse.ok) {
+          const result = await foodResponse.json();
+          setFood(result);
         } else {
           alert("No data Found");
         }
-      } catch (error) {}
+      } catch (error) {
+        console.error("Error fetching special items:", error);
+      }
     };
     fetchdata();
   }, [id]);
 
   // fetch all data
   useEffect(() => {
-    const fetchdata = async (res, req) => {
+    const fetchTotalData = async () => {
       try {
-        const foodResponse = await axios.get(
-          `${URL}dashboard/getSpecialItem`
-        );
+        const foodResponse = await fetch(`${URL}dashboard/getSpecialItem`);
+        const totalResponse = await fetch(`${URL}dashboard/getStaffTotal/` + id);
 
-        const response = await axios.get(
-          `${URL}dashboard/getStaffTotal/` + id
-        );
-
-        if (foodResponse.status === 200) {
-          setFood(foodResponse.data);
+        if (foodResponse.ok) {
+          const foodResult = await foodResponse.json();
+          setFood(foodResult);
         } else {
-          alert("No data Found");
+          alert("No special item data Found");
         }
-        console.log(foodResponse.data);
 
-        if (response.status === 200) {
-          setData(response.data);
+        if (totalResponse.ok) {
+          const totalResult = await totalResponse.json();
+          setData(totalResult);
         } else {
-          alert("No data Found");
+          alert("No total data Found");
         }
-      } catch (error) {}
+      } catch (error) {
+        console.error("Error fetching dashboard totals:", error);
+      }
     };
-    fetchdata();
+    fetchTotalData();
   }, [id]);
 
   return (

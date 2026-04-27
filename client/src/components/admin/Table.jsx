@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
-import axios from "axios";
+
 import { Link, useNavigate } from "react-router-dom";
 
 function Table() {
@@ -78,11 +78,18 @@ function Table() {
 
   // fetch all data
   useEffect(() => {
-    const fetchdata = async (res, req) => {
-      await axios
-        .get(`${URL}table`)
-        .then((res) => setRecords(res.data))
-        .catch((err) => alert(err));
+    const fetchdata = async () => {
+      try {
+        const response = await fetch(`${URL}table`);
+        if (response.ok) {
+          const result = await response.json();
+          setRecords(result);
+        } else {
+          alert("Failed to fetch tables");
+        }
+      } catch (err) {
+        alert(err);
+      }
     };
     fetchdata();
   }, []);
@@ -105,9 +112,15 @@ function Table() {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure to delete table?")) {
       try {
-        await axios.delete(`${URL}table/${id}`);
-        setRecords(records.filter((record) => record._id !== id));
-        alert("Table deleted successfully");
+        const response = await fetch(`${URL}table/${id}`, {
+          method: "DELETE",
+        });
+        if (response.ok) {
+          setRecords(records.filter((record) => record._id !== id));
+          alert("Table deleted successfully");
+        } else {
+          alert("Failed to delete table.");
+        }
       } catch (err) {
         alert("Failed to delete table.");
       }
@@ -118,21 +131,31 @@ function Table() {
   const handleToggleStatus = async (id) => {
     try {
       const table = records.find((record) => record._id === id);
-      await axios.patch(`${URL}table/${id}`, {
-        status: table.status === "occupied" ? "unoccupied" : "occupied",
+      const response = await fetch(`${URL}table/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          status: table.status === "occupied" ? "unoccupied" : "occupied",
+        }),
       });
-      setRecords(
-        records.map((record) =>
-          record._id === id
-            ? {
-                ...record,
-                status:
-                  record.status === "occupied" ? "unoccupied" : "occupied",
-              }
-            : record
-        )
-      );
-      alert("Table status Updated");
+      if (response.ok) {
+        setRecords(
+          records.map((record) =>
+            record._id === id
+              ? {
+                  ...record,
+                  status:
+                    record.status === "occupied" ? "unoccupied" : "occupied",
+                }
+              : record
+          )
+        );
+        alert("Table status Updated");
+      } else {
+        alert("Failed to update status");
+      }
     } catch (err) {
       alert("Failed to update status");
     }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+
 
 function NewOrder() {
   const [tables, setTables] = useState([]);
@@ -18,24 +18,28 @@ function NewOrder() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch tables
-        const tableResponse = await axios.get(
-          `${URL}table`
-        );
-        const availableTables = tableResponse.data.filter(
-          (table) => table.status === "unoccupied"
-        );
-        setTables(availableTables);
+        const tableResponse = await fetch(`${URL}table`);
+        if (tableResponse.ok) {
+          const tablesData = await tableResponse.json();
+          const availableTables = tablesData.filter(
+            (table) => table.status === "unoccupied"
+          );
+          setTables(availableTables);
+        }
 
-        // Fetch categories
-        const categoryResponse = await axios.post(
-          `${URL}category/active`
-        );
-        setCategories(categoryResponse.data);
+        const categoryResponse = await fetch(`${URL}category/active`, {
+          method: "POST",
+        });
+        if (categoryResponse.ok) {
+          const categoriesData = await categoryResponse.json();
+          setCategories(categoriesData);
+        }
 
-        // Fetch food items
-        const foodResponse = await axios.get(`${URL}food`);
-        setFoodItems(foodResponse.data);
+        const foodResponse = await fetch(`${URL}food`);
+        if (foodResponse.ok) {
+          const foodsData = await foodResponse.json();
+          setFoodItems(foodsData);
+        }
       } catch (error) {
         alert("Error fetching data: " + error.message);
       }
@@ -102,16 +106,23 @@ function NewOrder() {
           quantity: item.quantity,
         })),
       };
-      const res = await axios.post(
-        `${URL}order/newOrder`,
-        orderData
-      );
-      // console.log("", res);
-      if (res.status === 201) {
-        setSuccess(res.data.msg);
+      const response = await fetch(`${URL}order/newOrder`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(orderData),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setSuccess(result.msg);
         setTimeout(() => {
           window.location.href = "/staff/orders";
         }, 1000);
+      } else {
+        const errorData = await response.json();
+        setError(errorData.msg || "Order creation failed");
       }
       setOrderItems([]);
     } catch (error) {

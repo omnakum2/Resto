@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+
 import { Link } from "react-router-dom";
 
 function Profile() {
@@ -15,19 +15,20 @@ function Profile() {
   };
 
   useEffect(() => {
-    const fetchdata = async (res, req) => {
+    const fetchdata = async () => {
       try {
-        const response = await axios.get(
-          `${URL}user/profile/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        // console.log(response.data[0]);
-        setData(response.data);
-      } catch (err) {}
+        const response = await fetch(`${URL}user/profile/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (response.ok) {
+          const result = await response.json();
+          setData(result);
+        }
+      } catch (err) {
+        console.error("Error fetching profile:", err);
+      }
     };
     fetchdata();
   }, [id]);

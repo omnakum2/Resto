@@ -1,25 +1,22 @@
-Installation process
+# Resto - Restaurant Management System
 
-1 - download the zip file from the github and extract
+Resto is a comprehensive restaurant management system designed to streamline operations for administrators, staff, and customers. It features a robust React-based frontend and a Node.js/Express-based backend, providing real-time data management for orders, staff, inventory, and analytics.
 
-2 - now change directory goto client folder
-  - cd client  
-  - npm install  // install node modules
-  - create the .env file in client folder manually and paste the url below given
-  - REACT_APP_BASE_URL=YOUR-URL
-  - REACT_APP_BASE_URL_NEW=YOUR-URL
-  - npm start  // run the react-app
+## 🚀 Features
 
-3 - now change directory goto server folder
-  - cd server  
-  - npm install  // install node modules
-  - create the .env file in server folder manually and paste the url below given
-  - JWT_SECRET=mysecretkey
-  - MONGODB_URI=YOUR MONGODB URL
-  - IMAGE_URI=YOUR-URL
-  - EMAIL_USER=YOUR_EMAIL
-  - EMAIL_PASS=YOUR_PASS
-  - npm start  // run the server
+### Admin Portal
+- **Dashboard**: Real-time overview of sales and operational statistics.
+- **Inventory Management**: CRUD operations for Categories and Food Items.
+- **Staff Management**: Role-based access control and staff profile management.
+- **Table Management**: Monitor and manage restaurant table layout and status.
+- **Reports**: Generate detailed sales reports (Monthly, Yearly, User-specific).
+- **QR Code System**: Generate and manage QR codes for tables.
 
-4 - Now your project can be run on the browser
-    
+### Staff Portal
+- **Order Management**: Create and update customer orders.
+- **Real-time Status**: Monitor active and closed orders.
+- **Checkout system**: Efficient billing and order completion.
+
+### Customer View
+- **Digital Menu**: Dynamic menu with category-based filtering.
+- **Real-time Availability**: View current food offerings.

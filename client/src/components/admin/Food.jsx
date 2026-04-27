@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
-import axios from "axios";
+
 import { Link, useNavigate } from "react-router-dom";
 
 function Food() {
@@ -106,11 +106,18 @@ function Food() {
 
   // fetch all data
   useEffect(() => {
-    const fetchdata = async (res, req) => {
-      await axios
-        .get(`${URL}food`)
-        .then((res) => setRecords(res.data))
-        .catch((err) => alert(err));
+    const fetchdata = async () => {
+      try {
+        const response = await fetch(`${URL}food`);
+        if (response.ok) {
+          const result = await response.json();
+          setRecords(result);
+        } else {
+          alert("Failed to fetch food data");
+        }
+      } catch (err) {
+        alert(err);
+      }
     };
     fetchdata();
   }, []);
@@ -133,9 +140,15 @@ function Food() {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure to delete Food?")) {
       try {
-        await axios.delete(`${URL}food/${id}`);
-        setRecords(records.filter((record) => record._id !== id));
-        alert("Food deleted successfully");
+        const response = await fetch(`${URL}food/${id}`, {
+          method: "DELETE",
+        });
+        if (response.ok) {
+          setRecords(records.filter((record) => record._id !== id));
+          alert("Food deleted successfully");
+        } else {
+          alert("Failed to delete Food.");
+        }
       } catch (err) {
         alert("Failed to delete Food.");
       }
@@ -146,20 +159,30 @@ function Food() {
   const handleToggleStatus = async (id) => {
     try {
       const food = records.find((record) => record._id === id);
-      await axios.patch(`${URL}food/${id}`, {
-        status: food.status === "active" ? "deactive" : "active",
+      const response = await fetch(`${URL}food/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          status: food.status === "active" ? "deactive" : "active",
+        }),
       });
-      setRecords(
-        records.map((record) =>
-          record._id === id
-            ? {
-                ...record,
-                status: record.status === "active" ? "deactive" : "active",
-              }
-            : record
-        )
-      );
-      alert("Food status Updated");
+      if (response.ok) {
+        setRecords(
+          records.map((record) =>
+            record._id === id
+              ? {
+                  ...record,
+                  status: record.status === "active" ? "deactive" : "active",
+                }
+              : record
+          )
+        );
+        alert("Food status Updated");
+      } else {
+        alert("Failed to update status");
+      }
     } catch (err) {
       alert("Failed to update status");
     }
@@ -169,20 +192,30 @@ function Food() {
   const handleToggleFlag = async (id) => {
     try {
       const food = records.find((record) => record._id === id);
-      await axios.patch(`${URL}food/flag/${id}`, {
-        flag: food.flag === "special" ? "none" : "special",
+      const response = await fetch(`${URL}food/flag/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          flag: food.flag === "special" ? "none" : "special",
+        }),
       });
-      setRecords(
-        records.map((record) =>
-          record._id === id
-            ? {
-                ...record,
-                flag: record.flag === "special" ? "none" : "special",
-              }
-            : record
-        )
-      );
-      alert("Food Flag Updated");
+      if (response.ok) {
+        setRecords(
+          records.map((record) =>
+            record._id === id
+              ? {
+                  ...record,
+                  flag: record.flag === "special" ? "none" : "special",
+                }
+              : record
+          )
+        );
+        alert("Food Flag Updated");
+      } else {
+        alert("Failed to update flag");
+      }
     } catch (err) {
       alert("Failed to update flag");
     }

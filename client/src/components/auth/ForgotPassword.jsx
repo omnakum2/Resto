@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+
 import { useNavigate } from "react-router-dom";
 
 const ForgotPassword = () => {
@@ -17,15 +17,25 @@ const ForgotPassword = () => {
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        `${URL}user/forgot-password`,
-        { email }
-      );
-      setMessage(response.data.message);
-      setError("");
-      setStep(2); // Move to OTP verification step
+      const response = await fetch(`${URL}user/forgot-password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+      const result = await response.json();
+      if (response.ok) {
+        setMessage(result.message);
+        setError("");
+        setStep(2); // Move to OTP verification step
+      } else {
+        setError(result.message || "Server error");
+        setMessage("");
+      }
     } catch (err) {
-      setError(err.response?.data?.message || "Server error");
+      console.error("Error in forgot-password:", err);
+      setError("Server error");
       setMessage("");
     }
   };
@@ -38,15 +48,25 @@ const ForgotPassword = () => {
     }
     setPasswordError("");
     try {
-      const response = await axios.post(
-        `${URL}user/change-password`,
-        { email, otp, newPassword }
-      );
-      alert(response.data.message);
-      setError("");
-      navigate("/login"); // Optionally, redirect to login or other page
+      const response = await fetch(`${URL}user/change-password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, otp, newPassword }),
+      });
+      const result = await response.json();
+      if (response.ok) {
+        alert(result.message);
+        setError("");
+        navigate("/login"); // Optionally, redirect to login or other page
+      } else {
+        setError(result.message || "Server error");
+        setMessage("");
+      }
     } catch (err) {
-      setError(err.response?.data?.message || "Server error");
+      console.error("Error in change-password:", err);
+      setError("Server error");
       setMessage("");
     }
   };

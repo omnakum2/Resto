@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+
 import html2pdf from "html2pdf.js";
 import * as XLSX from "xlsx"; // Ensure you have this dependency
 
@@ -18,19 +18,18 @@ function Reports() {
     setLoading(true);
     setError(null); // Clear previous errors
     try {
-      const responses = {
-        month: await axios.get(`${URL}report/monthlySales`),
-        year: await axios.get(`${URL}report/yearlySales`),
-        user: await axios.get(`${URL}report/userSales`),
-        mostSell: await axios.get(
-          `${URL}report/getMostSell`
-        ),
+      const endpoints = {
+        month: `${URL}report/monthlySales`,
+        year: `${URL}report/yearlySales`,
+        user: `${URL}report/userSales`,
+        mostSell: `${URL}report/getMostSell`,
       };
 
-      const response = responses[reportType];
+      const response = await fetch(endpoints[reportType]);
 
-      if (response.status === 200) {
-        setData(response.data);
+      if (response.ok) {
+        const result = await response.json();
+        setData(result);
       } else {
         alert("No data found");
       }

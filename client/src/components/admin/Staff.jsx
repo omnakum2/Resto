@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
-import axios from "axios";
+
 import { Link, useNavigate } from "react-router-dom";
 
 function Staff() {
@@ -74,22 +74,21 @@ function Staff() {
 
   // fetch all data
   useEffect(() => {
-    const fetchdata = async (res, req) => {
+    const fetchdata = async () => {
       try {
-        const response = await axios.get(
-          `${URL}user/staff`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setRecords(response.data);
-      } catch (err) {
-        console.log(err);
-        if (err.response.status === 403) {
+        const response = await fetch(`${URL}user/staff`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (response.ok) {
+          const result = await response.json();
+          setRecords(result);
+        } else if (response.status === 403) {
           navigate("/unAuthenticated");
         }
+      } catch (err) {
+        console.log(err);
       }
     };
     fetchdata();
@@ -110,13 +109,18 @@ function Staff() {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure to delete user?")) {
       try {
-        await axios.delete(`${URL}user/staff/${id}`, {
+        const response = await fetch(`${URL}user/staff/${id}`, {
+          method: "DELETE",
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        setRecords(records.filter((record) => record._id !== id));
-        alert("User deleted successfully");
+        if (response.ok) {
+          setRecords(records.filter((record) => record._id !== id));
+          alert("User deleted successfully");
+        } else {
+          alert("Failed to delete user.");
+        }
       } catch (err) {
         alert("Failed to delete user.");
       }
@@ -127,28 +131,31 @@ function Staff() {
   const handleToggleStatus = async (id) => {
     try {
       const user = records.find((record) => record._id === id);
-      await axios.patch(
-        `${URL}user/staff/${id}`,
-        {
-          status: user.status === "active" ? "deactive" : "active",
+      const response = await fetch(`${URL}user/staff/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setRecords(
-        records.map((record) =>
-          record._id === id
-            ? {
-                ...record,
-                status: record.status === "active" ? "deactive" : "active",
-              }
-            : record
-        )
-      );
-      alert("User status Updated");
+        body: JSON.stringify({
+          status: user.status === "active" ? "deactive" : "active",
+        }),
+      });
+      if (response.ok) {
+        setRecords(
+          records.map((record) =>
+            record._id === id
+              ? {
+                  ...record,
+                  status: record.status === "active" ? "deactive" : "active",
+                }
+              : record
+          )
+        );
+        alert("User status Updated");
+      } else {
+        alert("Failed to update status");
+      }
     } catch (err) {
       alert("Failed to update status");
     }

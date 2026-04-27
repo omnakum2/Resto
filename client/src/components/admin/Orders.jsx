@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
-import axios from "axios";
+
 import { Link, useNavigate } from "react-router-dom";
 
 function Orders() {
@@ -70,13 +70,15 @@ function Orders() {
 
   // fetch all data
   useEffect(() => {
-    const fetchdata = async (res, req) => {
+    const fetchdata = async () => {
       try {
-        // Fetch user orders
-        const userOrderResponse = await axios.get(
-          `${URL}order/allOrders`
-        );
-        setRecords(userOrderResponse.data);
+        const response = await fetch(`${URL}order/allOrders`);
+        if (response.ok) {
+          const result = await response.json();
+          setRecords(result);
+        } else {
+          alert("Failed to fetch orders");
+        }
       } catch (error) {
         alert("Error fetching data: " + error.message);
       }
@@ -98,9 +100,15 @@ function Orders() {
   const handleDelete = async(id) => {
     if (window.confirm("Are you sure to delete Order?")) {
       try {
-        await axios.delete(`${URL}order/${id}`);
-        setRecords(records.filter((record) => record._id !== id));
-        alert("Order deleted successfully");
+        const response = await fetch(`${URL}order/${id}`, {
+          method: "DELETE",
+        });
+        if (response.ok) {
+          setRecords(records.filter((record) => record._id !== id));
+          alert("Order deleted successfully");
+        } else {
+          alert("Failed to delete order.");
+        }
       } catch (err) {
         alert("Failed to delete category.");
       }

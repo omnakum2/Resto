@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+
 import { Link, useParams } from "react-router-dom";
 import html2pdf from 'html2pdf.js';
 
@@ -16,15 +16,17 @@ function ViewOrder() {
 
   // fetch all data
   useEffect(() => {
-    const fetchdata = async (res, req) => {
+    const fetchdata = async () => {
       try {
-        // Fetch full order
-        const response = await axios.get(
-          `${URL}order/viewOrder/${id}`
-        );
-        const { order, fullOrder } = response.data;
-        setData(order);
-        setRecords(fullOrder);
+        const response = await fetch(`${URL}order/viewOrder/${id}`);
+        if (response.ok) {
+          const result = await response.json();
+          const { order, fullOrder } = result;
+          setData(order);
+          setRecords(fullOrder);
+        } else {
+          alert("Failed to fetch order data");
+        }
       } catch (error) {
         alert("Error fetching data: " + error.message);
       }

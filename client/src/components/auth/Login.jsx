@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
+
 
 function Login() {
   const location = useLocation();
@@ -19,17 +19,19 @@ function Login() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post(
-        `${URL}user/login`,
-        {
+      const response = await fetch(`${URL}user/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
           email,
           password,
-        },
-        { withCredentials: false }
-      );
+        }),
+      });
 
-      if (response.status === 200) {
-        const { user, token } = response.data;
+      if (response.ok) {
+        const { user, token } = await response.json();
 
         if (user.role === "admin" && user.status === "active") {
           localStorage.setItem("user_id", user._id);
@@ -49,16 +51,15 @@ function Login() {
           navigate("/login");
           setError("you are not an active user");
         }
-      } else {
+      } else if (response.status === 404) {
         navigate("*"); // Redirect to 404 not found
+      } else {
+        const errorData = await response.json();
+        setError(errorData.msg || "Login failed");
       }
     } catch (error) {
-      if (error.response) {
-        setError(error.response.data.msg);
-      } else {
-        console.error("Error:", error);
-        setError("Something went wrong. Please try again.");
-      }
+      console.error("Error:", error);
+      setError("Something went wrong. Please try again.");
     }
   };
 

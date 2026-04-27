@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
-import axios from "axios";
+
 import { Link, useNavigate } from "react-router-dom";
 
 function Orders() {
@@ -88,13 +88,15 @@ function Orders() {
 
   // fetch all data
   useEffect(() => {
-    const fetchdata = async (res, req) => {
+    const fetchdata = async () => {
       try {
-        // Fetch user orders
-        const userOrderResponse = await axios.get(
-          `${URL}order/userOrder/${id}`
-        );
-        setRecords(userOrderResponse.data);
+        const response = await fetch(`${URL}order/userOrder/${id}`);
+        if (response.ok) {
+          const result = await response.json();
+          setRecords(result);
+        } else {
+          alert("Failed to fetch user orders");
+        }
       } catch (error) {
         alert("Error fetching data: " + error.message);
       }

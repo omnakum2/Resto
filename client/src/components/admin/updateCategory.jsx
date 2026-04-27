@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+
 import { Link, useParams } from "react-router-dom";
 
 const UpdateCategory = () => {
@@ -12,10 +12,13 @@ const UpdateCategory = () => {
   useEffect(() => {
     const fetchCategory = async () => {
       try {
-        const response = await axios.get(
-          `${URL}category/${id}`
-        );
-        setCategory(response.data);
+        const response = await fetch(`${URL}category/${id}`);
+        if (response.ok) {
+          const result = await response.json();
+          setCategory(result);
+        } else {
+          setError("Failed to fetch category data.");
+        }
       } catch (err) {
         setError("Failed to fetch category data.");
       }
@@ -32,27 +35,28 @@ const UpdateCategory = () => {
     let category_obj = Object.fromEntries(formData.entries());
 
     try {
-      const response = await axios.put(
-        `${URL}category/${id}`,
-        {
+      const response = await fetch(`${URL}category/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
           name: category_obj.name,
-        }
-      );
+        }),
+      });
 
-      if (response.status === 200) {
+      if (response.ok) {
         setSuccess("Category Updated successfully");
         setTimeout(() => {
           window.location.href = "/admin/category";
         }, 2000);
       } else {
-        alert(response.statusText);
+        const errorData = await response.json();
+        setError(errorData.msg || "Category update failed");
       }
     } catch (error) {
-      if (error.response) {
-        setError(error.response.data.msg);
-      } else {
-        setError("server error...");
-      }
+      console.error("Error updating category:", error);
+      setError("server error...");
     }
   };
 

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -32,24 +32,26 @@ function Register() {
     }
 
     try {
-      const response = await axios.post(
-        `${URL}user/register`,
-        formData
-      );
-      if (response.status === 200) {
+      const response = await fetch(`${URL}user/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
         setSuccess("Registration Successful");
         setTimeout(() => {
           window.location.href = "/login";
         }, 500);
       } else {
-        alert(response.statusText);
+        const errorData = await response.json();
+        setError(errorData.msg || "Registration failed");
       }
     } catch (error) {
-      if (error.response) {
-        setError(error.response.data.msg);
-      } else {
-        setError("Server error...");
-      }
+      console.error("Error:", error);
+      setError("Server error...");
     }
   };
 

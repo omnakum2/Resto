@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+
 import { Link, useParams } from "react-router-dom";
 
 const UpdateTable = () => {
@@ -14,12 +14,16 @@ const UpdateTable = () => {
   useEffect(() => {
     const fetchTable = async () => {
       try {
-        const response = await axios.get(`${URL}table/${id}`);
-        const { table_no, size, type } = response.data;
-        setTable_no(table_no);
-        setSize(size);
-        setType(type);
-        // console.log(type);
+        const response = await fetch(`${URL}table/${id}`);
+        if (response.ok) {
+          const result = await response.json();
+          const { table_no, size, type } = result;
+          setTable_no(table_no);
+          setSize(size);
+          setType(type);
+        } else {
+          setError("Failed to fetch table data.");
+        }
       } catch (err) {
         setError("Failed to fetch table data.");
       }
@@ -32,29 +36,30 @@ const UpdateTable = () => {
     setError("");
 
     try {
-      const response = await axios.put(
-        `${URL}table/${id}`,
-        {
+      const response = await fetch(`${URL}table/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
           table_no,
           size,
           type,
-        }
-      );
+        }),
+      });
 
-      if (response.status === 200) {
+      if (response.ok) {
         setSuccess("Table updated successfully");
         setTimeout(() => {
-          window.location.href = "/table";
+          window.location.href = "/admin/table";
         }, 2000);
       } else {
-        alert(response.statusText);
+        const errorData = await response.json();
+        setError(errorData.msg || "Table update failed");
       }
     } catch (error) {
-      if (error.response) {
-        setError(error.response.data.msg);
-      } else {
-        setError("Server error...");
-      }
+      console.error("Error updating table:", error);
+      setError("Server error...");
     }
   };
 

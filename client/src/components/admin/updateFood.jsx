@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+
 import { Link, useParams } from "react-router-dom";
 
 const UpdateFood = () => {
@@ -17,11 +17,18 @@ const UpdateFood = () => {
 
   // fetch all category data
   useEffect(() => {
-    const fetchdata = async (res, req) => {
-      await axios
-        .get(`${URL}category`)
-        .then((res) => setCategory(res.data))
-        .catch((err) => alert(err));
+    const fetchdata = async () => {
+      try {
+        const response = await fetch(`${URL}category`);
+        if (response.ok) {
+          const result = await response.json();
+          setCategory(result);
+        } else {
+          alert("Failed to fetch categories");
+        }
+      } catch (err) {
+        alert(err);
+      }
     };
     fetchdata();
   }, []);
@@ -30,16 +37,18 @@ const UpdateFood = () => {
   useEffect(() => {
     const fetchFood = async () => {
       try {
-        const response = await axios.get(
-          `${URL}food/${id}`
-        );
-        const { name, category_id, price, description, image } = response.data;
-        setName(name);
-        setSelectedCategory(category_id);
-        setPrice(price);
-        setDescription(description);
-        setImage(image);
-        // console.log(response.data);
+        const response = await fetch(`${URL}food/${id}`);
+        if (response.ok) {
+          const result = await response.json();
+          const { name, category_id, price, description, image } = result;
+          setName(name);
+          setSelectedCategory(category_id);
+          setPrice(price);
+          setDescription(description);
+          setImage(image);
+        } else {
+          setError("Failed to fetch food data.");
+        }
       } catch (err) {
         setError("Failed to fetch food data.");
       }
@@ -57,30 +66,23 @@ const UpdateFood = () => {
     let formData = new FormData(form);
 
     try {
-      const response = await axios.put(
-        `${URL}food/${id}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await fetch(`${URL}food/${id}`, {
+        method: "PUT",
+        body: formData,
+      });
 
-      if (response.status === 200) {
+      if (response.ok) {
         setSuccess("Food Updated successfully");
         setTimeout(() => {
           window.location.href = "/admin/food";
         }, 2000);
       } else {
-        alert(response.statusText);
+        const errorData = await response.json();
+        setError(errorData.msg || "Food update failed");
       }
     } catch (error) {
-      if (error.response) {
-        setError(error.response.data.msg);
-      } else {
-        setError("server error...");
-      }
+      console.error("Error updating food:", error);
+      setError("server error...");
     }
   };
 

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+
 
 const ResetPassword = () => {
   const [currentPassword, setCurrentPassword] = useState("");
@@ -23,27 +23,31 @@ const ResetPassword = () => {
     }
 
     try {
-      const response = await axios.post(
-        `${URL}user/reset-password`,
-
-        {
+      const response = await fetch(`${URL}user/reset-password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
           userId, // Pass userId here
           currentPassword,
           newPassword,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+        }),
+      });
 
-      setSuccess("Password reset successful!");
-      setCurrentPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
+      if (response.ok) {
+        setSuccess("Password reset successful!");
+        setCurrentPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+      } else {
+        const errorData = await response.json();
+        setError(errorData.msg || "Error resetting password");
+      }
     } catch (err) {
-      setError(err.response?.data?.msg || "Error resetting password");
+      console.error("Error in reset-password:", err);
+      setError("Error resetting password");
     }
   };
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+
 import { Link } from "react-router-dom";
 
 const AddFood = () => {
@@ -10,11 +10,18 @@ const AddFood = () => {
 
   // fetch all data
   useEffect(() => {
-    const fetchdata = async (res, req) => {
-      await axios
-        .get(`${URL}category`)
-        .then((res) => setCategory(res.data))
-        .catch((err) => alert(err));
+    const fetchdata = async () => {
+      try {
+        const response = await fetch(`${URL}category`);
+        if (response.ok) {
+          const result = await response.json();
+          setCategory(result);
+        } else {
+          alert("Failed to fetch categories");
+        }
+      } catch (err) {
+        alert(err);
+      }
     };
     fetchdata();
   }, []);
@@ -29,26 +36,23 @@ const AddFood = () => {
     let formData = new FormData(form);
 
     try {
-      const response = await axios.post(`${URL}food`, formData, {
-        headers: {
-            'Content-Type': 'multipart/form-data'
-          }
+      const response = await fetch(`${URL}food`, {
+        method: "POST",
+        body: formData,
       });
 
-      if (response.status === 200) {
+      if (response.ok) {
         setSuccess("Food added successfully");
         setTimeout(() => {
           window.location.href = "/admin/food";
         }, 2000);
       } else {
-        alert(response.statusText);
+        const errorData = await response.json();
+        setError(errorData.msg || "Food addition failed");
       }
     } catch (error) {
-      if (error.response) {
-        setError(error.response.data.msg);
-      } else {
-        setError("server error...");
-      }
+      console.error("Error adding food:", error);
+      setError("server error...");
     }
   };
 

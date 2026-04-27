@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+
 import { Link } from "react-router-dom";
 
 const AddTable = () => {
@@ -18,26 +18,30 @@ const AddTable = () => {
     let table_obj = Object.fromEntries(formData.entries());
 
     try {
-      const response = await axios.post(`${URL}table`, {
-        table_no: table_obj.table_no,
-        size: table_obj.size,
-        type: table_obj.type,
+      const response = await fetch(`${URL}table`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          table_no: table_obj.table_no,
+          size: table_obj.size,
+          type: table_obj.type,
+        }),
       });
 
-      if (response.status === 200) {
+      if (response.ok) {
         setSuccess("Table added successfully");
         setTimeout(() => {
-          window.location.href = "/table";
+          window.location.href = "/admin/table";
         }, 2000);
       } else {
-        alert(response.statusText);
+        const errorData = await response.json();
+        setError(errorData.msg || "Table addition failed");
       }
     } catch (error) {
-      if (error.response) {
-        setError(error.response.data.msg);
-      }else{
-        setError("server error...");
-      }
+      console.error("Error adding table:", error);
+      setError("server error...");
     }
   };
 

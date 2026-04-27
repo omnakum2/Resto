@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
@@ -12,10 +12,13 @@ function QRCode() {
   useEffect(() => {
     const fetchQRCode = async () => {
       try {
-        const response = await axios.get(`${URL}QRCode/`);
-        if (response.status === 200) setQRCode(response.data);
+        const response = await fetch(`${URL}QRCode/`);
+        if (response.ok) {
+          const result = await response.json();
+          setQRCode(result);
+        }
       } catch (error) {
-        setError(error.response.data.msg);
+        console.error("Error fetching QR Code:", error);
       }
     };
     fetchQRCode();
@@ -25,13 +28,19 @@ function QRCode() {
     setError("");
     setIsDownloading(true);
     try {
-      const response = await axios.post(`${URL}QRCode/`);
-      if (response.status === 200) {
-        alert(response.data.msg);
-        setQRCode(response.data);
+      const response = await fetch(`${URL}QRCode/`, {
+        method: "POST",
+      });
+      if (response.ok) {
+        const result = await response.json();
+        alert(result.msg);
+        setQRCode(result);
+      } else {
+        const errorData = await response.json();
+        setError(errorData.msg || "QR Code generation failed");
       }
     } catch (error) {
-      setError(error.response.data.msg);
+      setError("Error generating QR Code");
     } finally {
       setIsDownloading(false);
     }

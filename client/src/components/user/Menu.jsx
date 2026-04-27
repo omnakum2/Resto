@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+
 
 function Menu() {
   const [categories, setCategories] = useState([]);
@@ -12,14 +12,18 @@ function Menu() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.post(
-          `${URL}category/active`
-        );
-        setCategories(response.data);
-        if (response.data.length > 0 && !categories.find(cat => cat._id === activeTab)) {
-          setActiveTab(response.data[0]._id); // Set the first category as the default active tab
+        const response = await fetch(`${URL}category/active`, {
+          method: "POST",
+        });
+        if (response.ok) {
+          const result = await response.json();
+          setCategories(result);
+          if (result.length > 0 && !categories.find((cat) => cat._id === activeTab)) {
+            setActiveTab(result[0]._id);
+          }
+        } else {
+          alert("Failed to fetch categories.");
         }
-        // console.log(URL);
       } catch (error) {
         alert("Failed to fetch categories.");
       }
@@ -33,10 +37,15 @@ function Menu() {
     if (activeTab) {
       const fetchItems = async () => {
         try {
-          const response = await axios.post(
-            `${URL}food/${activeTab}`
-          );
-          setItems(response.data);
+          const response = await fetch(`${URL}food/${activeTab}`, {
+            method: "POST",
+          });
+          if (response.ok) {
+            const result = await response.json();
+            setItems(result);
+          } else {
+            alert("Failed to fetch items.");
+          }
         } catch (error) {
           alert("Failed to fetch items.");
         }
