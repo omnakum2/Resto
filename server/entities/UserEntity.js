@@ -26,11 +26,13 @@ module.exports = new EntitySchema({
     status: {
       type: "enum",
       enum: ["active", "deactive"],
+      enumName: "user_status_enum",
       default: "deactive",
     },
     role: {
       type: "enum",
       enum: ["staff", "admin"],
+      enumName: "user_role_enum",
       default: "staff",
     },
     otp: {

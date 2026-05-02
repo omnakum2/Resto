@@ -18,6 +18,7 @@ module.exports = new EntitySchema({
     status: {
       type: "enum",
       enum: ["active", "deactive"],
+      enumName: "category_status_enum",
       default: "active",
     },
     createdAt: {

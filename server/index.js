@@ -26,7 +26,7 @@ app.use(express.json());
 
 AppDataSource.initialize()
   .then(() => {
-    console.log("MySQL Database connected via TypeORM");
+    console.log("PostgreSQL Database connected via TypeORM");
     const PORT = process.env.PORT || 3001;
     app.listen(PORT, () => {
       console.log(`local server running on port ${PORT}`);
