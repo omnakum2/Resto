@@ -7,7 +7,7 @@ function Orders() {
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
   const [search, setSearch] = useState("");
-  const URL = process.env.REACT_APP_BASE_URL;
+  const URL = import.meta.env.VITE_API_BASE_URL;
   
   // table style
   const mystyle = {
@@ -34,7 +34,7 @@ function Orders() {
     },
     {
       name: "Table No.",
-      selector: (row) => row.table_id.table_no,
+      selector: (row) => row.table.table_no,
     },
     {
       name: "Status",
@@ -53,13 +53,13 @@ function Orders() {
         <div>
             <button
               className="adminbtn adminbtn-dark adminbtn-sm me-2"
-              onClick={() => handleView(row._id)}
+              onClick={() => handleView(row.id)}
             >
               <i className="bi bi-eye"></i>
             </button>
             <button
               className="adminbtn adminbtn-danger adminbtn-sm me-2"
-              onClick={() => handleDelete(row._id)}
+              onClick={() => handleDelete(row.id)}
             >
               <i className="bi bi-trash-fill"></i>
             </button>
@@ -104,7 +104,7 @@ function Orders() {
           method: "DELETE",
         });
         if (response.ok) {
-          setRecords(records.filter((record) => record._id !== id));
+          setRecords(records.filter((record) => record.id !== id));
           alert("Order deleted successfully");
         } else {
           alert("Failed to delete order.");

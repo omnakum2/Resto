@@ -24,7 +24,10 @@ const getFoods = async (req, res) => {
 const getFood = async (req, res) => {
   try {
     const { id } = req.params;
-    const food = await foodRepository.findOneBy({ id: parseInt(id) });
+    const food = await foodRepository.findOne({ 
+      where: { id: parseInt(id) },
+      relations: ["category"]
+    });
     if (!food) return res.status(404).json({ msg: "Food item not found" });
     res.status(200).json(food);
   } catch (error) {
@@ -64,11 +67,7 @@ const addFood = async (req, res) => {
     });
     await foodRepository.save(newFood);
 
-    // full image URL
-    if (newFood.image) {
-      newFood.image = `http://localhost:3001/${newFood.image}`;
-    }
-
+    // full image path handling is handled by frontend BASE_URL
     res.status(200).send(newFood);
   } catch (error) {
     console.error(error);
@@ -208,9 +207,12 @@ const toggleSpecial = async (req, res) => {
 const byCategory = async (req, res) => {
   try {
     const id = req.params.category_id;
-    const foodByCategory = await foodRepository.findBy({
-      category: { id: parseInt(id) },
-      status: "active",
+    const foodByCategory = await foodRepository.find({
+      where: {
+        category: { id: parseInt(id) },
+        status: "active",
+      },
+      relations: ["category"],
     });
     res.send(foodByCategory);
   } catch (error) {

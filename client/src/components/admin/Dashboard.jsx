@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 
 function Dashboard() {
   const [data, setData] = useState("");
-  const URL = process.env.REACT_APP_BASE_URL;
+  const URL = import.meta.env.VITE_API_BASE_URL;
 
   // fetch all data
   useEffect(() => {

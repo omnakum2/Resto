@@ -7,11 +7,11 @@ function ViewOrder() {
   const { id } = useParams();
   const [records, setRecords] = useState([]);
   const [data, setData] = useState({});
-  const URL = process.env.REACT_APP_BASE_URL;
+  const URL = import.meta.env.VITE_API_BASE_URL;
 
   // Calculate total price
   const totalPrice = records.reduce((total, item) => {
-    return total + item.food_id.price * item.quantity;
+    return total + item.food.price * item.quantity;
   }, 0);
 
   // fetch all data
@@ -106,16 +106,16 @@ function ViewOrder() {
                         {index + 1}
                       </td>
                       <td style={{ border: "1px solid #ccc", padding: "8px" }}>
-                        {item.food_id.name}
+                        {item.food.name}
                       </td>
                       <td style={{ border: "1px solid #ccc", padding: "8px" }}>
-                        ₹ {item.food_id.price.toFixed(2)}
+                        ₹ {item.food.price.toFixed(2)}
                       </td>
                       <td style={{ border: "1px solid #ccc", padding: "8px" }}>
                         {item.quantity}
                       </td>
                       <td style={{ border: "1px solid #ccc", padding: "8px" }}>
-                        ₹ {item.food_id.price * item.quantity}
+                        ₹ {item.food.price * item.quantity}
                       </td>
                     </tr>
                   ))}

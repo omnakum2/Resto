@@ -8,7 +8,7 @@ function Staff() {
   const [records, setRecords] = useState([]);
   const [search, setSearch] = useState("");
   const token = localStorage.getItem("user_token");
-  const URL = process.env.REACT_APP_BASE_URL;
+  const URL = import.meta.env.VITE_API_BASE_URL;
 
   // table style
   const mystyle = {
@@ -44,7 +44,7 @@ function Staff() {
       cell: (row) => (
         <button
           className={`adminbtn ${row.status === "active" ? "adminbtn-sm adminbtn-success" : "adminbtn-sm adminbtn-warning"}`}
-          onClick={() => handleToggleStatus(row._id)}
+          onClick={() => handleToggleStatus(row.id)}
         >
           {row.status}
         </button>
@@ -57,13 +57,13 @@ function Staff() {
         <div>
           <button
             className="adminbtn adminbtn-dark adminbtn-sm me-2"
-            onClick={() => handleView(row._id)}
+            onClick={() => handleView(row.id)}
           >
             <i className="bi bi-eye"></i>
           </button>
           <button
             className="adminbtn adminbtn-danger adminbtn-sm"
-            onClick={() => handleDelete(row._id)}
+            onClick={() => handleDelete(row.id)}
           >
             <i className="bi bi-trash-fill"></i>
           </button>
@@ -92,7 +92,7 @@ function Staff() {
       }
     };
     fetchdata();
-  },);
+  }, []);
 
   // Filter the records based on search input
   const filteredRecords = records.filter((record) => {
@@ -116,7 +116,7 @@ function Staff() {
           },
         });
         if (response.ok) {
-          setRecords(records.filter((record) => record._id !== id));
+          setRecords(records.filter((record) => record.id !== id));
           alert("User deleted successfully");
         } else {
           alert("Failed to delete user.");
@@ -130,7 +130,7 @@ function Staff() {
   // toggle user status
   const handleToggleStatus = async (id) => {
     try {
-      const user = records.find((record) => record._id === id);
+      const user = records.find((record) => record.id === id);
       const response = await fetch(`${URL}user/staff/${id}`, {
         method: "PATCH",
         headers: {
@@ -144,7 +144,7 @@ function Staff() {
       if (response.ok) {
         setRecords(
           records.map((record) =>
-            record._id === id
+            record.id === id
               ? {
                   ...record,
                   status: record.status === "active" ? "deactive" : "active",

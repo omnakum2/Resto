@@ -9,7 +9,7 @@ const UpdateTable = () => {
   const [type, setType] = useState("AC"); // Default value should be one of the select options
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const URL = process.env.REACT_APP_BASE_URL;
+  const URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     const fetchTable = async () => {

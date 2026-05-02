@@ -7,7 +7,7 @@ function Category() {
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
   const [search, setSearch] = useState("");
-  const URL = process.env.REACT_APP_BASE_URL;
+  const URL = import.meta.env.VITE_API_BASE_URL;
 
   // table style
   const mystyle = {
@@ -38,7 +38,7 @@ function Category() {
       cell: (row) => (
         <button
           className={`adminbtn ${row.status === "active" ? "adminbtn-sm adminbtn-success" : "adminbtn-sm adminbtn-warning"}`}
-          onClick={() => handleToggleStatus(row._id)}
+          onClick={() => handleToggleStatus(row.id)}
         >
           {row.status}
         </button>
@@ -51,13 +51,13 @@ function Category() {
         <div>
           <button
             className="adminbtn adminbtn-primary adminbtn-sm me-2"
-            onClick={() => handleEdit(row._id)}
+            onClick={() => handleEdit(row.id)}
           >
             <i className="bi bi-pencil-fill"></i>
           </button>
           <button
             className="adminbtn adminbtn-danger adminbtn-sm"
-            onClick={() => handleDelete(row._id)}
+            onClick={() => handleDelete(row.id)}
           >
             <i className="bi bi-trash-fill"></i>
           </button>
@@ -102,7 +102,7 @@ function Category() {
           method: "DELETE",
         });
         if (response.ok) {
-          setRecords(records.filter((record) => record._id !== id));
+          setRecords(records.filter((record) => record.id !== id));
           alert("Category deleted successfully");
         } else {
           alert("Failed to delete category.");
@@ -116,7 +116,7 @@ function Category() {
   // toggle category status
   const handleToggleStatus = async (id) => {
     try {
-      const category = records.find((record) => record._id === id);
+      const category = records.find((record) => record.id === id);
       const response = await fetch(`${URL}category/${id}`, {
         method: "PATCH",
         headers: {
@@ -130,7 +130,7 @@ function Category() {
       if (response.ok) {
         setRecords(
           records.map((record) =>
-            record._id === id
+            record.id === id
               ? {
                   ...record,
                   status: record.status === "active" ? "deactive" : "active",

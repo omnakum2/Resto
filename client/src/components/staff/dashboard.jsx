@@ -5,7 +5,7 @@ function Dashboard() {
   const [data, setData] = useState("");
   const [food, setFood] = useState([]);
   const id = localStorage.getItem("user_id");
-  const URL = process.env.REACT_APP_BASE_URL;
+  const URL = import.meta.env.VITE_API_BASE_URL;
 
   // get special food
   useEffect(() => {

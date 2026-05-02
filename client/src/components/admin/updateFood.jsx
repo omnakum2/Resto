@@ -12,8 +12,8 @@ const UpdateFood = () => {
   const [image, setImage] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const URL = process.env.REACT_APP_BASE_URL;
-  const URI = process.env.REACT_APP_BASE_URL_NEW;
+  const URL = import.meta.env.VITE_API_BASE_URL;
+  const URI = import.meta.env.VITE_IMAGE_BASE_URL;
 
   // fetch all category data
   useEffect(() => {
@@ -126,7 +126,7 @@ const UpdateFood = () => {
                     onChange={(e) => setSelectedCategory(e.target.value)}
                   >
                     {category.map((cat) => (
-                      <option key={cat._id} value={cat._id}>
+                      <option key={cat.id} value={cat.id}>
                         {cat.name}
                       </option>
                     ))}

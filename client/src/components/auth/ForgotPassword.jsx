@@ -12,7 +12,7 @@ const ForgotPassword = () => {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const URL = process.env.REACT_APP_BASE_URL;
+  const URL = import.meta.env.VITE_API_BASE_URL;
 
   const handleEmailSubmit = async (e) => {
     e.preventDefault();

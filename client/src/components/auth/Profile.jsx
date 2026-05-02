@@ -7,8 +7,8 @@ function Profile() {
   const [data, setData] = useState([]);
   const token = localStorage.getItem("user_token");
   const userType = localStorage.getItem("user_role");
-  const URL = process.env.REACT_APP_BASE_URL;
-  const URI = process.env.REACT_APP_BASE_URL_NEW;
+  const URL = import.meta.env.VITE_API_BASE_URL;
+  const URI = import.meta.env.VITE_IMAGE_BASE_URL;
 
   const handleError = (e) => {
     e.target.src = `${URI}profile/blank-profile.jpg`; // Fallback image URL
@@ -61,10 +61,10 @@ function Profile() {
                     />
                   </div>
                   <div className="mb-3">
-                    <strong>Name :</strong> {data?.user_id?.name}
+                    <strong>Name :</strong> {data?.user?.name}
                   </div>
                   <div className="mb-3">
-                    <strong>Email :</strong> {data?.user_id?.email}
+                    <strong>Email :</strong> {data?.user?.email}
                   </div>
                   <div className="mb-3">
                     <strong>Address :</strong> {data?.address}

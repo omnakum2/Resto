@@ -7,10 +7,10 @@ const ResetPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const URL = process.env.REACT_APP_BASE_URL;
+  const URL = import.meta.env.VITE_API_BASE_URL;
 
   const userId = localStorage.getItem("user_id");
-  const token = localStorage.getItem("user_role");
+  const token = localStorage.getItem("user_token");
 
   const handleResetPassword = async (e) => {
     e.preventDefault();

@@ -13,7 +13,7 @@ function EditOrder() {
   const [orderItems, setOrderItems] = useState([]);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const URL = process.env.REACT_APP_BASE_URL;
+  const URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,7 +40,7 @@ function EditOrder() {
 
   // Filter food items based on selected category
   const filteredFoodItems = foodItems.filter(
-    (item) => item.category_id._id === selectedCategory
+    (item) => item.category.id === selectedCategory
   );
 
   const handleAddItem = () => {
@@ -49,7 +49,7 @@ function EditOrder() {
       return;
     }
 
-    const food = foodItems.find((item) => item._id === selectedFood);
+    const food = foodItems.find((item) => item.id === selectedFood);
     if (!food) {
       setError("Selected food item is not valid.");
       return;
@@ -154,7 +154,7 @@ function EditOrder() {
                       >
                         <option value="">-Category-</option>
                         {categories.map((item) => (
-                          <option key={item._id} value={item._id}>
+                          <option key={item.id} value={item.id}>
                             {item.name}
                           </option>
                         ))}
@@ -174,7 +174,7 @@ function EditOrder() {
                         <option value="">-Foods-</option>
                         {filteredFoodItems.length > 0 ? (
                           filteredFoodItems.map((item) => (
-                            <option key={item._id} value={item._id}>
+                            <option key={item.id} value={item.id}>
                               {item.name}
                             </option>
                           ))

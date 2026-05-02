@@ -7,8 +7,8 @@ function Food() {
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
   const [search, setSearch] = useState("");
-  const URL = process.env.REACT_APP_BASE_URL;
-  const URI = process.env.REACT_APP_BASE_URL_NEW;
+  const URL = import.meta.env.VITE_API_BASE_URL;
+  const URI = import.meta.env.VITE_IMAGE_BASE_URL;
 
   // table style
   const mystyle = {
@@ -56,7 +56,7 @@ function Food() {
     },
     {
       name: "Category",
-      selector: (row) => row.category_id.name,
+      selector: (row) => row.category.name,
       sortable: true,
     },
     {
@@ -64,7 +64,7 @@ function Food() {
       cell: (row) => (
         <button
           className={`adminbtn ${row.status === "active" ? "adminbtn-sm adminbtn-success" : "adminbtn-sm adminbtn-warning"}`}
-          onClick={() => handleToggleStatus(row._id)}
+          onClick={() => handleToggleStatus(row.id)}
         >
           {row.status}
         </button>
@@ -76,7 +76,7 @@ function Food() {
       cell: (row) => (
         <button
           className={`adminbtn ${row.flag === "special" ? "adminbtn-sm adminbtn-success" : "adminbtn-sm adminbtn-warning"}`}
-          onClick={() => handleToggleFlag(row._id)}
+          onClick={() => handleToggleFlag(row.id)}
         >
           {row.flag}
         </button>
@@ -89,13 +89,13 @@ function Food() {
         <div>
           <button
             className="adminbtn adminbtn-primary adminbtn-sm me-2"
-            onClick={() => handleEdit(row._id)}
+            onClick={() => handleEdit(row.id)}
           >
             <i className="bi bi-pencil-fill"></i>
           </button>
           <button
             className="adminbtn adminbtn-danger adminbtn-sm"
-            onClick={() => handleDelete(row._id)}
+            onClick={() => handleDelete(row.id)}
           >
             <i className="bi bi-trash-fill"></i>
           </button>
@@ -127,7 +127,7 @@ function Food() {
     return (
       record.name.toLowerCase().includes(search.toLowerCase()) ||
       record.description.toLowerCase().includes(search.toLowerCase()) ||
-      record.category_id.name.toLowerCase().includes(search.toLowerCase())
+      record.category.name.toLowerCase().includes(search.toLowerCase())
     );
   });
 
@@ -144,7 +144,7 @@ function Food() {
           method: "DELETE",
         });
         if (response.ok) {
-          setRecords(records.filter((record) => record._id !== id));
+          setRecords(records.filter((record) => record.id !== id));
           alert("Food deleted successfully");
         } else {
           alert("Failed to delete Food.");
@@ -158,7 +158,7 @@ function Food() {
   // toggle food status
   const handleToggleStatus = async (id) => {
     try {
-      const food = records.find((record) => record._id === id);
+      const food = records.find((record) => record.id === id);
       const response = await fetch(`${URL}food/${id}`, {
         method: "PATCH",
         headers: {
@@ -171,7 +171,7 @@ function Food() {
       if (response.ok) {
         setRecords(
           records.map((record) =>
-            record._id === id
+            record.id === id
               ? {
                   ...record,
                   status: record.status === "active" ? "deactive" : "active",
@@ -191,7 +191,7 @@ function Food() {
   // toggle food status
   const handleToggleFlag = async (id) => {
     try {
-      const food = records.find((record) => record._id === id);
+      const food = records.find((record) => record.id === id);
       const response = await fetch(`${URL}food/flag/${id}`, {
         method: "PATCH",
         headers: {
@@ -204,7 +204,7 @@ function Food() {
       if (response.ok) {
         setRecords(
           records.map((record) =>
-            record._id === id
+            record.id === id
               ? {
                   ...record,
                   flag: record.flag === "special" ? "none" : "special",

@@ -7,7 +7,7 @@ function QRCode() {
   const [qrcode, setQRCode] = useState("");
   const [error, setError] = useState("");
   const [isDownloading, setIsDownloading] = useState(false);
-  const URL = process.env.REACT_APP_BASE_URL;
+  const URL = import.meta.env.VITE_API_BASE_URL;
   
   useEffect(() => {
     const fetchQRCode = async () => {

@@ -6,7 +6,7 @@ const AddFood = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [category, setCategory] = useState([]);
-  const URL = process.env.REACT_APP_BASE_URL;
+  const URL = import.meta.env.VITE_API_BASE_URL;
 
   // fetch all data
   useEffect(() => {
@@ -88,7 +88,7 @@ const AddFood = () => {
                   <label className="form-label mt-3">Food Category</label>
                   <select name="category_id" id="" className="form-select">
                     {category.map((cat) => (
-                      <option key={cat._id} value={cat._id}>{cat.name}</option>
+                      <option key={cat.id} value={cat.id}>{cat.name}</option>
                     ))}
                   </select>
                 </div>

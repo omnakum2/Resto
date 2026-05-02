@@ -10,6 +10,8 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
+const isLocal = process.env.NODE_ENV === "local";
+
 const AppDataSource = new DataSource({
   type: "mysql",
   host: process.env.MYSQL_HOST || "localhost",
@@ -17,7 +19,7 @@ const AppDataSource = new DataSource({
   username: process.env.MYSQL_USER || "root",
   password: process.env.MYSQL_PASSWORD || "",
   database: process.env.MYSQL_DATABASE || "resto_db",
-  synchronize: true, // Auto-create tables (use only in dev)
+  synchronize: isLocal, // Auto-create tables (use only in dev)
   logging: false,
   entities: [
     UserEntity,

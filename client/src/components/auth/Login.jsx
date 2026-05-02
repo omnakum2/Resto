@@ -8,7 +8,7 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const URL = process.env.REACT_APP_BASE_URL;
+  const URL = import.meta.env.VITE_API_BASE_URL;
 
   // Get the message from the state (if available)
   const message = location.state?.message || "";
@@ -34,14 +34,14 @@ function Login() {
         const { user, token } = await response.json();
 
         if (user.role === "admin" && user.status === "active") {
-          localStorage.setItem("user_id", user._id);
+          localStorage.setItem("user_id", user.id);
           localStorage.setItem("user_name", user.name);
           localStorage.setItem("user_role", user.role);
           localStorage.setItem("user_token", token);
           localStorage.setItem("isAuthenticated", true);
           navigate("/admin");
         } else if (user.role === "staff" && user.status === "active") {
-          localStorage.setItem("user_id", user._id);
+          localStorage.setItem("user_id", user.id);
           localStorage.setItem("user_name", user.name);
           localStorage.setItem("user_role", user.role);
           localStorage.setItem("user_token", token);

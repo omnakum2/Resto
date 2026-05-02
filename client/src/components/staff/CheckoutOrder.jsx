@@ -9,11 +9,11 @@ function CheckoutOrder() {
   const [order_no, setOrder_no] = useState("");
   const [customer_mob, setCustomer_mob] = useState("");
   const [data, setData] = useState({});
-  const URL = process.env.REACT_APP_BASE_URL;
+  const URL = import.meta.env.VITE_API_BASE_URL;
 
   // Calculate total price
   const totalPrice = records.reduce((total, item) => {
-    return total + item.food_id.price * item.quantity;
+    return total + item.food.price * item.quantity;
   }, 0);
 
   // checkoutOrder
@@ -54,7 +54,7 @@ function CheckoutOrder() {
           const { order, fullOrder } = result;
           setData(order);
           setRecords(fullOrder);
-          setOrder_no(order._id);
+          setOrder_no(order.id);
         } else {
           alert("Failed to fetch order data");
         }
@@ -142,16 +142,16 @@ function CheckoutOrder() {
                         {index + 1}
                       </td>
                       <td style={{ border: "1px solid #ccc", padding: "8px" }}>
-                        {item.food_id.name}
+                        {item.food.name}
                       </td>
                       <td style={{ border: "1px solid #ccc", padding: "8px" }}>
-                        ₹ {item.food_id.price.toFixed(2)}
+                        ₹ {item.food.price.toFixed(2)}
                       </td>
                       <td style={{ border: "1px solid #ccc", padding: "8px" }}>
                         {item.quantity}
                       </td>
                       <td style={{ border: "1px solid #ccc", padding: "8px" }}>
-                        ₹ {item.food_id.price * item.quantity}
+                        ₹ {item.food.price * item.quantity}
                       </td>
                     </tr>
                   ))}

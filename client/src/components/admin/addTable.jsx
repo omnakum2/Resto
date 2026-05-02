@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const AddTable = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const URL = process.env.REACT_APP_BASE_URL;
+  const URL = import.meta.env.VITE_API_BASE_URL;
 
   const handleForm = async (e) => {
     e.preventDefault();

@@ -11,7 +11,7 @@ function Reports() {
   const [isDownloading, setIsDownloading] = useState(false); // Added for download state
   const [error, setError] = useState(null); // Added for error handling
   const year = new Date().getFullYear();
-  const URL = process.env.REACT_APP_BASE_URL;
+  const URL = import.meta.env.VITE_API_BASE_URL;
 
   // Fetch data based on the selected report type
   const fetchData = async () => {

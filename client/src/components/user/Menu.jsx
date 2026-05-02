@@ -5,8 +5,8 @@ function Menu() {
   const [categories, setCategories] = useState([]);
   const [items, setItems] = useState([]);
   const [activeTab, setActiveTab] = useState("");
-  const URL = process.env.REACT_APP_BASE_URL;
-  const URI = process.env.REACT_APP_BASE_URL_NEW;
+  const URL = import.meta.env.VITE_API_BASE_URL;
+  const URI = import.meta.env.VITE_IMAGE_BASE_URL;
 
   // Fetch categories on component mount
   useEffect(() => {
@@ -18,8 +18,9 @@ function Menu() {
         if (response.ok) {
           const result = await response.json();
           setCategories(result);
-          if (result.length > 0 && !categories.find((cat) => cat._id === activeTab)) {
-            setActiveTab(result[0]._id);
+          // Set active tab to the first category if not already set
+          if (result.length > 0 && !activeTab) {
+            setActiveTab(result[0].id);
           }
         } else {
           alert("Failed to fetch categories.");
@@ -30,7 +31,7 @@ function Menu() {
     };
 
     fetchCategories();
-  });
+  }, []);
 
   // Fetch items for the active category
   useEffect(() => {
@@ -92,12 +93,13 @@ function Menu() {
           >
             <ul className="nav nav-pills d-inline-flex justify-content-center mb-5">
               {categories.map((category) => (
-                <li className="nav-item" key={category._id}>
+                <li className="nav-item" key={category.id}>
                   <a
-                    className={`d-flex align-items-center text-start mx-3 ms-0 pb-3 ${activeTab === category._id ? "active" : ""}`}
+                    className={`d-flex align-items-center text-start mx-3 ms-0 pb-3 ${parseInt(activeTab) === category.id ? "active" : ""}`}
                     data-bs-toggle="pill"
-                    href={`#tab-${category._id}`}
-                    onClick={() => setActiveTab(category._id)}
+                    href={`#tab-${category.id}`}
+                    onClick={() => setActiveTab(category.id)}
+                    style={{ cursor: "pointer" }}
                   >
                     <div className="ps-3">
                       <h6 className="mt-n1 mb-0">{category.name}</h6>
@@ -109,19 +111,19 @@ function Menu() {
             <div className="tab-content">
               {categories.map((category) => (
                 <div
-                  key={category._id}
-                  id={`tab-${category._id}`}
-                  className={`tab-pane fade show ${activeTab === category._id ? "active" : ""}`}
+                  key={category.id}
+                  id={`tab-${category.id}`}
+                  className={`tab-pane fade show ${parseInt(activeTab) === category.id ? "active" : ""}`}
                 >
                   <div className="row g-4">
                     {items.map(
                       (item) =>
-                        item.category_id === category._id && ( // Display items only if they match the active category
-                          <div key={item._id} className="col-lg-6">
+                        (item.category?.id === category.id || item.category_id === category.id) && ( // Support both relation and raw ID
+                          <div key={item.id} className="col-lg-6">
                             <div className="d-flex align-items-center">
                               <img
                                 className="flex-shrink-0 img-fluid rounded"
-                                src={`${URI}${item.image}`} // Use actual image URL
+                                src={`${URI}${item.image}`}
                                 alt={item.name}
                                 style={{ width: "80px" }}
                               />

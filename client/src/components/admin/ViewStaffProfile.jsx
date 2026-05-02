@@ -7,8 +7,8 @@ function StaffProfile() {
   const { navigate } = useNavigate();
   const [data, setData] = useState([]);
   const token = localStorage.getItem("user_token");
-  const URL = process.env.REACT_APP_BASE_URL;
-  const URI = process.env.REACT_APP_BASE_URL_NEW;
+  const URL = import.meta.env.VITE_API_BASE_URL;
+  const URI = import.meta.env.VITE_IMAGE_BASE_URL;
 
   const handleError = (e) => {
     e.target.src = `${URI}profile/blank-profile.jpg`; // Fallback image URL
@@ -56,7 +56,7 @@ function StaffProfile() {
                 <div className="card-body">
                   <div className="text-center m-5">
                     <img
-                      src={`http://localhost:3001/uploads/profile/${data?.image}`}
+                      src={`${URI}profile/${data?.image}`}
                       alt="Profile"
                       className="img-fluid rounded-circle"
                       style={{ width: "150px", height: "150px" }}
@@ -64,10 +64,10 @@ function StaffProfile() {
                     />
                   </div>
                   <div className="mb-3">
-                    <strong>Name :</strong> {data?.user_id?.name}
+                    <strong>Name :</strong> {data?.user?.name}
                   </div>
                   <div className="mb-3">
-                    <strong>Email :</strong> {data?.user_id?.email}
+                    <strong>Email :</strong> {data?.user?.email}
                   </div>
                   <div className="mb-3">
                     <strong>Address :</strong> {data?.address}

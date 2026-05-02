@@ -7,7 +7,7 @@ const UpdateCategory = () => {
   const [category, setCategory] = useState({ name: "" });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const URL = process.env.REACT_APP_BASE_URL;
+  const URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     const fetchCategory = async () => {

@@ -14,8 +14,8 @@ const EditProfile = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const userType = localStorage.getItem("user_role");
-  const URL = process.env.REACT_APP_BASE_URL;
-  const URI = process.env.REACT_APP_BASE_URL_NEW;
+  const URL = import.meta.env.VITE_API_BASE_URL;
+  const URI = import.meta.env.VITE_IMAGE_BASE_URL;
 
   const handleError = (e) => {
     e.target.src = `${URI}profile/blank-profile.jpg`; // Fallback image URL
@@ -32,7 +32,7 @@ const EditProfile = () => {
         if (response.ok) {
           const result = await response.json();
           const { address, mobile, gender, image } = result;
-          const { name, email } = result.user_id;
+          const { name, email } = result.user;
           setName(name);
           setEmail(email);
           setMobile(mobile);
