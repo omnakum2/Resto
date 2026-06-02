@@ -16,19 +16,9 @@ module.exports = new EntitySchema({
       nullable: false,
     },
     status: {
-      type: "enum",
-      enum: ["active", "deactive"],
-      enumName: "category_status_enum",
+      type: "varchar",
       default: "active",
-    },
-    createdAt: {
-      type: "timestamp",
-      createDate: true,
-    },
-    updatedAt: {
-      type: "timestamp",
-      updateDate: true,
-    },
+    }
   },
   relations: {
     foods: {

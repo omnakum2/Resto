@@ -35,15 +35,7 @@ module.exports = new EntitySchema({
     image: {
       type: "varchar",
       nullable: true,
-    },
-    createdAt: {
-      type: "timestamp",
-      createDate: true,
-    },
-    updatedAt: {
-      type: "timestamp",
-      updateDate: true,
-    },
+    }
   },
   relations: {
     category: {

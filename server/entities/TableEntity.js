@@ -26,15 +26,7 @@ module.exports = new EntitySchema({
     type: {
       type: "varchar",
       nullable: true,
-    },
-    createdAt: {
-      type: "timestamp",
-      createDate: true,
-    },
-    updatedAt: {
-      type: "timestamp",
-      updateDate: true,
-    },
+    }
   },
   relations: {
     orders: {

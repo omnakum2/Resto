@@ -15,11 +15,11 @@ module.exports = new EntitySchema({
       default: 1,
     },
     createdAt: {
-      type: "timestamp",
+      type: "datetime",
       createDate: true,
     },
     updatedAt: {
-      type: "timestamp",
+      type: "datetime",
       updateDate: true,
     },
   },

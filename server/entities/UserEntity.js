@@ -24,15 +24,11 @@ module.exports = new EntitySchema({
       nullable: false,
     },
     status: {
-      type: "enum",
-      enum: ["active", "deactive"],
-      enumName: "user_status_enum",
+      type: "varchar",
       default: "deactive",
     },
     role: {
-      type: "enum",
-      enum: ["staff", "admin"],
-      enumName: "user_role_enum",
+      type: "varchar",
       default: "staff",
     },
     otp: {
@@ -47,14 +43,6 @@ module.exports = new EntitySchema({
         to: (value) => (value instanceof Date ? value.getTime() : value),
         from: (value) => (value ? new Date(parseInt(value)) : null),
       },
-    },
-    createdAt: {
-      type: "timestamp",
-      createDate: true,
-    },
-    updatedAt: {
-      type: "timestamp",
-      updateDate: true,
-    },
+    }
   },
 });

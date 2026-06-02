@@ -25,15 +25,7 @@ module.exports = new EntitySchema({
     gender: {
       type: "varchar",
       nullable: true,
-    },
-    createdAt: {
-      type: "timestamp",
-      createDate: true,
-    },
-    updatedAt: {
-      type: "timestamp",
-      updateDate: true,
-    },
+    }
   },
   relations: {
     user: {

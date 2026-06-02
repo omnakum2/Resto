@@ -14,19 +14,21 @@ const dashboardRoute = require("./routes/dashboardRoutes");
 const reportRoute = require("./routes/reportRoutes");
 const profileRoute = require("./routes/profileRoutes");
 const qrcodeRoute = require("./routes/qrcodeRoutes");
+const { seedDemoData } = require("./common/seedDemoData");
 
 const app = express();
 app.use(
   cors({
-    origin: "*",
-    credentials: false,
+    origin: process.env.FRONTEND_URL,
   })
 );
 app.use(express.json());
 
 AppDataSource.initialize()
-  .then(() => {
-    console.log("PostgreSQL Database connected via TypeORM");
+  .then(async () => {
+    console.log("SQLite Database connected via TypeORM");
+    await seedDemoData();
+
     const PORT = process.env.PORT || 3001;
     app.listen(PORT, () => {
       console.log(`local server running on port ${PORT}`);
