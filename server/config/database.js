@@ -10,12 +10,10 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
-const isLocal = process.env.NODE_ENV === "local";
-
 const AppDataSource = new DataSource({
   type: process.env.DB_TYPE,
   database: process.env.DB_NAME,
-  synchronize: isLocal, // Auto-create tables (use only in dev)
+  synchronize: true,
   entities: [
     UserEntity,
     CategoryEntity,
