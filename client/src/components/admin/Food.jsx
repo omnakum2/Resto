@@ -3,7 +3,7 @@ import DataTable from "react-data-table-component";
 
 import { Link, useNavigate } from "react-router-dom";
 
-function Food() {
+function Food({ role }) {
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
   const [search, setSearch] = useState("");
@@ -59,49 +59,53 @@ function Food() {
       selector: (row) => row.category.name,
       sortable: true,
     },
-    {
-      name: "Status",
-      cell: (row) => (
-        <button
-          className={`adminbtn ${row.status === "active" ? "adminbtn-sm adminbtn-success" : "adminbtn-sm adminbtn-warning"}`}
-          onClick={() => handleToggleStatus(row.id)}
-        >
-          {row.status}
-        </button>
-      ),
-      sortable: true,
-    },
-    {
-      name: "Featured",
-      cell: (row) => (
-        <button
-          className={`adminbtn ${row.flag === "special" ? "adminbtn-sm adminbtn-success" : "adminbtn-sm adminbtn-warning"}`}
-          onClick={() => handleToggleFlag(row.id)}
-        >
-          {row.flag}
-        </button>
-      ),
-      sortable: true,
-    },
-    {
-      name: "Action",
-      cell: (row) => (
-        <div>
-          <button
-            className="adminbtn adminbtn-primary adminbtn-sm me-2"
-            onClick={() => handleEdit(row.id)}
-          >
-            <i className="bi bi-pencil-fill"></i>
-          </button>
-          <button
-            className="adminbtn adminbtn-danger adminbtn-sm"
-            onClick={() => handleDelete(row.id)}
-          >
-            <i className="bi bi-trash-fill"></i>
-          </button>
-        </div>
-      ),
-    },
+    ...(role === "admin"
+      ? [
+        {
+          name: "Status",
+          cell: (row) => (
+            <button
+              className={`adminbtn ${row.status === "active" ? "adminbtn-sm adminbtn-success" : "adminbtn-sm adminbtn-warning"}`}
+              onClick={() => handleToggleStatus(row.id)}
+            >
+              {row.status}
+            </button>
+          ),
+          sortable: true,
+        },
+        {
+          name: "Featured",
+          cell: (row) => (
+            <button
+              className={`adminbtn ${row.flag === "special" ? "adminbtn-sm adminbtn-success" : "adminbtn-sm adminbtn-warning"}`}
+              onClick={() => handleToggleFlag(row.id)}
+            >
+              {row.flag}
+            </button>
+          ),
+          sortable: true,
+        },
+        {
+          name: "Action",
+          cell: (row) => (
+            <div>
+              <button
+                className="adminbtn adminbtn-primary adminbtn-sm me-2"
+                onClick={() => handleEdit(row.id)}
+              >
+                <i className="bi bi-pencil-fill"></i>
+              </button>
+              <button
+                className="adminbtn adminbtn-danger adminbtn-sm"
+                onClick={() => handleDelete(row.id)}
+              >
+                <i className="bi bi-trash-fill"></i>
+              </button>
+            </div>
+          ),
+        },
+      ]
+      : []),
   ];
 
   // fetch all data
@@ -173,9 +177,9 @@ function Food() {
           records.map((record) =>
             record.id === id
               ? {
-                  ...record,
-                  status: record.status === "active" ? "deactive" : "active",
-                }
+                ...record,
+                status: record.status === "active" ? "deactive" : "active",
+              }
               : record
           )
         );
@@ -206,9 +210,9 @@ function Food() {
           records.map((record) =>
             record.id === id
               ? {
-                  ...record,
-                  flag: record.flag === "special" ? "none" : "special",
-                }
+                ...record,
+                flag: record.flag === "special" ? "none" : "special",
+              }
               : record
           )
         );
@@ -227,12 +231,14 @@ function Food() {
         <div className="container">
           <div className="pagetitle">
             Food Items
-            <Link
-              className="adminbtn text-decoration-none adminbtn-dark adminbtn-sm float-end"
-              to="/admin/food-add"
-            >
-              <span>Add</span>
-            </Link>
+            {role === "admin" && (
+              <Link
+                className="adminbtn text-decoration-none adminbtn-dark adminbtn-sm float-end"
+                to="/admin/food-add"
+              >
+                <span>Add</span>
+              </Link>
+            )}
           </div>
           <hr />
 

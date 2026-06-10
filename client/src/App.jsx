@@ -7,7 +7,6 @@ import AuthLayout from "./components/AuthLayout";
 // user components
 import Home from "./components/user/Home";
 import About from "./components/user/About";
-import Contact from "./components/user/Contact";
 import Menu from "./components/user/Menu";
 
 // admin components
@@ -21,9 +20,9 @@ import UpdateTable from "./components/admin/updateTable";
 import Food from "./components/admin/Food";
 import AddFood from "./components/admin/addFood";
 import UpdateFood from "./components/admin/updateFood";
-import AdminOrders from "./components/admin/Orders";
 import Reports from "./components/admin/Reports";
 import Staff from "./components/admin/Staff";
+import AddStaff from "./components/admin/addStaff";
 import ViewStaffProfile from "./components/admin/ViewStaffProfile";
 import AdminSetting from "./components/admin/Setting";
 import QRCode from "./components/admin/QRCode";
@@ -38,11 +37,9 @@ import CheckoutOrder from "./components/staff/CheckoutOrder";
 import Setting from "./components/staff/Setting";
 
 // auth components
-import Register from "./components/auth/Register";
 import Login from "./components/auth/Login";
 import Profile from "./components/auth/Profile";
 import EditProfile from "./components/auth/EditProfile";
-import ForgotPassword from "./components/auth/ForgotPassword";
 
 // other components
 import NotFound from "./components/NotFound";
@@ -60,7 +57,6 @@ function App() {
             <Route index element={<Home />} />
             <Route path="/menu" element={<Menu />} />
             <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
           </Route>
 
           {/* admin routes */}
@@ -77,12 +73,12 @@ function App() {
             <Route path="table" element={<Table />} />
             <Route path="table-add" element={<AddTable />} />
             <Route path="table-edit/:id" element={<UpdateTable />} />
-            <Route path="food" element={<Food />} />
+            <Route path="food" element={<Food role="admin" />} />
             <Route path="food-add" element={<AddFood />} />
             <Route path="food-edit/:id" element={<UpdateFood />} />
-            <Route path="orders" element={<AdminOrders />} />
             <Route path="reports" element={<Reports />} />
             <Route path="staff" element={<Staff />} />
+            <Route path="staff-add" element={<AddStaff />} />
             <Route path="staff-profile/:id" element={<ViewStaffProfile />} />
             <Route path="settings" element={<AdminSetting />} />
             <Route path="profile" element={<Profile />} />
@@ -101,6 +97,7 @@ function App() {
             }
           >
             <Route index element={<StaffDashboard />} />
+            <Route path="menu" element={<Food />} />
             <Route path="new-order" element={<NewOrder />} />
             <Route path="orders" element={<Orders />} />
             <Route path="view-order/:id" element={<ViewOrder />} />
@@ -114,8 +111,6 @@ function App() {
           {/* auth routes */}
           <Route path="/auth" element={<AuthLayout />}>
             <Route index element={<Login />} />
-            <Route path="register" element={<Register />} />
-            <Route path="forgot-password" element={<ForgotPassword />} />
           </Route>
 
           {/* error handle routes */}

@@ -29,9 +29,6 @@ function Header() {
               <a href="/about" className="nav-item nav-link">
                 About
               </a>
-              <a href="/contact" className="nav-item nav-link">
-                Contact
-              </a>
             </div>
           </div>
         </nav>

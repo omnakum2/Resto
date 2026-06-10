@@ -48,7 +48,7 @@ function Login() {
           localStorage.setItem("isAuthenticated", true);
           navigate("/staff");
         } else {
-          navigate("/login");
+          navigate("/auth");
           setError("you are not an active user");
         }
       } else if (response.status === 404) {
@@ -65,64 +65,65 @@ function Login() {
 
   return (
     <>
-      <div className="card-title">
-        <div className="text-center mt-4">
-          <h2 className="text-center mb-4">
-            <i className="fa fa-utensils text-primary"></i>&nbsp; Welcome Back!
-          </h2>
-        </div>
-      </div>
-      <div className="card-body">
-        {error && <div className="alert alert-danger">{error}</div>}
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label htmlFor="email" className="form-label">
-              Email
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              className="form-control"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              autoComplete="off"
-              autoFocus
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="password" className="form-label">
-              Password
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              className="form-control"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoComplete="off"
-            />
-          </div>
-          <button type="submit" className="btn btn-primary w-100">
-            Login
-          </button>
-        </form>
-        <div className="row mt-3">
-          <div className="col-md-6">
-            <Link to="/auth/register" className="text-decoration-none link-primary">
-              New User!
-            </Link>
-          </div>
-          <div className="col-md-6">
-            <p className="text-end">
-              <Link
-                to="/auth/forgot-password"
-                className="text-decoration-none link-primary"
-              >
-                Forgot Password
-              </Link>
-            </p>
+      <div className="container">
+        <div className="row justify-content-center">
+          <div className="card col-sm-8 col-md-6 col-lg-4">
+            <div className="card-body p-2">
+            <div className="mt-3">
+              <div className="text-center mb-4">
+                <i
+                  className="fa fa-utensils"
+                  style={{ fontSize: "40px", color: "#ff9800" }}
+                ></i>
+
+                <h3 className="mt-3 fw-bold text-primary">FoodCourt</h3>
+
+                <p className="text-muted">
+                  Please sign in to your account
+                </p>
+              </div>
+            </div>
+              {error && <div className="alert alert-danger">{error}</div>}
+              <form onSubmit={handleSubmit}>
+                <div className="mb-3">
+                  <label htmlFor="email" className="form-label">
+                    Email
+                  </label>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    className="form-control"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    autoComplete="off"
+                    autoFocus
+                  />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="password" className="form-label">
+                    Password
+                  </label>
+                  <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    className="form-control"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    autoComplete="off"
+                  />
+                </div>
+                <button type="submit" className="btn btn-primary w-100 mt-2">
+                  Login
+                </button>
+              </form>
+              <div className="mt-2 mb-2 text-center">
+                <Link to="/" className="text-decoration-none link-primary">
+                  Go to Home Page
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </div>

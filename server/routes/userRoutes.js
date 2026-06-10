@@ -9,17 +9,13 @@ const {
   login,
   getAllStaff,
   toggleStatus,
-  resetPassword,
-  forgotPassword,
-  changePassword,
+  resetPassword
 } = require("../controllers/userController");
 const { authenticateJWT, authorizeRole } = require("../middleware/auth");
 
 // public routes
 router.post("/register", register);
 router.post("/login", login);
-router.post("/forgot-password", forgotPassword);
-router.post("/change-password", changePassword);
 
 // admin routes
 router.get("/admin", authenticateJWT, authorizeRole("admin"), getAllUsers);

@@ -97,7 +97,7 @@ function Header() {
           <li className="nav-item">
             <Link className="nav-link collapsed" to="/admin/staff">
               <i className="bi bi-people-fill"></i>
-              <span>Staff</span>
+              <span>New Staff</span>
             </Link>
           </li>
 
@@ -105,13 +105,6 @@ function Header() {
             <Link className="nav-link collapsed" to="/admin/reports">
               <i className="bi bi-bar-chart-fill"></i>
               <span>Reports</span>
-            </Link>
-          </li>
-
-          <li className="nav-item">
-            <Link className="nav-link collapsed" to="/admin/orders">
-              <i className="bi bi-list-check"></i>
-              <span>Orders</span>
             </Link>
           </li>
 

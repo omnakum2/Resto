@@ -25,9 +25,9 @@ function Home() {
                   Taste it
                 </a>
               </div>
-              <div className="col-lg-6 text-center text-lg-end overflow-hidden">
+              <div className="col-12 col-lg-6 text-center text-lg-end overflow-hidden">
                 <img
-                  className="assets/img-fluid"
+                  className="img-fluid"
                   src="assets/img/hero.png"
                   alt="assets/img"
                 />

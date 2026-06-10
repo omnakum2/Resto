@@ -3,8 +3,6 @@ const UserEntity = require("../entities/UserEntity");
 const UserProfileEntity = require("../entities/UserProfileEntity");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const nodemailer = require("nodemailer");
-const crypto = require("crypto");
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -17,15 +15,6 @@ const generateToken = (user) => {
     expiresIn: "1h",
   });
 };
-
-// Setup Nodemailer
-const transporter = nodemailer.createTransport({
-  service: "Gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
 
 // new user register
 const register = async (req, res) => {
@@ -192,63 +181,6 @@ const resetPassword = async (req, res) => {
   }
 };
 
-const forgotPassword = async (req, res) => {
-  const { email } = req.body;
-
-  try {
-    const user = await userRepository.findOneBy({ email });
-    if (!user) {
-      return res.status(400).json({ message: "User not Exists" });
-    }
-
-    const otp = crypto.randomInt(1000, 9999).toString();
-    user.otp = otp;
-    user.otpExpire = new Date(Date.now() + 300000); 
-
-    await userRepository.save(user);
-
-    const mailOptions = {
-      to: email,
-      from: "no-reply@FoodCourt.com",
-      subject: "Password Reset OTP",
-      text: `Your OTP is ${otp}. It will expire in 5 minutes.`,
-    };
-
-    await transporter.sendMail(mailOptions);
-
-    res.status(200).json({ message: "OTP sent to your email" });
-  } catch (err) {
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
-const changePassword = async (req, res) => {
-  const { email, otp, newPassword } = req.body;
-
-  try {
-    const user = await AppDataSource.getRepository(UserEntity)
-      .createQueryBuilder("user")
-      .where("user.email = :email", { email })
-      .andWhere("user.otp = :otp", { otp })
-      .andWhere("user.otpExpire > :now", { now: new Date() })
-      .getOne();
-
-    if (!user) {
-      return res.status(400).json({ message: "Invalid OTP" });
-    }
-
-    user.password = await bcrypt.hash(newPassword, 12);
-    user.otp = null;
-    user.otpExpire = null;
-
-    await userRepository.save(user);
-
-    res.status(200).json({ message: "Password has been changed successfully" });
-  } catch (err) {
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
 module.exports = {
   register,
   login,
@@ -258,7 +190,5 @@ module.exports = {
   editUser,
   deleteUser,
   toggleStatus,
-  resetPassword,
-  forgotPassword,
-  changePassword,
+  resetPassword
 };

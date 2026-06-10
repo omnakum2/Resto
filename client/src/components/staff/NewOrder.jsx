@@ -49,8 +49,8 @@ function NewOrder() {
 
   // Filter food items based on selected category
   const filteredFoodItems = foodItems.filter(
-    (item) => item.category.id === selectedCategory
-  );
+    (item) => item.category.id === Number(selectedCategory)
+    );
 
   const handleCardClick = (table) => {
     setSelectedTable(table);
@@ -63,7 +63,7 @@ function NewOrder() {
       setError("Please select a food item and enter quantity.");
       return;
     }
-    const food = foodItems.find((item) => item.id === selectedFood);
+    const food = foodItems.find((item) => item.id === Number(selectedFood));
     if (!food) {
       // alert("");
       setError("Selected food item is not valid.");
@@ -72,7 +72,7 @@ function NewOrder() {
 
     // Check if item already exists in the order
     const existingItemIndex = orderItems.findIndex(
-      (item) => item.foodId === selectedFood
+      (item) => item.foodId === Number(selectedFood)
     );
     if (existingItemIndex !== -1) {
       // Update quantity if the item already exists

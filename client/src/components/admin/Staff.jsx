@@ -169,9 +169,9 @@ function Staff() {
             Staff
             <Link
               className="adminbtn text-decoration-none adminbtn-dark adminbtn-sm float-end"
-              to="/admin"
+              to="/admin/staff-add"
             >
-              <span>Back</span>
+              <span>Add</span>
             </Link>
           </div>
           <hr />

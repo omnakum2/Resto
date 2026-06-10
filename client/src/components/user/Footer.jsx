@@ -17,9 +17,6 @@ function Footer() {
               <a className="btn-link" href="/about">
                 About Us
               </a>
-              <a className="btn-link" href="/contact">
-                Contact Us
-              </a>
               <a className="btn-link" href="/">
                 Terms & Condition
               </a>
