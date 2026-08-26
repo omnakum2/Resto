@@ -73,7 +73,7 @@ function Login() {
               <div className="text-center mb-4">
                 <i
                   className="fa fa-utensils"
-                  style={{ fontSize: "40px", color: "#ff9800" }}
+                  style={{ fontSize: "40px", color: "#fea116" }}
                 ></i>
 
                 <h3 className="mt-3 fw-bold text-primary">FoodCourt</h3>
@@ -114,7 +114,11 @@ function Login() {
                     autoComplete="off"
                   />
                 </div>
-                <button type="submit" className="btn btn-primary w-100 mt-2">
+                <button
+                  type="submit"
+                  className="btn btn-primary w-100 mt-2"
+                  style={{ color: "#3f2d18" }}
+                >
                   Login
                 </button>
               </form>

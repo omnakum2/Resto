@@ -31,7 +31,7 @@ function Reports() {
         const result = await response.json();
         setData(result);
       } else {
-        alert("No data found");
+        setError("No data found");
       }
     } catch (error) {
       console.error("Error fetching data:", error); // Log error for debugging
@@ -143,7 +143,7 @@ function Reports() {
                         <thead>
                           <tr>
                             <th>Month</th>
-                            <th>Amount</th>
+                            <th>Total Sales Amount</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -168,7 +168,7 @@ function Reports() {
                         <thead>
                           <tr>
                             <th>Year</th>
-                            <th>Amount</th>
+                            <th>Total Sales Amount</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -193,7 +193,7 @@ function Reports() {
                         <thead>
                           <tr>
                             <th>Name</th>
-                            <th>Amount</th>
+                            <th>Total Sales Amount</th>
                           </tr>
                         </thead>
                         <tbody>

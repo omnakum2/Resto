@@ -6,16 +6,24 @@ const FoodEntity = require("../entities/FoodEntity");
 const orderItemRepository = AppDataSource.getRepository(OrderItemEntity);
 const orderRepository = AppDataSource.getRepository(OrderEntity);
 
+// SQLite has no MONTHNAME(); build "January".."December" from a datetime column.
+const monthNameExpr = (col) => `CASE strftime('%m', ${col})
+    WHEN '01' THEN 'January' WHEN '02' THEN 'February' WHEN '03' THEN 'March'
+    WHEN '04' THEN 'April' WHEN '05' THEN 'May' WHEN '06' THEN 'June'
+    WHEN '07' THEN 'July' WHEN '08' THEN 'August' WHEN '09' THEN 'September'
+    WHEN '10' THEN 'October' WHEN '11' THEN 'November' WHEN '12' THEN 'December'
+  END`;
+
 const getMonthlyMostSoldFoodItems = async () => {
   try {
     // Using raw SQL for complex aggregation that is easier than QueryBuilder for this specific case
     const result = await AppDataSource.query(`
-      SELECT 
+      SELECT
         f.name as food_name,
         SUM(oi.quantity) as totalQuantity,
-        MONTHNAME(oi.createdAt) as monthName,
-        YEAR(oi.createdAt) as year,
-        MONTH(oi.createdAt) as month
+        ${monthNameExpr("oi.createdAt")} as monthName,
+        strftime('%Y', oi.createdAt) as year,
+        strftime('%m', oi.createdAt) as month
       FROM order_items oi
       JOIN foods f ON oi.food_id = f.id
       GROUP BY f.id, year, month
@@ -47,11 +55,11 @@ const totalSalesYearly = async (req, res) => {
   try {
     const salesReport = await orderRepository
       .createQueryBuilder("order")
-      .select("YEAR(order.createdAt)", "year")
+      .select("strftime('%Y', order.createdAt)", "year")
       .addSelect("SUM(order.grand_total)", "totalSales")
       .where("order.status = :status", { status: "closed" })
-      .groupBy("year")
-      .orderBy("year", "ASC")
+      .groupBy("strftime('%Y', order.createdAt)")
+      .orderBy("strftime('%Y', order.createdAt)", "ASC")
       .getRawMany();
 
     if (!salesReport || salesReport.length === 0) {
@@ -68,12 +76,12 @@ const totalSalesMonthly = async (req, res) => {
   try {
     const salesReport = await orderRepository
       .createQueryBuilder("order")
-      .select("MONTHNAME(order.createdAt)", "month")
-      .addSelect("MONTH(order.createdAt)", "monthNum")
+      .select(monthNameExpr("order.createdAt"), "month")
+      .addSelect("strftime('%m', order.createdAt)", "monthNum")
       .addSelect("SUM(order.grand_total)", "totalSales")
       .where("order.status = :status", { status: "closed" })
-      .groupBy("monthNum, month")
-      .orderBy("monthNum", "ASC")
+      .groupBy("strftime('%m', order.createdAt)")
+      .orderBy("strftime('%m', order.createdAt)", "ASC")
       .getRawMany();
 
     if (!salesReport || salesReport.length === 0) {

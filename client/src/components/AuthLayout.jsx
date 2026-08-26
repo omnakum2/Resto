@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 
 const AuthLayout = () => {
   const backgroundStyle = {
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // Deep blue to purple gradient
+    backgroundColor: "rgba(63, 45, 24, 0.55)", // espresso-tinted overlay
     height: "100vh", // Full viewport height
     display: "flex",
     alignItems: "center",

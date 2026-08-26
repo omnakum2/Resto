@@ -13,7 +13,7 @@ function Table() {
   const mystyle = {
     headRow: {
       style: {
-        backgroundColor: "black",
+        backgroundColor: "#3f2d18",
         color: "white",
         fontWeight: "bold",
         fontSize: "15px",

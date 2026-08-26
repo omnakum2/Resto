@@ -3,6 +3,14 @@
   --primary: #fea116;
   --light: #f1f8ff;
   --dark: #0f172b;
+
+  /* Admin / Staff / Auth panel theme (espresso base + gold accent) */
+  --admin-espresso: #3f2d18; /* primary on white: nav text, icons, buttons, table head (14:1) */
+  --admin-espresso-hover: #523a20; /* button hover */
+  --admin-brand: #fea116; /* gold accent: brand, active nav, avatar, hover pops */
+  --admin-brand-hover: #e08e0a; /* darker gold */
+  --admin-brand-soft: #fbf3e4; /* subtle warm hover surface */
+  --admin-active: #fbe6c2; /* visible gold tint for the active nav item */
 }
 
 .ff-secondary {
@@ -335,14 +343,14 @@
 
 .adminbtn-primary {
   color: #fff;
-  background-color: #007bff;
-  border-color: #007bff;
+  background-color: var(--admin-espresso);
+  border-color: var(--admin-espresso);
 }
 
 .adminbtn-primary:hover {
   color: #fff;
-  background-color: #0069d9;
-  border-color: #0062cc;
+  background-color: var(--admin-espresso-hover);
+  border-color: var(--admin-espresso-hover);
 }
 
 .adminbtn-success {
@@ -383,14 +391,14 @@
 
 .adminbtn-dark {
   color: #fff;
-  background-color: #343a40;
-  border-color: #343a40;
+  background-color: var(--admin-espresso);
+  border-color: var(--admin-espresso);
 }
 
 .adminbtn-dark:hover {
   color: #fff;
-  background-color: #23272b;
-  border-color: #1d2124;
+  background-color: var(--admin-espresso-hover);
+  border-color: var(--admin-espresso-hover);
 }
 
 /*--------------------------------------------------------------
@@ -414,7 +422,7 @@
 .pagetitle {
   font-size: 24px;
   font-weight: bold;
-  color: #36454f;
+  color: var(--admin-espresso);
   margin-bottom: 10px;
 }
 
@@ -516,6 +524,8 @@
   scrollbar-color: #aab7cf transparent;
   box-shadow: 0px 0px 20px rgba(1, 41, 112, 0.1);
   background-color: #fff;
+  display: flex;
+  flex-direction: column;
 }
 
 @media (max-width: 1199px) {
@@ -562,6 +572,9 @@
   padding: 0;
   margin: 0;
   list-style: none;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
 }
 
 .sidebar-nav li {
@@ -577,7 +590,7 @@
 .sidebar-nav .nav-heading {
   font-size: 11px;
   text-transform: uppercase;
-  color: #36454f;
+  color: var(--admin-espresso);
   font-weight: 600;
   margin: 10px 0 5px 15px;
 }
@@ -587,35 +600,47 @@
   align-items: center;
   font-size: 15px;
   font-weight: 600;
-  color: #36454f;
+  color: var(--admin-espresso);
   transition: 0.3;
-  background: #f6f9ff;
+  background: #fff;
   padding: 10px 15px;
   border-radius: 4px;
+  cursor: pointer;
 }
 
 .sidebar-nav .nav-link i {
   font-size: 16px;
   margin-right: 10px;
-  color: #36454f;
+  color: var(--admin-espresso);
 }
 
 .sidebar-nav .nav-link.collapsed {
-  color: #36454f;
+  color: var(--admin-espresso);
   background: #fff;
 }
 
 .sidebar-nav .nav-link.collapsed i {
-  color: #36454f;
+  color: var(--admin-espresso);
 }
 
 .sidebar-nav .nav-link:hover {
-  color: #36454f;
-  background: #f6f9ff;
+  color: var(--admin-espresso);
+  background: var(--admin-brand-soft);
 }
 
 .sidebar-nav .nav-link:hover i {
-  color: #36454f;
+  color: var(--admin-brand-hover);
+}
+
+.sidebar-nav .nav-link.active {
+  color: var(--admin-espresso);
+  background: var(--admin-active);
+  border-left: 4px solid var(--admin-brand);
+  padding-left: 11px; /* keep text aligned against the 4px accent bar */
+}
+
+.sidebar-nav .nav-link.active i {
+  color: var(--admin-brand);
 }
 
 .sidebar-nav .nav-link .bi-chevron-down {
@@ -638,7 +663,7 @@
   align-items: center;
   font-size: 14px;
   font-weight: 600;
-  color: #36454f;
+  color: var(--admin-espresso);
   transition: 0.3;
   padding: 10px 0 10px 40px;
   transition: 0.3s;
@@ -654,11 +679,80 @@
 
 .sidebar-nav .nav-content a:hover,
 .sidebar-nav .nav-content a.active {
-  color: #040c12;
+  color: var(--admin-brand-hover);
 }
 
 .sidebar-nav .nav-content a.active i {
-  background-color: #040c12;
+  background-color: var(--admin-brand);
+}
+
+/* Sidebar profile (pinned bottom) */
+.sidebar-nav .sidebar-profile {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 12px;
+  border-top: 1px solid #eef0f4;
+}
+
+.sidebar-profile .avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--admin-brand);
+  color: var(--admin-espresso);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 18px;
+  flex-shrink: 0;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.sidebar-profile .profile-info {
+  min-width: 0;
+  line-height: 1.2;
+}
+
+.sidebar-profile .profile-name {
+  display: block;
+  font-weight: 600;
+  color: var(--admin-espresso);
+  font-size: 15px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar-profile .profile-role {
+  font-size: 12px;
+  color: #9a8b74;
+  text-transform: capitalize;
+}
+
+.sidebar-profile .logout-btn {
+  margin-left: auto;
+  background: transparent;
+  border: none;
+  color: var(--admin-espresso);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 6px;
+  border-radius: 6px;
+  transition:
+    color 0.2s,
+    background 0.2s;
+}
+
+.sidebar-profile .logout-btn:hover {
+  color: var(--admin-brand-hover);
+  background: var(--admin-brand-soft);
 }
 
 /*--------------------------------------------------------------
@@ -719,10 +813,6 @@
 /*--------------------------------------------------------------
 # Footer
 --------------------------------------------------------------*/
-.adminfooter {
-  margin-top: 20rem;
-}
-
 .footer .copyright {
   text-align: center;
   color: #36454f;

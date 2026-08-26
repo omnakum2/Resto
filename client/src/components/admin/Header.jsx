@@ -1,5 +1,15 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
+
+const NAV_ITEMS = [
+  { to: "/admin", end: true, icon: "grid", label: "Dashboard" },
+  { to: "/admin/category", icon: "collection", label: "New Category" },
+  { to: "/admin/table", icon: "grid-3x3-gap", label: "New Table" },
+  { to: "/admin/food", icon: "basket", label: "New Food" },
+  { to: "/admin/staff", icon: "people", label: "New Staff" },
+  { to: "/admin/reports", icon: "bar-chart", label: "Reports" },
+  { to: "/admin/settings", icon: "gear", label: "Settings" },
+];
 
 function Header() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -10,6 +20,8 @@ function Header() {
   };
 
   const userName = localStorage.getItem("user_name");
+  const userRole = localStorage.getItem("user_role");
+  const initial = userName ? userName.trim().charAt(0) : "?";
 
   const handleLogout = () => {
     localStorage.removeItem("user_id");
@@ -25,10 +37,14 @@ function Header() {
       {/* ======= Header ======= */}
       <nav
         className="navbar navbar-expand-lg fixed-top"
-        style={{ background: "#36454f" }}
+        style={{ background: "var(--admin-espresso)" }}
       >
         <div className="container-fluid">
-          <Link className="navbar-brand text-light" to="/admin">
+          <Link
+            className="navbar-brand fw-bold"
+            to="/admin"
+            style={{ color: "var(--admin-brand)" }}
+          >
             FoodCourt
           </Link>
           <button
@@ -39,7 +55,7 @@ function Header() {
             aria-expanded={isSidebarOpen ? "true" : "false"}
             aria-label="Toggle navigation"
           >
-            <span className="text-light">
+            <span style={{ color: "var(--admin-brand)" }}>
               <i className="bi bi-list"></i>
             </span>
           </button>
@@ -49,87 +65,48 @@ function Header() {
       {/* ======= Sidebar ======= */}
       <aside id="sidebar" className="sidebar">
         <ul className="sidebar-nav" id="sidebar-nav">
-          <Link
-            to="/admin/profile"
-            className="text-decoration-none"
-            style={{ color: "#36454f" }}
-          >
-            <div className="box text-center">
-              <div className="row">
-                <span className="bi bi-person-fill display-6"></span>
-              </div>
-              <div className="row mb-2">
-                <strong>
-                  <span className="h4">{userName}</span>
-                </strong>
-              </div>
-            </div>
-          </Link>
+          {NAV_ITEMS.map((item) => (
+            <li className="nav-item" key={item.to}>
+              <NavLink
+                to={item.to}
+                end={item.end}
+                className={({ isActive }) =>
+                  "nav-link" + (isActive ? " active" : " collapsed")
+                }
+              >
+                {({ isActive }) => (
+                  <>
+                    <i
+                      className={`bi bi-${item.icon}${isActive ? "-fill" : ""}`}
+                    ></i>
+                    <span>{item.label}</span>
+                  </>
+                )}
+              </NavLink>
+            </li>
+          ))}
 
-          <li className="nav-item">
-            <Link className="nav-link collapsed" to="/admin">
-              <i className="bi bi-grid-fill"></i>
-              <span>Dashboard</span>
+          {/* Profile + Logout pinned to bottom */}
+          <li className="sidebar-profile">
+            <Link to="/admin/profile" className="avatar" title="View profile">
+              {initial}
             </Link>
-          </li>
-
-          <li className="nav-item">
-            <Link className="nav-link collapsed" to="/admin/category">
-              <i className="bi bi-stack"></i>
-              <span>New Category</span>
+            <Link
+              to="/admin/profile"
+              className="profile-info text-decoration-none"
+            >
+              <span className="profile-name">{userName}</span>
+              <span className="profile-role">{userRole}</span>
             </Link>
-          </li>
-
-          <li className="nav-item">
-            <Link className="nav-link collapsed" to="/admin/table">
-              <i className="bi bi-table"></i>
-              <span>New Table</span>
-            </Link>
-          </li>
-
-          <li className="nav-item">
-            <Link className="nav-link collapsed" to="/admin/food">
-              <i className="bi bi-box"></i>
-              <span>New Food</span>
-            </Link>
-          </li>
-
-          <li className="nav-item">
-            <Link className="nav-link collapsed" to="/admin/staff">
-              <i className="bi bi-people-fill"></i>
-              <span>New Staff</span>
-            </Link>
-          </li>
-
-          <li className="nav-item">
-            <Link className="nav-link collapsed" to="/admin/reports">
-              <i className="bi bi-bar-chart-fill"></i>
-              <span>Reports</span>
-            </Link>
-          </li>
-
-          <li className="nav-item">
-            <Link className="nav-link collapsed" to="/admin/settings">
-              <i className="bi bi-gear-fill"></i>
-              <span>Settings</span>
-            </Link>
-          </li>
-
-          <li className="nav-item">
-            <p className="nav-link collapsed" onClick={handleLogout}>
+            <button
+              type="button"
+              className="logout-btn"
+              onClick={handleLogout}
+              title="Logout"
+              aria-label="Logout"
+            >
               <i className="bi bi-box-arrow-right"></i>
-              <span>Logout</span>
-            </p>
-          </li>
-
-          <li className="nav-item adminfooter">
-            <p className="nav-link collapsed">
-              &copy;{" "}
-              <strong>
-                <span>FoodCourt</span>
-              </strong>
-              . All Rights Reserved
-            </p>
+            </button>
           </li>
         </ul>
       </aside>

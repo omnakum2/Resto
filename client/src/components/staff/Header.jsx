@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 function Header() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -10,6 +10,11 @@ function Header() {
   };
 
   const userName = localStorage.getItem("user_name");
+  const userRole = localStorage.getItem("user_role");
+  const initial = userName ? userName.trim().charAt(0) : "?";
+
+  const navClass = ({ isActive }) =>
+    "nav-link" + (isActive ? " active" : " collapsed");
 
   const handleLogout = () => {
     localStorage.removeItem("user_id");
@@ -25,10 +30,14 @@ function Header() {
       {/* ======= Header ======= */}
       <nav
         className="navbar navbar-expand-lg fixed-top"
-        style={{ background: "#36454f" }}
+        style={{ background: "var(--admin-espresso)" }}
       >
         <div className="container-fluid">
-          <Link className="navbar-brand text-light" to="/staff">
+          <Link
+            className="navbar-brand fw-bold"
+            to="/staff"
+            style={{ color: "var(--admin-brand)" }}
+          >
             FoodCourt
           </Link>
           <button
@@ -39,7 +48,7 @@ function Header() {
             aria-expanded={isSidebarOpen ? "true" : "false"}
             aria-label="Toggle navigation"
           >
-            <span className="text-light">
+            <span style={{ color: "var(--admin-brand)" }}>
               <i className="bi bi-list"></i>
             </span>
           </button>
@@ -49,34 +58,28 @@ function Header() {
       {/* ======= Sidebar ======= */}
       <aside id="sidebar" className="sidebar">
         <ul className="sidebar-nav" id="sidebar-nav">
-        <Link
-            to="/staff/profile"
-            className="text-decoration-none"
-            style={{ color: "#36454f" }}
-          >
-            <div className="box text-center">
-              <div className="row">
-                <span className="bi bi-person-fill display-6"></span>
-              </div>
-              <div className="row mb-2">
-                <strong>
-                  <span className="h4">{userName}</span>
-                </strong>
-              </div>
-            </div>
-          </Link>
           <li className="nav-item">
-            <Link className="nav-link collapsed" to="/staff">
-              <i className="bi bi-grid-fill"></i>
-              <span>Dashboard</span>
-            </Link>
+            <NavLink className={navClass} to="/staff" end>
+              {({ isActive }) => (
+                <>
+                  <i className={`bi bi-grid${isActive ? "-fill" : ""}`}></i>
+                  <span>Dashboard</span>
+                </>
+              )}
+            </NavLink>
           </li>
 
           <li className="nav-item">
-            <Link className="nav-link collapsed" to="/staff/menu">
-              <i className="bi bi-list-task"></i>
-              <span>Menu</span>
-            </Link>
+            <NavLink className={navClass} to="/staff/menu">
+              {({ isActive }) => (
+                <>
+                  <i
+                    className={`bi bi-menu-button-wide${isActive ? "-fill" : ""}`}
+                  ></i>
+                  <span>Menu</span>
+                </>
+              )}
+            </NavLink>
           </li>
 
           <li className="nav-item">
@@ -86,7 +89,7 @@ function Header() {
               data-bs-target="#stock-nav"
               data-bs-toggle="collapse"
             >
-              <i className="bi bi-plus-lg"></i>
+              <i className="bi bi-receipt"></i>
               <span>Orders</span>
               <i className="bi bi-chevron-down ms-auto"></i>
             </a>
@@ -96,42 +99,52 @@ function Header() {
               data-bs-parent="#sidebar-nav"
             >
               <li>
-                <Link to="/staff/new-order">
+                <NavLink to="/staff/new-order">
                   <i className="bi bi-circle"></i>
                   <span>New Order</span>
-                </Link>
+                </NavLink>
               </li>
               <li>
-                <Link to="/staff/orders">
+                <NavLink to="/staff/orders">
                   <i className="bi bi-circle"></i>
                   <span>Manage Order</span>
-                </Link>
+                </NavLink>
               </li>
             </ul>
           </li>
 
           <li className="nav-item">
-            <Link className="nav-link collapsed" to="/staff/settings">
-              <i className="bi bi-gear-fill"></i>
-              <span>Settings</span>
+            <NavLink className={navClass} to="/staff/settings">
+              {({ isActive }) => (
+                <>
+                  <i className={`bi bi-gear${isActive ? "-fill" : ""}`}></i>
+                  <span>Settings</span>
+                </>
+              )}
+            </NavLink>
+          </li>
+
+          {/* Profile + Logout pinned to bottom */}
+          <li className="sidebar-profile">
+            <Link to="/staff/profile" className="avatar" title="View profile">
+              {initial}
             </Link>
-          </li>
-
-          <li className="nav-item">
-            <p className="nav-link collapsed" onClick={handleLogout}>
+            <Link
+              to="/staff/profile"
+              className="profile-info text-decoration-none"
+            >
+              <span className="profile-name">{userName}</span>
+              <span className="profile-role">{userRole}</span>
+            </Link>
+            <button
+              type="button"
+              className="logout-btn"
+              onClick={handleLogout}
+              title="Logout"
+              aria-label="Logout"
+            >
               <i className="bi bi-box-arrow-right"></i>
-              <span>Logout</span>
-            </p>
-          </li>
-
-          <li className="nav-item adminfooter">
-            <p className="nav-link collapsed">
-              &copy;{" "}
-              <strong>
-                <span>FoodCourt</span>
-              </strong>
-              . All Rights Reserved
-            </p>
+            </button>
           </li>
         </ul>
       </aside>

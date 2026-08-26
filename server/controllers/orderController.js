@@ -45,7 +45,8 @@ const generateOrderNumber = async () => {
     const lastOrder = await orderRepository
       .createQueryBuilder("order")
       .where("order.order_no LIKE :prefix", { prefix: `${prefix}%` })
-      .orderBy("order.order_no", "DESC")
+      .orderBy("order.createdAt", "DESC")
+      .addOrderBy("order.id", "DESC")
       .getOne();
 
     let sequence = 1;

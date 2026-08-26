@@ -28,7 +28,11 @@ module.exports = new EntitySchema({
       precision: 10,
       scale: 2,
       default: 0.0,
-    }
+    },
+    createdAt: {
+      type: "datetime",
+      createDate: true,
+    },
   },
   relations: {
     table: {
