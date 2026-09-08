@@ -14,7 +14,7 @@ function Home() {
                   Delicious Meal
                 </h1>
                 <p className="text-white animated slideInLeft mb-4 pb-2">
-                  The FoodCourt serve's the Authentic Taste of Indian and
+                  The Resto serve's the Authentic Taste of Indian and
                   Multicuisine food at one stop destination for your Family.
                   Dine in to taste our Delicious meal.
                 </p>
@@ -62,7 +62,7 @@ function Home() {
                   <i className="fa fa-3x fa-home text-primary mb-4"></i>
                   <h5>One Stop Destination</h5>
                   <p>
-                    FoodCourt is hub of varities of foods so get all your taste
+                    Resto is hub of varities of foods so get all your taste
                     at one place.
                   </p>
                 </div>
@@ -135,7 +135,7 @@ function Home() {
               </h5>
               <h1 className="mb-4">
                 Welcome to <i className="fa fa-utensils text-primary me-2"></i>
-                FoodCourt
+                Resto
               </h1>
               <p className="mb-4">
                 where passion meets palate in a celebration of flavors and

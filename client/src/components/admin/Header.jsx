@@ -45,7 +45,7 @@ function Header() {
             to="/admin"
             style={{ color: "var(--admin-brand)" }}
           >
-            FoodCourt
+            Resto
           </Link>
           <button
             className="navbar-toggler toggle-sidebar-btn"

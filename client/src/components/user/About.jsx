@@ -70,10 +70,10 @@ function About() {
               </h5>
               <h1 className="mb-4">
                 Welcome to <i className="fa fa-utensils text-primary me-2"></i>
-                FoodCourt
+                Resto
               </h1>
               <p className="mb-4">
-                At FoodCourt, we pride ourselves on offering a culinary journey
+                At Resto, we pride ourselves on offering a culinary journey
                 that spans continents. Our menu is a fusion of Indian and
                 Multicuisine delights, curated to satisfy every taste and
                 preference. From the rich, aromatic spices of India to the bold,
@@ -83,7 +83,7 @@ function About() {
               <p className="mb-4">
                 Whether you're dining with family, friends, or colleagues, our
                 warm ambiance and attentive service ensure a memorable
-                experience. Join us at FoodCourt and embark on a gastronomic
+                experience. Join us at Resto and embark on a gastronomic
                 adventure that promises to delight and inspire.
               </p>
               <div className="row g-4 mb-4">

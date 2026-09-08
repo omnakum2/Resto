@@ -69,20 +69,20 @@ function Login() {
         <div className="row justify-content-center">
           <div className="card col-sm-8 col-md-6 col-lg-4">
             <div className="card-body p-2">
-            <div className="mt-3">
-              <div className="text-center mb-4">
-                <i
-                  className="fa fa-utensils"
-                  style={{ fontSize: "40px", color: "#fea116" }}
-                ></i>
+              <div className="mt-3">
+                <div className="text-center mb-4">
+                  <i
+                    className="fa fa-utensils"
+                    style={{ fontSize: "40px", color: "#fea116" }}
+                  ></i>
 
-                <h3 className="mt-3 fw-bold text-primary">FoodCourt</h3>
+                  <h3 className="mt-3 fw-bold text-primary">Resto</h3>
 
-                <p className="text-muted">
-                  Please sign in to your account
-                </p>
+                  <p className="text-muted">
+                    Please sign in to your account
+                  </p>
+                </div>
               </div>
-            </div>
               {error && <div className="alert alert-danger">{error}</div>}
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">

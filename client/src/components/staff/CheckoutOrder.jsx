@@ -80,7 +80,7 @@ function CheckoutOrder() {
         </div>
         <hr />
         <div className="card">
-          <h4 className="text-center mt-4">FoodCourt</h4>
+          <h4 className="text-center mt-4">Resto</h4>
           <div className="card-body m-4">
             <form action="" onSubmit={handlecheckout}>
               <div className="row">

@@ -26,14 +26,14 @@ function Footer() {
                 Contact
               </h4>
               <p className="mb-2">
-                <i className="fa fa-map-marker-alt me-3"></i>Lalwadi Road, 
+                <i className="fa fa-map-marker-alt me-3"></i>Lalwadi Road,
                 Kaushal Nagar, Jamnagar
               </p>
               <p className="mb-2">
                 <i className="fa fa-phone-alt me-3"></i>+91 92423 45672
               </p>
               <p className="mb-2">
-                <i className="fa fa-envelope me-3"></i>info@foodcourt.com
+                <i className="fa fa-envelope me-3"></i>info@Resto.com
               </p>
             </div>
             <div className="col-lg-4 col-md-6">
@@ -53,9 +53,9 @@ function Footer() {
               <div className="d-flex align-items-center justify-content-center">
                 &copy;{" "}
                 <a className="btn-link" href="/">
-                  FoodCourt
+                  Resto
                 </a>
-                  &nbsp;, All Right Reserved.
+                &nbsp;, All Right Reserved.
               </div>
             </div>
           </div>

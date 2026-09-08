@@ -28,7 +28,7 @@ export const seedDemoData = async () => {
             role: "admin",
         });
         await userRepository.save(adminUser);
-        
+
         const categoryCount = await categoryRepository.count();
         if (categoryCount === 0) {
             const categories = {};
@@ -141,7 +141,7 @@ export const seedDemoData = async () => {
 
         // Seed a master staff user (Suresh) with a profile
         let sureshUser = await userRepository.findOneBy({
-            email: "suresh@foodcourt.com",
+            email: "suresh@Resto.com",
         });
         if (!sureshUser) {
             const staffPassword = await bcrypt.hash(
@@ -150,7 +150,7 @@ export const seedDemoData = async () => {
             );
             sureshUser = userRepository.create({
                 name: "Suresh",
-                email: "suresh@foodcourt.com",
+                email: "suresh@Resto.com",
                 password: staffPassword,
                 status: "active",
                 role: "staff",
@@ -221,12 +221,12 @@ export const seedDemoData = async () => {
                     const grandTotal =
                         ord.status === "closed"
                             ? ord.items.reduce(
-                                  (sum, it) =>
-                                      sum +
-                                      parseFloat(foodByName[it.name].price) *
-                                          it.quantity,
-                                  0
-                              )
+                                (sum, it) =>
+                                    sum +
+                                    parseFloat(foodByName[it.name].price) *
+                                    it.quantity,
+                                0
+                            )
                             : 0;
 
                     const order = orderRepository.create({

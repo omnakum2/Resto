@@ -69,7 +69,7 @@ function ViewOrder() {
         <div id="print_bill">
           <div className="card">
             <div className="card-body m-4">
-              <h4 className="text-center">FoodCourt</h4>
+              <h4 className="text-center">Resto</h4>
               <span>
                 <span className="h5">Order No : </span>
                 <span className="fw-medium"> #{data.order_no}</span>
